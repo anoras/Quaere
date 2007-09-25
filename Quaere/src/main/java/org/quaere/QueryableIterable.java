@@ -1,5 +1,8 @@
 package org.quaere;
 
+import org.quaere.expressions.Identifier;
+import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -10,25 +13,15 @@ public class QueryableIterable<T> implements Queryable<T> {
         this.elements = elements;
     }
 
-// --------------------- Interface Iterable ---------------------
-
-
     public Iterator<T> iterator() {
         return elements.iterator();
     }
 
-// --------------------- Interface Queryable ---------------------
 
-
-    public Queryable<T> orderBy(Comparator comparison) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public QueryEngine createQueryEngine() {
+        return new Quaere4ObjectsQueryEngine();
     }
-
-    public Queryable<T> select(Action<T> action) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Queryable<T> where(Predicate<T> predicate) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Identifier getSourceIdentifier(Identifier identifier) {
+        return new Identifier("__src_" + identifier.getText());
     }
 }

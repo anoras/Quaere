@@ -1,5 +1,7 @@
 package org.quaere.expressions;
 
+import java.util.UUID;
+
 public class Identifier extends Expression {
     private final String text;
 
@@ -20,5 +22,8 @@ public class Identifier extends Expression {
 
     public void accept(ExpressionTreeVisitor visitor) {
         visitor.visit(this);
+    }
+    public static Identifier createUniqueIdentfier() {
+        return new Identifier("Id_" + UUID.randomUUID().toString().replace("-", ""));
     }
 }

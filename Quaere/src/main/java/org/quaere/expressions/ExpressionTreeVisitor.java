@@ -1,7 +1,6 @@
 package org.quaere.expressions;
 
 public interface ExpressionTreeVisitor {
-    public <T> T evaluate();
     public void visit(FromClause expression);
 
     public void visit(GroupClause expression);

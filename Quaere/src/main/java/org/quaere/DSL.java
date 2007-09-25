@@ -1,257 +1,85 @@
 package org.quaere;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.quaere.dsl.OrderableAndGroupableQueryBodyBuilder;
-import org.quaere.dsl.SubqueryOrderableAndGroupableQueryBodyBuilder;
-import org.quaere.dsl.parser.QuaereLexer;
-import org.quaere.dsl.parser.QuaereParser;
+import org.quaere.dsl.*;
+import org.quaere.dsl.PartitioningOperatorBuilder;
 import org.quaere.expressions.*;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryBuilder;
-import org.quaere.quaere4objects.Quaere4ObjectsQuery;
-import org.quaere.quaere4objects.Quaere4ObjectsSubqueryBuilder;
+import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
 
 import java.util.*;
 
 public class DSL {
-    private static Expression parseLiteralExpression(String literalExpression) {
-        QuaereLexer lexer = new QuaereLexer(new ANTLRStringStream(literalExpression));
-        QuaereParser parser = new QuaereParser(new CommonTokenStream(lexer));
-        Expression expression;
-        try {
-            expression = parser.quaereExpression().value;
-        } catch (RecognitionException e) {
-            throw new RuntimeException(e);
-        }
-        return expression;
+    public static <R> FromClauseBuilder<R> from(final String identifier) {
+        QueryExpressionBuilderImpl<R> queryExpressionBuilder = new QueryExpressionBuilderImpl<R>();
+        return queryExpressionBuilder.from(identifier);
     }
-
-    public static FirstFromClause from(String identifier) {
-        return new FirstFromClause(identifier);
+    // Expressions
+    // eq
+    public static EqualOperator eq(String leftHandSide, String rightHandSide) {
+        return new EqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-
-
-    public static <T> Iterable<T> select(Object[] source, String lambdaExpression){
-        return select(Arrays.asList(source),lambdaExpression);
+    public static EqualOperator eq(String leftHandSide, Comparable rightHandSide) {
+        return new EqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-    public static <T> Iterable<T> select(List<Object> source, String lambdaExpression){
-        String sourceIdenetifier= "src_"+UUID.randomUUID().toString().replace("-","");
-        String completeExpression=String.format("%s.Select(%s)",sourceIdenetifier,lambdaExpression);
-        Expression queryExpression=parseLiteralExpression(completeExpression);
-        Quaere4ObjectsQuery query=new Quaere4ObjectsQuery(queryExpression);
-        query.addSource(sourceIdenetifier, source);
-        return query.evaluate();
+    public static EqualOperator eq(Comparable leftHandSide, String rightHandSide) {
+        return new EqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-    // Element operators
-    public static <T> T first(Iterable<T> source) {
-        Iterator<T> iter = source.iterator();
-        if (!iter.hasNext()) {
-            return null;
-        } else {
-            return iter.next();
-        }
+    // ne
+    public static NotEqualOperator ne(String leftHandSide, String rightHandSide) {
+        return new NotEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    // Conversion operators
-    public static <T> T[] asArray(T[] tArray, Iterable<T> source) {
-        List<T> asList = new ArrayList<T>();
-        for (T elm : source) {
-            asList.add(elm);
-        }
-        return asList.toArray(tArray);
+    public static NotEqualOperator ne(String leftHandSide, Comparable rightHandSide) {
+        return new NotEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-
-    public static <T> List<T> asList(Iterable<T> source) {
-        List<T> asList = new ArrayList<T>();
-        for (T elm : source) {
-            asList.add(elm);
-        }
-        return asList;
+    public static NotEqualOperator ne(Comparable leftHandSide, String rightHandSide) {
+        return new NotEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-
-
-    public static <V> Map<Object, V> asMap(String keyProperty, Iterable<V> source) {
-        throw new RuntimeException("dsl.asMap is not implemented");
+    // le
+    public static LessThanOrEqualOperator le(String leftHandSide, String rightHandSide) {
+        return new LessThanOrEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static <T> Iterable<T> ofClass(Class<T> clazz, Object... source) {
-        return ofClass(clazz, Arrays.asList(source));
+    public static LessThanOrEqualOperator le(String leftHandSide, Comparable rightHandSide) {
+        return new LessThanOrEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-    @SuppressWarnings({"unchecked"})
-    public static <T> Iterable<T> ofClass(Class<T> clazz, Iterable source) {
-         List<T> result = new ArrayList<T>();
-         for (Object obj : source) {
-             if (obj != null && obj.getClass().equals(clazz)) {
-                 result.add((T) obj);
-             }
-         }
-         return result;
-     }
-
-    // Set operators
-    public static <T> Iterable<T> distinct(T... source) {
-         return distinct(Arrays.asList(source));
-     }
-
-     public static <T> Iterable<T> distinct(Iterable<T> source) {
-         List<T> result = new ArrayList<T>();
-         for (T elm : source) {
-             if (!result.contains(elm)) result.add(elm);
-         }
-         return result;
-     }
-   public static <T> Iterable<T> union(T[] leftHandSide, T[] rightHandSide) {
-        List<T> unionedList = new ArrayList<T>();
-        for (T elm : leftHandSide) {
-            if (!unionedList.contains(elm)) unionedList.add(elm);
-        }
-        for (T elm : rightHandSide) {
-            if (!unionedList.contains(elm)) unionedList.add(elm);
-        }
-        return unionedList;
+    public static LessThanOrEqualOperator le(Comparable leftHandSide, String rightHandSide) {
+        return new LessThanOrEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-
-    public static <T> Iterable<T> union(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
-        List<T> unionedList = new ArrayList<T>();
-        for (T elm : leftHandSide) {
-            if (!unionedList.contains(elm)) unionedList.add(elm);
-        }
-        for (T elm : rightHandSide) {
-            if (!unionedList.contains(elm)) unionedList.add(elm);
-        }
-        return unionedList;
-    }    
-   public static <T> Iterable<T> intersect(T[] leftHandSide, T[] rightHandSide) {
-        List<T> intersection = new ArrayList<T>();
-        for (T elm : leftHandSide) {
-            if (Arrays.binarySearch(rightHandSide, elm) >= 0 && !intersection.contains(elm)) {
-                intersection.add(elm);
-            }
-        }
-        return intersection;
+    // lt
+    public static LessThanOperator lt(String leftHandSide, String rightHandSide) {
+        return new LessThanOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-
-    public static <T> Iterable<T> intersect(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
-        List<T> rhsList = new ArrayList<T>();
-        for (T rhsElm : rightHandSide) {
-            rhsList.add(rhsElm);
-        }
-        List<T> intersection = new ArrayList<T>();
-        for (T lhsElm : leftHandSide) {
-            if (rhsList.contains(lhsElm) && !intersection.contains(lhsElm)) {
-                intersection.add(lhsElm);
-            }
-        }
-        return intersection;
+    public static LessThanOperator lt(String leftHandSide, Comparable rightHandSide) {
+        return new LessThanOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-    public static <T> Iterable<T> except(T[] leftHandSide, T[] rightHandSide) {
-        List<T> expections = new ArrayList<T>();
-        for (T elm : leftHandSide) {
-            if (Arrays.binarySearch(rightHandSide, elm) < 0 && !expections.contains(elm)) {
-                expections.add(elm);
-            }
-        }
-        return expections;
+    public static LessThanOperator lt(Comparable leftHandSide, String rightHandSide) {
+        return new LessThanOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-
-    public static <T> Iterable<T> except(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
-        List<T> rhsList = new ArrayList<T>();
-        for (T rhsElm : rightHandSide) {
-            rhsList.add(rhsElm);
-        }
-        List<T> exceptions = new ArrayList<T>();
-        for (T lhsElm : leftHandSide) {
-            if (!rhsList.contains(lhsElm) && !exceptions.contains(lhsElm)) {
-                exceptions.add(lhsElm);
-            }
-        }
-        return exceptions;
+    // ge
+    public static GreaterThanOrEqualOperator ge(String leftHandSide, String rightHandSide) {
+        return new GreaterThanOrEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    // Partitioning operators
-    public static <T> Iterable<T> take(int count, T...source){
-        return take(count, Arrays.asList(source));  
+    public static GreaterThanOrEqualOperator ge(String leftHandSide, Comparable rightHandSide) {
+        return new GreaterThanOrEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-    public static <T> Iterable<T> take(int count, Iterable<T> source)
-    {
-        List<T> result = new ArrayList<T>();
-        Iterator<T> iter = source.iterator();
-        while (result.size() < count && iter.hasNext()) {
-            result.add(iter.next());
-        }
-        return result;
+    public static GreaterThanOrEqualOperator ge(Comparable leftHandSide, String rightHandSide) {
+        return new GreaterThanOrEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-    public static <T> Iterable<T> takeWhile(String lambdaExpression, T...source)
-    {
-        return takeWhile(lambdaExpression, Arrays.asList(source));
+    // gt
+    public static GreaterThanOperator gt(String leftHandSide, String rightHandSide) {
+        return new GreaterThanOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static <T> Iterable<T> takeWhile(String lambdaExpression, List<T> source)
-    {
-        String sourceIdenetifier= "src_"+UUID.randomUUID().toString().replace("-","");
-        String completeExpression=String.format("%s.takeWhile(%s)",sourceIdenetifier,lambdaExpression);
-        Expression queryExpression=parseLiteralExpression(completeExpression);
-        Quaere4ObjectsQuery query=new Quaere4ObjectsQuery(queryExpression);
-        query.addSource(sourceIdenetifier, source);
-        return query.evaluate();
+    public static GreaterThanOperator gt(String leftHandSide, Comparable rightHandSide) {
+        return new GreaterThanOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
-    public static <T> Iterable<T> skip(int count, T... source) {
-        return skip(count, Arrays.asList(source));
+    public static GreaterThanOperator gt(Comparable leftHandSide, String rightHandSide) {
+        return new GreaterThanOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
-
-    public static <T> Iterable<T> skip(int count, Iterable<T> source) {
-        ArrayList<T> result = new ArrayList<T>();
-        int skipped = 0;
-        Iterator<T> iter = source.iterator();
-        while (skipped < count && iter.hasNext()) {
-            iter.next();
-            skipped++;
-        }
-        while (iter.hasNext()) {
-            result.add(iter.next());
-        }
-        return result;
+    // anonymous classes
+    public static NewExpression create(Property... properties) {
+        return new NewExpression(null, Arrays.asList(properties));
     }
-    public static <T> Iterable<T> skipWhile(String lambdaExpression, T... source) {
-        return skipWhile(lambdaExpression,Arrays.asList(source));
-    }
-    public static <T> Iterable<T> skipWhile(String lambdaExpression, List<T> source)
-    {
-        String sourceIdenetifier= "src_"+UUID.randomUUID().toString().replace("-","");
-        String completeExpression=String.format("%s.skipWhile(%s)",sourceIdenetifier,lambdaExpression);
-        Expression queryExpression=parseLiteralExpression(completeExpression);
-        Quaere4ObjectsQuery query=new Quaere4ObjectsQuery(queryExpression);
-        query.addSource(sourceIdenetifier, source);
-        return query.evaluate();
-    }
-    // Quantifiers
-    public static boolean any(Object[] source,String lambdaExpression) {
-        return any(Arrays.asList(source), lambdaExpression);
-    }
-    public static boolean any(List<?> source, String lambdaExpression){
-        String sourceIdenetifier= "src_"+UUID.randomUUID().toString().replace("-","");
-        String completeExpression=String.format("%s.any(%s)",sourceIdenetifier,lambdaExpression);
-        Expression queryExpression=parseLiteralExpression(completeExpression);
-        Quaere4ObjectsQuery query=new Quaere4ObjectsQuery(queryExpression);
-        query.addSource(sourceIdenetifier, source);
-        return (Boolean) query.<Object>evaluate();
-    }
-    // Ordering operators
-    public static <T> Iterable<T> reverse(Iterable<T> sequence) {
-        List<T> asList = new ArrayList<T>();
-        for (T elm : sequence) {
-            asList.add(elm);
-        }
-        Collections.reverse(asList);
-        return asList;
-    }
-    // Expression factories
-    public static NewExpression create(Property...properties)
-    {
-        return new NewExpression(null,Arrays.asList(properties));
-    }
-
-    public static Property property(String expression)
-    {
-        Statement statment= (Statement) parseLiteralExpression(expression);
-        if (statment.getExpressions().size() >1) {
+    public static Property property(String expression) {
+        Statement statment = (Statement) LiteralExpression.parse(expression);
+        if (statment.getExpressions().size() > 1) {
             // We're looking for a method call
             for (Expression statementExpression : statment.getExpressions()) {
                 if (statementExpression instanceof MethodCall) {
@@ -266,105 +94,219 @@ public class DSL {
                     return property(propertyName, expression);
                 }
             }
-        } else
-        {
+        } else {
             // We're looking for an identifier
-            Identifier identifier=(Identifier) statment.getExpressions().get(0);
-            return property(identifier.getText(),expression);
+            Identifier identifier = (Identifier) statment.getExpressions().get(0);
+            return property(identifier.getText(), expression);
         }
-        throw new IllegalArgumentException(String.format("\"%s\" is not a vaild property expression.",expression));
+        throw new IllegalArgumentException(String.format("\"%s\" is not a vaild property expression.", expression));
     }
-    public static Property property(String propertyName, String expression)
-    {
-        return property(propertyName,parseLiteralExpression(expression));
+    public static Property property(String propertyName, String expression) {
+        return property(propertyName, LiteralExpression.parse(expression));
     }
-    public static Property property(String propertyName, Expression expression)
-    {
-        return new Property(new Identifier(propertyName),expression);
+    public static Property property(String propertyName, Expression expression) {
+        return new Property(new Identifier(propertyName), expression);
     }
-    public static Expression any(String reference,String lambdaExpression)
-    {
-        String completeExpression=String.format("%s.any(%s)",reference,lambdaExpression);
-        return parseLiteralExpression(completeExpression);
+    public static <R> Property property(String propertyName, QueryContinuationOrQueryBodyBuilder<R> subquery) {
+        throw new RuntimeException("DSL.property is not implemented");
+    }
+    // Conversion operators
+    public static <T> T[] asArray(T[] tArray, Iterable<T> source) {
+        List<T> asList = new ArrayList<T>();
+        for (T elm : source) {
+            asList.add(elm);
+        }
+        return asList.toArray(tArray);
+    }
 
+    @SuppressWarnings({"unchecked"})
+    public static <T> List<T> asList(Iterable<? extends Object> iterable) {
+        List<T> asList = new ArrayList<T>();
+        for (Object elm : iterable) {
+            asList.add((T) elm);
+        }
+        return asList;
     }
-    public static Expression avg(String reference,String lambdaExpression){
-        String completeExpression=String.format("%s.average(%s)",reference,lambdaExpression);
-         return parseLiteralExpression(completeExpression);
+    public static <T> Iterable<T> ofClass(Class<T> clazz, Object... source) {
+        return ofClass(clazz, Arrays.asList(source));
     }
-    public static AndOperator and(Expression leftHandSide, Expression rightHandSide) {
-        return new AndOperator(
-                new Statement(
-                        Arrays.<Expression>asList(leftHandSide)
-                ),
-                new Statement(
-                        Arrays.<Expression>asList(rightHandSide)
+    @SuppressWarnings({"unchecked"})
+    public static <T> Iterable<T> ofClass(Class<T> clazz, Iterable<? extends Object> source) {
+        List<T> result = new ArrayList<T>();
+        for (Object obj : source) {
+            if (obj != null && obj.getClass().equals(clazz)) {
+                result.add((T) obj);
+            }
+        }
+        return result;
+    }
+
+    // Ordering operators
+    public static <T> Iterable<T> reverse(Iterable<T> sequence) {
+        List<T> asList = new ArrayList<T>();
+        for (T elm : sequence) {
+            asList.add(elm);
+        }
+        Collections.reverse(asList);
+        return asList;
+    }
+    // Quantifier operators
+    public static class any {
+        public static QuantificationExpressionArgumentDefinitionBuilder in(String expression) {
+            QuantificationExpressionBuilder quantificationBuilder = new QuantificationExpressionBuilderImpl("any");
+            return quantificationBuilder.in(expression);
+        }
+        public static <T> QuantificationOperatorArgumentDefinitionBuilder in(T[] source) {
+            return in(Arrays.asList(source));
+        }
+        public static <T> QuantificationOperatorArgumentDefinitionBuilder in(Iterable<T> source) {
+            return in(new QueryableIterable<T>(source));
+        }
+        public static <T> QuantificationOperatorArgumentDefinitionBuilder in(Queryable<T> source) {
+            QuantificationOperatorBuilder quantificationBuilder = new QuantificationOperatorBuilderImpl("any");
+            return quantificationBuilder.in(source);
+        }
+    }
+
+
+    // Partitioning operators
+    public static PartitioningOperatorBuilder take(int count) {
+        return new PartitioningOperatorBuilderImpl("take", count);
+    }
+    public static PartitionWhenOperatorBuilder take(String anonymousIdentifier) {
+        return new PartitionWhenOperatorBuilderImpl("takeWhile", anonymousIdentifier);
+    }
+    public static PartitioningOperatorBuilder skip(int count) {
+        return new PartitioningOperatorBuilderImpl("skip", count);
+    }
+    public static PartitionWhenOperatorBuilder skip(String anonymousIdentifier) {
+        return new PartitionWhenOperatorBuilderImpl("skipWhile", anonymousIdentifier);
+    }
+    // Set operators
+    public static <T> Iterable<T> distinct(T[] source) {
+        return distinct(Arrays.asList(source));
+    }
+    public static <T> Iterable<T> distinct(Iterable<T> source) {
+        return distinct(new QueryableIterable<T>(source));
+    }
+
+    public static <T> Iterable<T> distinct(Queryable<T> source) {
+        QueryEngine queryEngine = source.createQueryEngine();
+        Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        sourceIdentifier,
+                        new MethodCall(
+                                new Identifier("distinct"),
+                                new ArrayList<Expression>(0)
+                        )
                 )
         );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+        }
+        return queryEngine.evaluate(query);
+    }
+    public static <T> Iterable<T> union(T[] leftHandSide, T[] rightHandSide) {
+        return union(Arrays.asList(leftHandSide), Arrays.asList(rightHandSide));
+    }
+    public static <T> Iterable<T> union(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
+        return union(new QueryableIterable<T>(leftHandSide), new QueryableIterable<T>(rightHandSide));
     }
 
-    public static EqualOperator eq(String leftHandSide, String rightHandSide) {
-        Expression leftExpression = parseLiteralExpression(leftHandSide);
-        Expression rightExpression = parseLiteralExpression(rightHandSide);
-        return new EqualOperator(leftExpression, rightExpression);
-    }
-    public static EqualOperator eq(String leftHandSide, Comparable rightHandSide) {
-        Expression leftExpression = parseLiteralExpression(leftHandSide);
-        return new EqualOperator(
-                leftExpression,
-                new Statement(
-                        Arrays.<Expression>asList(new Constant(rightHandSide, rightHandSide.getClass()))
+    public static <T> Iterable<T> union(Queryable<T> leftHandSide, Queryable<T> rightHandSide) {
+        QueryEngine queryEngine = leftHandSide.createQueryEngine();
+        Identifier leftSourceIdentifier = Identifier.createUniqueIdentfier();
+        Identifier rightSourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        leftSourceIdentifier,
+                        new MethodCall(
+                                new Identifier("union"),
+                                Arrays.<Expression>asList(
+                                        new Statement(
+                                                Arrays.<Expression>asList(
+                                                        rightSourceIdentifier
+                                                )
+                                        )
+                                )
+                        )
                 )
         );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(leftSourceIdentifier, leftHandSide);
+            asQuaere4ObjectsQueryEngine.addSource(rightSourceIdentifier, rightHandSide);
+        }
+        return queryEngine.evaluate(query);
     }
-    public static LessThanOperator lt(String leftHandSide, String rightHandSide)
-    {
-        Expression leftExpression = parseLiteralExpression(leftHandSide);
-        Expression rightExpression = parseLiteralExpression(rightHandSide);
-        return new LessThanOperator(leftExpression,rightExpression);        
+    public static <T> Iterable<T> intersect(T[] leftHandSide, T[] rightHandSide) {
+        return intersect(Arrays.asList(leftHandSide), Arrays.asList(rightHandSide));
+    }
+    public static <T> Iterable<T> intersect(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
+        return intersect(new QueryableIterable<T>(leftHandSide), new QueryableIterable<T>(rightHandSide));
     }
 
-    public static LessThanOperator lt(String leftHandSide, Comparable rightHandSide) {
-        Expression leftExpression = parseLiteralExpression(leftHandSide);
-        return new LessThanOperator(
-                leftExpression,
-                new Statement(
-                        Arrays.<Expression>asList(new Constant(rightHandSide, rightHandSide.getClass()))
+    public static <T> Iterable<T> intersect(Queryable<T> leftHandSide, Queryable<T> rightHandSide) {
+        QueryEngine queryEngine = leftHandSide.createQueryEngine();
+        Identifier leftSourceIdentifier = Identifier.createUniqueIdentfier();
+        Identifier rightSourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        leftSourceIdentifier,
+                        new MethodCall(
+                                new Identifier("intersect"),
+                                Arrays.<Expression>asList(
+                                        new Statement(
+                                                Arrays.<Expression>asList(
+                                                        rightSourceIdentifier
+                                                )
+                                        )
+                                )
+                        )
                 )
         );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(leftSourceIdentifier, leftHandSide);
+            asQuaere4ObjectsQueryEngine.addSource(rightSourceIdentifier, rightHandSide);
+        }
+        return queryEngine.evaluate(query);
     }
-    public static GreaterThanOperator gt(String leftHandSide, Comparable rightHandSide) {
-        Expression leftExpression = parseLiteralExpression(leftHandSide);
-        return new GreaterThanOperator(
-                leftExpression,
-                new Statement(
-                        Arrays.<Expression>asList(new Constant(rightHandSide, rightHandSide.getClass()))
+    public static <T> Iterable<T> except(T[] leftHandSide, T[] rightHandSide) {
+        return except(Arrays.asList(leftHandSide), Arrays.asList(rightHandSide));
+    }
+    public static <T> Iterable<T> except(Iterable<T> leftHandSide, Iterable<T> rightHandSide) {
+        return except(new QueryableIterable<T>(leftHandSide), new QueryableIterable<T>(rightHandSide));
+    }
+
+    public static <T> Iterable<T> except(Queryable<T> leftHandSide, Queryable<T> rightHandSide) {
+        QueryEngine queryEngine = leftHandSide.createQueryEngine();
+        Identifier leftSourceIdentifier = Identifier.createUniqueIdentfier();
+        Identifier rightSourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        leftSourceIdentifier,
+                        new MethodCall(
+                                new Identifier("except"),
+                                Arrays.<Expression>asList(
+                                        new Statement(
+                                                Arrays.<Expression>asList(
+                                                        rightSourceIdentifier
+                                                )
+                                        )
+                                )
+                        )
                 )
         );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(leftSourceIdentifier, leftHandSide);
+            asQuaere4ObjectsQueryEngine.addSource(rightSourceIdentifier, rightHandSide);
+        }
+        return queryEngine.evaluate(query);
     }
 
-    private DSL() {
-    }
-    public static class FirstFromClause {
-        private final String identifier;
 
-        public FirstFromClause(String identifier) {
-            this.identifier = identifier;
-        }
-        public <T> OrderableAndGroupableQueryBodyBuilder in(T...source)
-        {
-            Quaere4ObjectsQueryBuilder builder = new Quaere4ObjectsQueryBuilder();
-            return builder.from(identifier).in(source);
-        }
-        public <T> OrderableAndGroupableQueryBodyBuilder in(List<T> source)
-        {
-            Quaere4ObjectsQueryBuilder builder = new Quaere4ObjectsQueryBuilder();
-            return builder.from(identifier).in(source);
-        }
-        public SubqueryOrderableAndGroupableQueryBodyBuilder in(String expression)
-        {
-            Quaere4ObjectsSubqueryBuilder builder=new Quaere4ObjectsSubqueryBuilder();
-            return builder.from(identifier).in(expression);
-        }
-    }
 }

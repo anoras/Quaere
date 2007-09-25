@@ -16,9 +16,9 @@ public class BinaryExpression extends Expression {
         return String.format("(%s %s %s)", leftExpression, operatorText(), rightExpression);
     }
 
-    protected String operatorText(){
+    protected String operatorText() {
         return "default";
-    };
+    }
 
 // --------------------- Interface ExpressionTreeNode ---------------------
 

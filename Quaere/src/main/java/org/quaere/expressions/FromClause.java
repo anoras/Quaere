@@ -1,19 +1,13 @@
 package org.quaere.expressions;
 
 public class FromClause extends QueryBodyClause {
-    private final String className;
     private final Identifier identifier;
     private final Expression expression;
 
 
-    public FromClause(String className, Identifier identifier, Expression expression) {
-        this.className = className;
+    public FromClause(Identifier identifier, Expression expression) {
         this.identifier = identifier;
         this.expression = expression;
-    }
-
-    public String getClassName() {
-        return className;
     }
 
     public Expression getExpression() {

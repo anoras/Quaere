@@ -307,6 +307,9 @@ public class DSL {
         }
         return queryEngine.evaluate(query);
     }
-
+    // Generators
+    public static <T extends Number> Iterable<T> range(T from, T to) {
+        return new Range<T>(from, to);
+    }
 
 }

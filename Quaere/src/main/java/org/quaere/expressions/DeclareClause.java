@@ -1,10 +1,10 @@
 package org.quaere.expressions;
 
-public class LetClause extends QueryBodyClause {
+public class DeclareClause extends QueryBodyClause {
     private final Identifier left;
     private final Expression right;
 
-    public LetClause(Identifier left, Expression right) {
+    public DeclareClause(Identifier left, Expression right) {
         this.left = left;
         this.right = right;
     }

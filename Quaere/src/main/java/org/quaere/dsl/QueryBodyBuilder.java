@@ -8,7 +8,7 @@ import java.util.Comparator;
 public interface QueryBodyBuilder<R> extends Iterable<R> {
     FromClauseBuilder<R> from(String identifer);
     FromClauseBuilder<R> from(QueryExpressionBuilder subquery);
-    LetClauseBuilder<R> let(String identifier);
+    DeclarationClauseBuilder<R> declare(String identifier);
     QueryBodyBuilder<R> where(String predicate);
     QueryBodyBuilder<R> where(Expression predicate);
     JoinClauseBuilder<R> join(String identifer);

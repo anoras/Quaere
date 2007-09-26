@@ -3025,7 +3025,7 @@ public class QuaereParser extends Parser {
     // $ANTLR end whereClause
 
     public static class letClause_return extends ParserRuleReturnScope {
-        public LetClause value;
+        public DeclareClause value;
         CommonTree tree;
         public Object getTree() {
             return tree;
@@ -3078,7 +3078,7 @@ public class QuaereParser extends Parser {
                 _fsp--;
 
                 adaptor.addChild(root_0, expression82.getTree());
-                retval.value = new LetClause(identifier80.value, expression82.value);
+                retval.value = new DeclareClause(identifier80.value, expression82.value);
 
             }
 

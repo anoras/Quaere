@@ -12,7 +12,7 @@ public class QueryExpressionBuilderImpl<R> implements
         Iterable<R>,
         QueryExpressionBuilder<R>,
         FromClauseBuilder<R>,
-        LetClauseBuilder<R>,
+        DeclarationClauseBuilder<R>,
         GroupClauseBuilder<R>,
         QueryBodyBuilder<R>,
         QueryContinuationBuider<R>,
@@ -76,8 +76,17 @@ public class QueryExpressionBuilderImpl<R> implements
     public FromClauseBuilder<R> from(QueryExpressionBuilder subquery) {
         throw new RuntimeException("The method is not implemented");
     }
-    public LetClauseBuilder<R> let(String identifier) {
-        throw new RuntimeException("The method is not implemented");
+    public DeclarationClauseBuilder<R> declare(String identifier) {
+        currentIdentifier = new Identifier(identifier);
+        return this;
+    }
+    public QueryBodyBuilder<R> as(String expression) {
+        return as(LiteralExpression.parse(expression));
+    }
+    public QueryBodyBuilder<R> as(Expression expression) {
+        queryBodyClauses.add(new DeclareClause(currentIdentifier, expression));
+        currentIdentifier = null;
+        return this;
     }
     public QueryBodyBuilder<R> where(String predicate) {
         return where(LiteralExpression.parse(predicate));

@@ -9,7 +9,7 @@ public interface ExpressionTreeVisitor {
 
     public void visit(OrderByClause expression);
 
-    public void visit(LetClause expression);
+    public void visit(DeclareClause expression);
 
     public void visit(WhereClause expression);
 

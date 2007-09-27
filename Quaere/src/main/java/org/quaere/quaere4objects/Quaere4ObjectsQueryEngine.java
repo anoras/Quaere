@@ -182,7 +182,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         );
     }
 
-    public void visit(LetClause expression) {
+    public void visit(DeclareClause expression) {
         sourceNames.add(expression.getLeft().getText());
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
@@ -466,10 +466,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(Indexer expression) {
-        Object old = result;
+        Object old = result;    // <-- Gets the collection
 
         expression.getInnerExpression().accept(this);
-        if (result != null) {
+        if (result != null) {                            // <-- result is element
             if (result.getClass().isArray()) {
                 result = Arrays.asList((Object[]) result);
             }
@@ -477,7 +477,14 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Object indexed = result;
         result = null;
         expression.getParameter().accept(this);
-        result = ((List) indexed).get((Integer) result);
+        if (result instanceof List) {
+            result = ((List) indexed).get((Integer) result);
+        } else if (result instanceof CharSequence) {
+            // TODO: We need to keep the index paramter so that we can pass it to charAt here!
+//            result = ((CharSequence) result).charAt()
+        } else {
+            throw new IllegalArgumentException(String.format("Cannot apply indexer to '%s'.", result.getClass().getName()));
+        }
 //        try {
 //            Method getItemMethod = old.getClass().getMethod("get", Integer.class);
 //            getItemMethod.invoke(old, result);

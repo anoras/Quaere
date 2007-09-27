@@ -26,10 +26,14 @@ public class QueryExpressionBuilderImpl<R> implements
     List<QueryBodyClause> queryBodyClauses = new ArrayList<QueryBodyClause>();
     private SelectOrGroupClause currentSelectOrGroupClause;
     private QueryContinuation queryContinuation;
-    private List<OrderByCriteria> currentOrderByCriterias = new ArrayList<OrderByCriteria>();
+    public Map<Identifier, Queryable> getSources() {
+        return sources;
+    }
 
+    private List<OrderByCriteria> currentOrderByCriterias = new ArrayList<OrderByCriteria>();
     public QueryExpressionBuilderImpl() {
     }
+
     private QueryExpressionBuilderImpl(QueryExpressionBuilderImpl<R> parentQueryBuilder) {
         this.parentQueryBuilder = parentQueryBuilder;
     }
@@ -37,23 +41,26 @@ public class QueryExpressionBuilderImpl<R> implements
     private void addOrderByCriteria(Expression expression, OrderByCriteria.Direction direction, Comparator comparator) {
         currentOrderByCriterias.add(new OrderByCriteria(expression, direction, comparator));
     }
-
     private void terminateOrderingClauses() {
         if (currentOrderByCriterias.size() > 0) {
             queryBodyClauses.add(new OrderByClause(currentOrderByCriterias));
             currentOrderByCriterias = new ArrayList<OrderByCriteria>();
         }
     }
+    public QueryExpression getQueryExpression() {
+        QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
+        QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
+        return queryExpression;
+    }
     public Iterator<R> iterator() {
         if (parentQueryBuilder != null) {
-            QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
-            return parentQueryBuilder.iterator(queryBody);
+            QueryExpression queryExpression = getQueryExpression();
+            return parentQueryBuilder.iterator(queryExpression.getQueryBody());
         } else {
             if (currentSelectOrGroupClause == null) {
                 throw new IncompleteQueryException("A query must have a select or group by clause.");
             }
-            QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
-            QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
+            QueryExpression queryExpression = getQueryExpression();
             Quaere4ObjectsQueryEngine q = new Quaere4ObjectsQueryEngine();
             for (Map.Entry<Identifier, Queryable> sourceEntry : sources.entrySet()) {
                 q.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());

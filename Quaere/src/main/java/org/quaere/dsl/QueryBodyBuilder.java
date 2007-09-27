@@ -1,6 +1,7 @@
 package org.quaere.dsl;
 
 import org.quaere.expressions.Expression;
+import org.quaere.expressions.QueryExpression;
 
 import java.util.Comparator;
 
@@ -23,4 +24,5 @@ public interface QueryBodyBuilder<R> extends Iterable<R> {
     <R> QueryContinuationOrQueryBodyBuilder<R> select(String expression);
     <R> QueryContinuationOrQueryBodyBuilder<R> select(Expression expression);
     GroupClauseBuilder<R> group(String identifier);
+    QueryExpression getQueryExpression();
 }

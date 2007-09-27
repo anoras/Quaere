@@ -307,6 +307,56 @@ public class DSL {
         }
         return queryEngine.evaluate(query);
     }
+    // Element operators
+    public static <R> R first(R[] source) {
+        if (source.length > 0) {
+            return source[0];
+        } else {
+            return null;
+        }
+    }
+
+    public static <R> R first(Iterable<R> source) {
+        Iterator<R> iter = source.iterator();
+        if (iter.hasNext()) {
+            return iter.next();
+        } else {
+            return null;
+        }
+    }
+    public static <R> R first(Queryable<R> source) {
+        QueryEngine queryEngine = source.createQueryEngine();
+        Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        sourceIdentifier,
+                        new MethodCall(
+                                new Identifier("first"),
+                                new ArrayList<Expression>(0)
+                        )
+                )
+        );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+        }
+        //noinspection RedundantTypeArguments
+        return queryEngine.<R>evaluate(query); // <-- IntelliJ suggests that <R> can be inferred, but this leads to a compilation error.
+    }
+    public static <R> R first(QueryBodyBuilder<?> query) {
+        QueryExpressionBuilderImpl<R> impl = (QueryExpressionBuilderImpl<R>) query;
+        Statement statement = new Statement(Arrays.<Expression>asList(
+                query.getQueryExpression(),
+                new MethodCall(new Identifier("first"), new ArrayList<Expression>(0)))
+
+        );
+        Quaere4ObjectsQueryEngine engine = new Quaere4ObjectsQueryEngine();
+        for (Map.Entry<Identifier, Queryable> sourceEntry : impl.getSources().entrySet()) {
+            engine.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
+        }
+        //noinspection RedundantTypeArguments
+        return engine.<R>evaluate(statement); // <-- IntelliJ suggests that <R> can be inferred, but we get a compilation error if its not specified.
+    }
     // Generators
     public static <T extends Number> Iterable<T> range(T from, T to) {
         return new Range<T>(from, to);

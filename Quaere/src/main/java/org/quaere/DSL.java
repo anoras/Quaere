@@ -357,6 +357,18 @@ public class DSL {
         //noinspection RedundantTypeArguments
         return engine.<R>evaluate(statement); // <-- IntelliJ suggests that <R> can be inferred, but we get a compilation error if its not specified.
     }
+    public static class first {
+        public static <T> ElementOperatorArgumentDefinitionBuilder in(T[] source) {
+            return in(Arrays.asList(source));
+        }
+        public static <T> ElementOperatorArgumentDefinitionBuilder in(Iterable<T> source) {
+            return in(new QueryableIterable<T>(source));
+        }
+        public static <T> ElementOperatorArgumentDefinitionBuilder in(Queryable<T> source) {
+            ElementOperatorBuilder builder = new ElementOperatorBuilderImpl("first");
+            return builder.in(source);
+        }
+    }
     // Generators
     public static <T extends Number> Iterable<T> range(T from, T to) {
         return new Range<T>(from, to);

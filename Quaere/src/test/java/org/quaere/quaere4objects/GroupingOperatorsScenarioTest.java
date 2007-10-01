@@ -2,6 +2,7 @@ package org.quaere.quaere4objects;
 
 import static org.quaere.DSL.*;
 import org.quaere.Variant;
+import org.quaere.Group;
 import org.quaere.model.Customer;
 import org.quaere.model.Product;
 import org.junit.Test;

@@ -29,6 +29,9 @@ public class QueryableArray<T> implements Queryable<T> {
         public QueryableArrayQueryEngine(QueryableArray<T> queryableArray) {
             this.source = queryableArray;
         }
+        public void addSource(Identifier identifer, Queryable<?> source) {
+
+        }
         public <T> T evaluate(Expression query) {
             return (T) this.source.innerList;
         }

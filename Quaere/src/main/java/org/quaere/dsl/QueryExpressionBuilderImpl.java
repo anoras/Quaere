@@ -3,6 +3,7 @@ package org.quaere.dsl;
 import org.quaere.IncompleteQueryException;
 import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
+import org.quaere.QueryEngine;
 import org.quaere.expressions.*;
 import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
 
@@ -61,8 +62,9 @@ public class QueryExpressionBuilderImpl<R> implements
                 throw new IncompleteQueryException("A query must have a select or group by clause.");
             }
             QueryExpression queryExpression = getQueryExpression();
-            Quaere4ObjectsQueryEngine q = new Quaere4ObjectsQueryEngine();
+            QueryEngine q = null;
             for (Map.Entry<Identifier, Queryable> sourceEntry : sources.entrySet()) {
+                if (q == null) q = sourceEntry.getValue().createQueryEngine();
                 q.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
             }
             Iterable<R> result = q.evaluate(queryExpression);

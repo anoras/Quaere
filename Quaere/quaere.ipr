@@ -256,6 +256,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/quaere.iml" filepath="$PROJECT_DIR$/quaere.iml" />
+      <module fileurl="file:///Users/anders/IdeaProjects/Quaere/QuaereForJPA/quaereForJPA.iml" filepath="/Users/anders/IdeaProjects/Quaere/QuaereForJPA/quaereForJPA.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" />

@@ -1,7 +1,6 @@
 package org.quaere.quaere4objects;
 
 import org.quaere.*;
-import org.quaere.dsl.LiteralExpression;
 import org.quaere.expressions.*;
 
 import java.lang.reflect.Field;
@@ -26,46 +25,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         rawSources.put(identifier.getText(), source);
     }
 
-    private void prepareSources(Expression query) {
-        if (rawSources.size() > 1) {
-            for (Map.Entry<String, Queryable> sourceEntry : rawSources.entrySet()) {
-                if (sourceEntry.getValue() instanceof QueryableIterable) {
-                    List<Object> s = new ArrayList<Object>();
-                    for (Object elm : sourceEntry.getValue()) s.add(elm);
-                    namedSources.put(sourceEntry.getKey(), s);
-                    continue;
-                }
-                Identifier identifer = new Identifier(sourceEntry.getKey());
-                FromClause fromClause = new FromClause(identifer,
-                        new Statement(
-                                Arrays.<Expression>asList(
-                                        new Identifier(sourceEntry.getValue().getSourceIdentifier(identifer).getText())
-                                )
-                        )
-                );
-                QueryBody queryBody = new QueryBody(
-                        Arrays.<QueryBodyClause>asList(),
-                        new SelectClause(LiteralExpression.parse(identifer.getText())),
-                        null
-                );
-                QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
-                QueryEngine engine = sourceEntry.getValue().createQueryEngine();
-                Iterable src = engine.evaluate(queryExpression);
-                List<Object> s = new ArrayList<Object>();
-                for (Object elm : src) s.add(elm);
-                namedSources.put(sourceEntry.getKey(), s);
-
-            }
-        } else {
-            for (Map.Entry<String, Queryable> sourceEntry : rawSources.entrySet()) {
-                List<Object> s = new ArrayList<Object>();
-                for (Object elm : sourceEntry.getValue()) s.add(elm);
-                namedSources.put(sourceEntry.getKey(), s);
-            }
-        }
-    }
-
-// --------------------- Interface ExpressionTreeVisitor ---------------------
+    // --------------------- Interface ExpressionTreeVisitor ---------------------
 
     public void visit(FromClause expression) {
         sourceNames.add(expression.getIdentifier().getText());
@@ -522,7 +482,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
 
     // --------------------- Interface QueryEngine ---------------------
     public <T> T evaluate(Expression expression) {
-        prepareSources(expression);
+        for (Map.Entry<String, Queryable> sourceEntry : rawSources.entrySet()) {
+            List<Object> s = new ArrayList<Object>();
+            for (Object elm : sourceEntry.getValue()) s.add(elm);
+            namedSources.put(sourceEntry.getKey(), s);
+        }
         expression.accept(this);
         return (T) result;
     }

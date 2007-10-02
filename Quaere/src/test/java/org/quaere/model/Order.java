@@ -32,7 +32,7 @@ public class Order {
     }
 
     public String toString() {
-        return String.format("OrderingTestCase (%s): OrderID=%s, OrderDate=%s, Total=%s", hashCode(), orderID, orderDate, total);
+        return String.format("Order (%s): OrderID=%s, OrderDate=%s, Total=%s", hashCode(), orderID, orderDate, total);
     }
 
     public boolean equals(Object o) {

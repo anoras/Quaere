@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.quaere.model.Customer" table="Customers">
+        <id name="customerID" column="CustomerID">
+            <generator class="assigned"/>
+        </id>
+        <property name="companyName"/>
+        <property name="address"/>
+        <property name="postalCode"/>
+        <property name="city"/>
+        <property name="region"/>
+        <property name="country"/>
+        <property name="phone"/>
+        <property name="fax"/>
+        <list name="orders" cascade="all">
+            <key column="CustomerID"/>
+            <index column="Order_IDX"/>
+            <one-to-many class="org.quaere.model.Order"/>
+        </list>
+    </class>
+</hibernate-mapping>

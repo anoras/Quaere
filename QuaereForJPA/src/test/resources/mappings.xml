@@ -39,7 +39,7 @@
         <field name="Fax" type="java.lang.String">
             <bind-xml name="fax"/>
         </field>
-        <field name="Orders" collection="arraylist" firect="false" type="org.quaere.model.Order">
+        <field name="Orders" collection="arraylist" direct="false" type="org.quaere.model.Order">
             <bind-xml name="order"/>
         </field>
     </class>

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+        "http://castor.org/mapping.dtd">
+<mapping>
+    <class name="org.quaere.model.CustomersContainer">
+        <map-to xml="customers"/>
+        <field name="Customers"
+               collection="arraylist"
+               type="org.quaere.model.Customer">
+            <bind-xml name="customer"/>
+        </field>
+    </class>
+
+    <class name="org.quaere.model.Customer">
+        <field name="CustomerID" type="java.lang.String">
+            <bind-xml name="id"/>
+        </field>
+        <field name="CompanyName" type="java.lang.String">
+            <bind-xml name="name"/>
+        </field>
+        <field name="Address" type="java.lang.String">
+            <bind-xml name="address"/>
+        </field>
+        <field name="City" type="java.lang.String">
+            <bind-xml name="city"/>
+        </field>
+        <field name="Region" type="java.lang.String">
+            <bind-xml name="region"/>
+        </field>
+        <field name="PostalCode" type="java.lang.String">
+            <bind-xml name="postalcode"/>
+        </field>
+        <field name="Country" type="java.lang.String">
+            <bind-xml name="country"/>
+        </field>
+        <field name="Phone" type="java.lang.String">
+            <bind-xml name="phone"/>
+        </field>
+        <field name="Fax" type="java.lang.String">
+            <bind-xml name="fax"/>
+        </field>
+        <field name="Orders" collection="arraylist" firect="false" type="org.quaere.model.Order">
+            <bind-xml name="order"/>
+        </field>
+    </class>
+
+    <class name="org.quaere.model.Order">
+        <field name="OrderID" type="java.lang.Integer">
+            <bind-xml name="id"/>
+        </field>
+        <field name="OrderDate" type="java.util.Date">
+            <bind-xml name="orderdate"/>
+        </field>
+        <field name="Total" type="java.lang.Double">
+            <bind-xml name="total"/>
+        </field>
+    </class>
+</mapping>

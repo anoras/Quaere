@@ -1,0 +1,143 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.quaere</groupId>
+    <artifactId>quaere-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Quaere Language Integrated Query - Parent POM</name>
+    <inceptionYear>2007</inceptionYear>
+    <developers>
+        <developer>
+            <id>anoras</id>
+            <name>Anders Norås</name>
+            <email>anders.noras@andersnoras.com</email>
+        </developer>
+    </developers>
+    <url>http://quaere.codehaus.org</url>
+
+    <organization>
+        <name>Codehaus</name>
+        <url>http://codehaus.org</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <issueManagement>
+    <system>jira</system>
+        <url>http://jira.codehaus.org/browse/QUAERE</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>scm</name>
+            <archive>http://archive.quaere.org/scm</archive>
+            <subscribe>http://xircles.codehaus.org/lists/scm@quaere.codehaus.org/subscribe</subscribe>
+        </mailingList>
+        <mailingList>
+            <name>user</name>
+            <archive>http://archive.quaere.org/user</archive>
+            <subscribe>http://xircles.codehaus.org/lists/user@quaere.codehaus.org/subscribe</subscribe>
+        </mailingList>
+        <mailingList>
+            <name>dev</name>
+            <archive>http://archive.quaere.org/dev</archive>
+            <subscribe>http://xircles.codehaus.org/lists/dev@quaere.codehaus.org/subscribe</subscribe>
+        </mailingList>
+        <mailingList>
+            <name>announce</name>
+            <archive>http://archive.quaere.org/announce</archive>
+            <subscribe>http://xircles.codehaus.org/lists/announce@quaere.codehaus.org/subscribe</subscribe>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:svn://svn.quaere.codehaus.org/quaere/trunk</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/quaere/trunk/</developerConnection>
+        <url>http://svn.quaere.codehaus.org/browse/quaere/trunk</url>
+    </scm>
+
+    <modules>
+        <module>Quaere</module>
+        <module>QuaereForJPA</module>
+    </modules>
+
+    <build>
+        <!--sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java/</testSourceDirectory-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <jdkName>1.5</jdkName>
+                    <jdkLevel>1.5</jdkLevel>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <reporting>
+        <plugins>
+           <plugin>
+               <artifactId>maven-javadoc-plugin</artifactId>
+           </plugin>
+           <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>jxr-maven-plugin</artifactId>
+          </plugin>      
+           <plugin>
+               <artifactId>maven-javadoc-plugin</artifactId>
+           </plugin>
+           <plugin>
+               <artifactId>maven-jxr-plugin</artifactId>
+           </plugin>
+           <!--plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>dashboard-maven-plugin</artifactId>
+           </plugin-->
+           <plugin>
+               <artifactId>maven-pmd-plugin</artifactId>
+           </plugin>
+           <plugin>
+               <artifactId>maven-checkstyle-plugin</artifactId>
+           </plugin>
+           <plugin>
+               <artifactId>maven-clover-plugin</artifactId>
+           </plugin>
+       </plugins>
+    </reporting>
+
+    <distributionManagement>
+        <repository>
+            <id>codehaus.org</id>
+            <name>Mojo Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/quaere/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codehaus.org</id>
+            <name>Quaere Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/quaere/</url>
+        </snapshotRepository>
+        <site>
+            <id>codehaus.org</id>
+            <name>Quaere Website</name>
+            <url>dav:https://dav.codehaus.org/quaere/</url>
+        </site>
+    </distributionManagement>
+</project>

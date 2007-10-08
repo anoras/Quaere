@@ -4,6 +4,13 @@ public class Constant extends Expression {
     private final Object value;
     private final Class clazz;
 
+    public Constant(Object value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Canot infer the type of 'null'. Use the Constant(Object,Class) constructor to create a null valued constant.");
+        }
+        this.value = value;
+        this.clazz = value.getClass();
+    }
     public Constant(Object value, Class clazz) {
         this.value = value;
         this.clazz = clazz;
@@ -18,7 +25,13 @@ public class Constant extends Expression {
     }
 
     public String toString() {
-        return String.valueOf(value);
+        if (String.class.equals(clazz)) {
+            return '"' + String.valueOf(value) + '"';
+        } else if (Character.class.equals(clazz)) {
+            return '\'' + String.valueOf(value) + '\'';
+        } else {
+            return String.valueOf(value);
+        }
     }
 
 // --------------------- Interface ExpressionTreeNode ---------------------

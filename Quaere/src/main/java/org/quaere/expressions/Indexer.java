@@ -18,7 +18,7 @@ public class Indexer extends Expression {
     }
 
     public String toString() {
-        return '[' + parameter.toString() + ']';
+        return innerExpression.toString() + '[' + parameter.toString() + ']';
     }
 
 // --------------------- Interface ExpressionTreeNode ---------------------

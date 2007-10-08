@@ -6,17 +6,17 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Quare Language Integrated Query</name>
-	<description>
-		Quaere is an extensible framework that adds a query syntax reminiscent of SQL to Java applications.
-	</description>
-	<inceptionYear>2007</inceptionYear>
-	<developers>
-		<developer>
-			<id>anoras</id>
-			<name>Anders Norås</name>
-			<email>anders.noras@andersnoras.com</email>
-		</developer>
-	</developers>
+    <description>
+        Quaere is an extensible framework that adds a query syntax reminiscent of SQL to Java applications.
+    </description>
+    <inceptionYear>2007</inceptionYear>
+    <developers>
+        <developer>
+            <id>anoras</id>
+            <name>Anders Norås</name>
+            <email>anders.noras@andersnoras.com</email>
+        </developer>
+    </developers>
     <url>http://quaere.codehaus.org</url>
     <licenses>
         <license>
@@ -24,10 +24,10 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
-	<issueManagement>
-		<system>jira</system>
-		<url>http://jira.codehaus.org/browse/QUAERE</url>
-	</issueManagement>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.codehaus.org/browse/QUAERE</url>
+    </issueManagement>
     <mailingLists>
         <mailingList>
             <name>scm</name>
@@ -61,6 +61,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-junit4</artifactId>
+            <version>2.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

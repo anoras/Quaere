@@ -96,6 +96,50 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/anders/.m2/repository/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///Users/anders/.m2/repository/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/anders/.m2/repository/org/jmock/jmock/2.2.0/jmock-2.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///Users/anders/.m2/repository/org/jmock/jmock/2.2.0/jmock-2.2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/anders/.m2/repository/org/jmock/jmock-junit4/2.2.0/jmock-junit4-2.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///Users/anders/.m2/repository/org/jmock/jmock-junit4/2.2.0/jmock-junit4-2.2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/anders/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///Users/anders/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">

@@ -1,7 +1,6 @@
 package org.quaere;
 
 import org.quaere.dsl.*;
-import org.quaere.dsl.PartitioningOperatorBuilder;
 import org.quaere.expressions.*;
 import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
 
@@ -17,7 +16,7 @@ public class DSL {
     public static EqualOperator eq(String leftHandSide, String rightHandSide) {
         return new EqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static EqualOperator eq(String leftHandSide, Comparable rightHandSide) {
+    public static EqualOperator eq(String leftHandSide, Comparable<Integer> rightHandSide) {
         return new EqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
     public static EqualOperator eq(Comparable leftHandSide, String rightHandSide) {
@@ -27,7 +26,7 @@ public class DSL {
     public static NotEqualOperator ne(String leftHandSide, String rightHandSide) {
         return new NotEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static NotEqualOperator ne(String leftHandSide, Comparable rightHandSide) {
+    public static NotEqualOperator ne(String leftHandSide, Comparable<Integer> rightHandSide) {
         return new NotEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
     public static NotEqualOperator ne(Comparable leftHandSide, String rightHandSide) {
@@ -87,14 +86,16 @@ public class DSL {
                     String propertyName = methodCall.getIdentifier().getText();
                     if (propertyName.startsWith("get")) {
                         propertyName = propertyName.substring("get".length());
-                    } else if (propertyName.startsWith("is")) {
+                    }
+                    else if (propertyName.startsWith("is")) {
                         propertyName = propertyName.substring("is".length());
                     }
                     propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
                     return property(propertyName, expression);
                 }
             }
-        } else {
+        }
+        else {
             // We're looking for an identifier
             Identifier identifier = (Identifier) statment.getExpressions().get(0);
             return property(identifier.getText(), expression);
@@ -311,20 +312,40 @@ public class DSL {
     public static <R> R first(R[] source) {
         if (source.length > 0) {
             return source[0];
-        } else {
+        }
+        else {
             return null;
         }
     }
 
-    public static <R> R first(Iterable<R> source) {
+    // NOTE: This method is a facade for the typed firstXxx methods to enable the module to be built with Eclipse.
+    @SuppressWarnings({"RedundantTypeArguments", "unchecked"})
+    public static <R> R first(Object source) {
+        // NOTE: Explicit type argument is required in the following section support Eclipse.
+        if (source instanceof QueryBodyBuilder<?>) {
+            return DSL.<R>firstInQueryBodyBuilder((QueryBodyBuilder) source);
+        }
+        else if (source instanceof Queryable<?>) {
+            // NOTE: The unchecked casts is required for IDEA to build the module while the call is redirected to
+            // an explicitly typed method on the DSL class.
+            return DSL.<R>firstInQueryable((Queryable<R>) source);
+        }
+        else if (source instanceof Iterable<?>) {
+            return DSL.<R>firstInIterable((Iterable<R>) source);
+        }
+        throw new IllegalArgumentException("Cannot retrieve first element from " + source.getClass().getName());
+    }
+
+    private static <R> R firstInIterable(Iterable<R> source) {
         Iterator<R> iter = source.iterator();
         if (iter.hasNext()) {
             return iter.next();
-        } else {
+        }
+        else {
             return null;
         }
     }
-    public static <R> R first(Queryable<R> source) {
+    private static <R> R firstInQueryable(Queryable<R> source) {
         QueryEngine queryEngine = source.createQueryEngine();
         Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
         Statement query = new Statement(
@@ -343,7 +364,7 @@ public class DSL {
         //noinspection RedundantTypeArguments
         return queryEngine.<R>evaluate(query); // <-- IntelliJ suggests that <R> can be inferred, but this leads to a compilation error.
     }
-    public static <R> R first(QueryBodyBuilder<?> query) {
+    private static <R> R firstInQueryBodyBuilder(QueryBodyBuilder<?> query) {
         QueryExpressionBuilderImpl<R> impl = (QueryExpressionBuilderImpl<R>) query;
         Statement statement = new Statement(Arrays.<Expression>asList(
                 query.getQueryExpression(),

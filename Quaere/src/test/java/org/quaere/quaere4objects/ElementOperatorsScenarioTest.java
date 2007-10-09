@@ -4,7 +4,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import static org.quaere.DSL.*;
 import org.quaere.model.Product;
-import org.quaere.DSL;
 
 public class ElementOperatorsScenarioTest {
     @Test

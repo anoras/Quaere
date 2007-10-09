@@ -16,10 +16,12 @@ public class PartitioningOperatorsScenarioTest {
 
         Assert.assertEquals(Arrays.asList(5, 4, 1), firstThreeNumbers);
     }
+    @SuppressWarnings({"RedundantTypeArguments"})
     @Test
     public void canUseTakeToGetTheFirstThreeOrdersFromCustomersInWashington_linq21() {
         Customer[] customers = Customer.getAllCustomers();
-        Iterable<Variant> firstThreeWAOrders = take(3).from(
+        // NOTE: Explicit type argument is required before the take.from clause to support Eclipse.
+        Iterable<Variant> firstThreeWAOrders = take(3).<Variant>from(
                 from("c").in(customers).
                         from("o").in("c.getOrders()").
                         where(eq("c.getRegion()", "WA")).
@@ -48,11 +50,13 @@ public class PartitioningOperatorsScenarioTest {
         }
         Assert.assertEquals(numbers.length, index);
     }
+    @SuppressWarnings({"RedundantTypeArguments"})
     @Test
     public void canUseSkipToGetAllButTheFirstTwoOrdersFromCustomersInWashington_linq23() {
         Customer[] customers = Customer.getAllCustomers();
+        // NOTE: Explicit type argument is required before the take.from clause to support Eclipse.
         Iterable<Variant> allButFirst2Orders =
-                skip(2).in(
+                skip(2).<Variant>in(
                         from("c").in(customers).
                                 from("o").in("c.getOrders()").
                                 where(eq("c.getRegion()", "WA")).

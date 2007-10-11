@@ -38,7 +38,7 @@ public class SamplesManyTest {
         for (Pair p : pairs) {
             result += p.a + "<" + p.b + ";";
         }
-//        Assert.assertEquals(result, "0<1;0<3;0<5;0<7;0<8;2<3;2<5;2<7;2<8;4<5;4<7;4<8;5<7;5<8;6<7;6<8;");
+        Assert.assertEquals(result, "0<1;0<3;0<5;0<7;0<8;2<3;2<5;2<7;2<8;4<5;4<7;4<8;5<7;5<8;6<7;6<8;");
     }
     
     @Test

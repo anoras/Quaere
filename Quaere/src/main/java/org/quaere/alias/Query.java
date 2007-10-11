@@ -15,60 +15,73 @@ public class Query<T> extends QueryBase {
         addCondition(condition);
         return this;
     }
-
+    
+    public Query<T> orderBy(Object... orderList) {
+        addOrder(orderList);
+        return this;
+    }    
+    
     public List<T> select() {
         initSelect();
-        ArrayList<T> result = Utils.createArrayList();
-        List<T> list = selector.getList();
-        for (T item : list) {
-            if (condition == null || condition.test(item, this)) {
-                result.add(item);
-            }
-            index++;
-        }
-        return result;
-    }
-    
-    public <U> List<U> select(U template, Assign ... assign) {
-        initSelect();
-        ArrayList<U> result = Utils.createArrayList();
-        List<T> list = selector.getList();
-        FieldMapping<U> mapping = ListProvider.getMapping(template);
-        Class<U> clazz = mapping.getObjectClass();
-        for (T item : list) {
-            if (condition == null || condition.test(item, this)) {
-                U obj = createFromTemplate(clazz, template, item);
-                for (Assign a : assign) {
-                    a.set(this, mapping, obj, item);
+        final ArrayList<Row <T>> result = Utils.createArrayList();
+        final Query<T> me = this;
+        selector.iterate(new ListVisitor<T>() {
+            public void visit() {
+                if (condition == null || condition.test(me)) {
+                    T item = selector.getCurrentItem();
+                    addRow(result, item);
                 }
-                result.add(obj);
+                index++;
             }
-            index++;
-        }
-        return result;
+        });
+        return order(result);
     }
     
-    public <U> List<U> select(Object object) {
+    public <U> List<U> select(final U template, final Assign ... assign) {
         initSelect();
-        ArrayList<U> result = Utils.createArrayList();
-        List<T> list = selector.getList();
-        for (T item : list) {
-            if (condition == null || condition.test(item, this)) {
-                Object o = getValue(object, item);
-                U converted = (U) selector.getMapping().convert(o, object.getClass());
-                result.add(converted);
+        final ArrayList<Row <U>> result = Utils.createArrayList();
+        final Query<T> me = this;
+        final FieldMapping<U> mapping = ListProvider.getMapping(template);
+        final Class<U> clazz = mapping.getObjectClass();
+        selector.iterate(new ListVisitor<T>() {
+            public void visit() {
+                if (condition == null || condition.test(me)) {
+                    U obj = createFromTemplate(clazz, template);
+                    for (Assign a : assign) {
+                        a.set(me, mapping, obj);
+                    }
+                    addRow(result, obj);
+                }
+                index++;
             }
-            index++;
-        }
-        return result;
+        });
+        return order(result);
+    }
+    
+    public <U> List<U> select(final Object object) {
+        initSelect();
+        final ArrayList<Row <U>> result = Utils.createArrayList();
+        final Query<T> me = this;
+        selector.iterate(new ListVisitor<T>() {
+            public void visit() {
+                if (condition == null || condition.test(me)) {
+                    Object o = getValue(object);
+                    U converted = (U) selector.getMapping().convert(o, object.getClass());
+                    addRow(result, converted);
+                }
+                index++;
+            }
+        });
+        return order(result);
     }
 
-    Object getValue(Object o, Object t) {
+    Object getValue(Object o) {
         if (o instanceof Function) {
             Function f = (Function) o;
-            return f.getValue(this, t);
+            return f.getValue(this);
         }
-        return selector.getMapping().getValue(o, (T) t);
+        T t = selector.getCurrentItem();
+        return selector.getMapping().getValue(o, t);
     }
 
 }

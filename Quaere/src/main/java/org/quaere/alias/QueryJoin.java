@@ -16,12 +16,30 @@ public class QueryJoin extends QueryBase {
         return this;
     }
 
-    public <U> List<U> select(U template, Assign ... assign) {
-        ArrayList<U> result = Utils.createArrayList();
-        FieldMapping<U> mapping = ListProvider.getMapping(template);
-        Class<U> clazz = mapping.getObjectClass();
-        index = 0;
-//        List<T> list = selector.getList();
+    public <U> List<U> select(final U template, final Assign ... assign) {
+        initSelect();        
+        final ArrayList<Row<U>> result = Utils.createArrayList();
+        final FieldMapping<U> mapping = ListProvider.getMapping(template);
+        final Class<U> clazz = mapping.getObjectClass();
+        final QueryJoin me = this;
+        for (int i = 0; i < selectors.size() - 1; i++) {
+            Selector s = selectors.get(i);
+            s.setJoin(selectors.get(i + 1));
+        }
+        Selector main = selectors.get(0);
+        main.iterate(new ListVisitor<U>() {
+            public void visit() {
+                if (condition == null || condition.test(me)) {
+                    U obj = createFromTemplate(clazz, template);
+                    for (Assign a : assign) {
+                        a.set(me, mapping, obj);
+                    }
+                    addRow(result, obj);
+                }
+                index++;
+            }
+        });
+// List<T> list = selector.getList();
 //        for (T item : list) {
 //            if (condition == null || condition.test(item, this)) {
 //                U obj = createFromTemplate(clazz, template, item);
@@ -32,21 +50,23 @@ public class QueryJoin extends QueryBase {
 //            }
 //            index++;
 //        }
-        return result;
+        return order(result);
     }
     
-    Object getValue(Object o, Object t) {
+    Object getValue(Object o) {
         if (o instanceof Function) {
             Function f = (Function) o;
-            return f.getValue(this, t);
+            return f.getValue(this);
         }
         // TODO use a hash map for performance
         for (Selector s : selectors) {
-            if (s.getInstance() == t) {
-                return s.getMapping().getValue(o, t);
+            Object t = s.getCurrentItem();
+            Object result = s.getMapping().getValue(o, t);
+            if (result != o) {
+                return result;
             }
         }
-        throw new Error("Unknown alias: " + t);
+        return o;
     }
 
 }

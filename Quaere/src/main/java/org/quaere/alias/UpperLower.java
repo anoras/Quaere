@@ -9,8 +9,8 @@ public class UpperLower<T> implements Function<T> {
         this.upper = upper;
     }
 
-    public Object getValue(QueryBase query, T t) {
-        Object o = query.getValue(object, t);
+    public Object getValue(QueryBase query) {
+        Object o = query.getValue(object);
         if (o == null) {
             return null;
         }

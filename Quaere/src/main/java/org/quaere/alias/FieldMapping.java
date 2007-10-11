@@ -1,6 +1,7 @@
 package org.quaere.alias;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.IdentityHashMap;
 import java.util.List;
 
@@ -8,14 +9,26 @@ import java.util.List;
 public class FieldMapping<T> {
     private final Class<T> clazz;
     private final List<T> list;
-    private final IdentityHashMap<Object, String> fieldMap = new IdentityHashMap<Object, String>();
-    private static final String FIELDNAME_ITSELF = "";
+    private final IdentityHashMap<Object, Field> fieldMap = new IdentityHashMap<Object, Field>();
+
+    /*
+     * This is a special field. It could be any, but it must be one that is not used by the application
+     */
+    private static final Field FIELD_ITSELF;
+    
+    static {
+        try {
+            FIELD_ITSELF = System.class.getField("out");
+        } catch (Exception e) {
+            throw new Error("Field System.out not found: " + e);
+        }
+    }
     
     public FieldMapping(Class<T> clazz, List<T> list, T instance, boolean basic) {
         this.clazz = clazz;
         this.list = list;
         if (basic) {
-            fieldMap.put(instance, FIELDNAME_ITSELF);
+            fieldMap.put(instance, FIELD_ITSELF);
         } else {
             Field[] fields = instance.getClass().getFields();
             for (int i = 0; i < fields.length; i++) {
@@ -23,10 +36,29 @@ public class FieldMapping<T> {
                 Class type = f.getType();
                 try {
                     Object obj = Utils.createNew(type);
-                    fieldMap.put(obj, f.getName());
+                    fieldMap.put(obj, f);
                     f.set(instance, obj);
                 } catch (IllegalAccessException e) {
                     throw new Error("IllegalAccessException setting " + instance.getClass().getName()+"."+ f.getName());
+                }
+            }
+            if (Utils.MAP_NON_PUBLIC_FIELDS) {
+                // TODO only new fields
+                fields = instance.getClass().getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    Field f = fields[i];
+                    if ((f.getModifiers() & Modifier.PUBLIC) != 0) {
+                        continue;
+                    }
+                    f.setAccessible(true);
+                    Class type = f.getType();
+                    try {
+                        Object obj = Utils.createNew(type);
+                        fieldMap.put(obj, f);
+                        f.set(instance, obj);
+                    } catch (IllegalAccessException e) {
+                        throw new Error("IllegalAccessException setting " + instance.getClass().getName()+"."+ f.getName());
+                    }
                 }
             }
         }
@@ -37,17 +69,16 @@ public class FieldMapping<T> {
     }
 
     Object getValue(Object o, T t) {
-        String fieldName = fieldMap.get(o);
-        if (fieldName == null) {
+        Field field = fieldMap.get(o);
+        if (field == null) {
             return o;
-        } else if (FieldMapping.FIELDNAME_ITSELF.equals(fieldName)) {
+        } else if (FieldMapping.FIELD_ITSELF == field) {
             return t;
         } else {
             try {
-                Field f = t.getClass().getField(fieldName);
-                return f.get(t);
+                return field.get(t);
             } catch (Exception e) {
-                throw new Error("Error accessing field " + fieldName);
+                throw new Error("Error accessing field " + field.getName());
             }
         }
     }
@@ -80,7 +111,7 @@ public class FieldMapping<T> {
         return clazz;
     }
 
-    String getFieldName(Object field) {
+    Field getField(Object field) {
         return fieldMap.get(field);
     }
 

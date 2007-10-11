@@ -9,7 +9,7 @@ public class ConditionOr<T> extends Condition<T> {
         this.right = right;
     }
 
-    boolean test(T t, QueryBase query) {
-        return left.test(t, query) || right.test(t, query);
+    boolean test(QueryBase query) {
+        return left.test(query) || right.test(query);
     }
 }

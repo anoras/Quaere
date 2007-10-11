@@ -12,14 +12,13 @@ public class Assign {
         this.value = value;
     }
     
-    <T, U> void set(Query<T> query, FieldMapping<U> mapping, U target, T item) {
-        Object v = query.getValue(value, item);
-        String fieldName = mapping.getFieldName(field);
+    <T, U> void set(QueryBase query, FieldMapping<U> mapping, U target) {
+        Object v = query.getValue(value);
+        Field f = mapping.getField(field);
         try {
-            Field f = target.getClass().getField(fieldName);
             f.set(target, v);
         } catch (Exception e) {
-            throw new Error("Can not assign " + v + " to " + target.getClass() + "." + fieldName, e);
+            throw new Error("Can not assign " + v + " to " + target.getClass() + "." + field, e);
         }
     }
 

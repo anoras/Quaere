@@ -1,11 +1,16 @@
 package org.quaere.alias;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.WeakHashMap;
 
 public class Utils {
+    
+    private static final boolean MAKE_ACCESSIBLE = true;
+    public static final boolean MAP_NON_PUBLIC_FIELDS = true;
+    
     static <T> ArrayList<T> createArrayList() {
         return new ArrayList<T>();
     }
@@ -29,10 +34,31 @@ public class Utils {
         }
         try {
             return clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            throw new Error("IllegalAccessException creating " + clazz.getName());
-        } catch (InstantiationException e) {
-            throw new Error("InstantiationException creating " + clazz.getName());
+        } catch (Exception e) {
+            if (MAKE_ACCESSIBLE) {
+                Constructor[] constructors = clazz.getDeclaredConstructors();
+                // try 0 length constructors
+                for (Constructor c : constructors) {
+                    if (c.getParameterTypes().length == 0) {
+                        c.setAccessible(true);
+                        try {
+                            return clazz.newInstance();
+                        } catch (Exception e2) {
+                        }
+                    }
+                }
+                // try 1 length constructors
+                for (Constructor c : constructors) {
+                    if (c.getParameterTypes().length == 1) {
+                        c.setAccessible(true);
+                        try {
+                            return (T) c.newInstance(new Object[1]);
+                        } catch (Exception e2) {
+                        }
+                    }
+                }
+            }
+            throw new Error("Exception trying to create " + clazz.getName() + ": " + e, e);
         }
     }
 

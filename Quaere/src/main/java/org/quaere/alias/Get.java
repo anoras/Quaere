@@ -1,17 +1,17 @@
 package org.quaere.alias;
 
-public class Get<U> implements Function<U> {
+public class Get<T> implements Function<T> {
     
-    private U[] list;
+    private T[] list;
     private Object index;
     
-    Get(U[] list, Object index) {
+    Get(T[] list, Object index) {
         this.list = list;
         this.index = index;
     }
 
-    public Object getValue(QueryBase query, U t) {
-        Object o = query.getValue(index, t);
+    public Object getValue(QueryBase query) {
+        Object o = query.getValue(index);
         return list[((Number) o).intValue()];
     }
 

@@ -30,6 +30,14 @@ public class ListProvider {
         return instance;
     }
     
+    public static Order desc(Object o) {
+        return new Order(o, false, false);
+    }
+
+    public static Order asc(Object o) {
+        return new Order(o, true, true);
+    }
+
     public static String alias(String[] array) {
         return alias(String.class, new String(), array);
     }

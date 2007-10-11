@@ -8,8 +8,8 @@ public class Length<T> implements Function<T> {
         this.object = object;
     }
     
-    public Object getValue(QueryBase query, T t) {
-        Object o = query.getValue(object, t);
+    public Object getValue(QueryBase query) {
+        Object o = query.getValue(object);
         return o == null ? null : o.toString().length();
     }
 

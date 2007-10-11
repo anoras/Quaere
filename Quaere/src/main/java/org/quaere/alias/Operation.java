@@ -11,8 +11,8 @@ public class Operation<T> implements Function<T> {
         this.type = type;
     }
 
-    public Object getValue(QueryBase query, T t) {
-        return type.calculate(query.getValue(left, t), query.getValue(right, t));
+    public Object getValue(QueryBase query) {
+        return type.calculate(query.getValue(left), query.getValue(right));
     }
 
 }

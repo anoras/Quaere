@@ -11,9 +11,9 @@ public class ConditionCompare<T> extends Condition<T> {
         this.type = type;
     }
     
-    boolean test(T t, QueryBase query) {
-        Object a = query.getValue(left, t);
-        Object b = query.getValue(right, t);
+    boolean test(QueryBase query) {
+        Object a = query.getValue(left);
+        Object b = query.getValue(right);
         return type.test(a, b);
     }
     

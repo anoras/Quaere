@@ -1,103 +1,163 @@
 package org.quaere.alias;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
 
-public class WeakIdentityHashMap<K, V> implements Map<K, V> {
+public class WeakIdentityHashMap<K, V> {
+    private int mask, len, size, deletedCount, level;
+    private int maxSize, minSize, maxDeleted;
+    private static final int MAX_LOAD = 90;
+    private static final WeakReference DELETED_KEY = new WeakReference(null);
+    private WeakReference<K>[] keys;
+    private V[] values;
     
-    public static class IdentityWrapper<U> {
-        private int identityHashCode;
-        private U object;
-        IdentityWrapper(U o) {
-            object = o;
-        }
-        public int hashCode() {
-            if (identityHashCode == 0) {
-                identityHashCode = System.identityHashCode(object);
-            }
-            return identityHashCode;
-        }
-
-        public boolean equals(Object o) {
-            if (o instanceof IdentityWrapper) {
-                IdentityWrapper w = (IdentityWrapper) o;
-                return w.object == this.object;
-            }
-            assert false;
-            return false;
-        }
-
-        public U getObject() {
-            return object;
-        }
+    public WeakIdentityHashMap() {
+        reset(2);
     }
     
-    private WeakHashMap<IdentityWrapper<K>, IdentityWrapper<V>> map = new WeakHashMap<IdentityWrapper<K>, IdentityWrapper<V>>();
-
-    public void clear() {
-        map.clear();
-    }
-
-    public boolean containsKey(Object key) {
-        return map.containsKey(new IdentityWrapper<Object>(key));
-    }
-
-    public boolean containsValue(Object value) {
-        return map.containsValue(new IdentityWrapper<Object>(value));
-    }
-
-    public Set<Entry<K, V>> entrySet() {
-        throw new UnsupportedOperationException();
-    }
-
-    public V get(Object key) {
-        return map.get(new IdentityWrapper<Object>(key)).getObject();
-    }
-
-    public boolean isEmpty() {
-        return map.isEmpty();
-    }
-
-    public Set<K> keySet() {
-        throw new UnsupportedOperationException();
-    }
-
-    public V put(K key, V value) {
-        IdentityWrapper<V> w = map.put(new IdentityWrapper<K>(key), new IdentityWrapper<V>(value));
-        if (w == null) {
-            return null;
-        }
-        return w.getObject();
-    }
-
-    public void putAll(Map< ? extends K, ? extends V> m) {
-        for (Object o : m.entrySet()) {
-            Map.Entry< ? extends K, ? extends V> e = (Map.Entry< ? extends K, ? extends V>) o;
-            put(e.getKey(), e.getValue());
-        }
-    }
-
-    public V remove(Object key) {
-        IdentityWrapper<V> w = map.remove(new IdentityWrapper<Object>(key));
-        if (w == null) {
-            return null;
-        }
-        return w.getObject();
-    }
-
     public int size() {
-        return map.size();
+        return size;
     }
 
-    public Collection<V> values() {
-        ArrayList<V> list = new ArrayList<V>(map.size());
-        for (IdentityWrapper<V> x : map.values()) {
-            list.add(x.getObject());
+    private void checkSizePut() {
+        if (deletedCount > size) {
+            rehash(level);
         }
-        return list;
+        if (size + deletedCount >= maxSize) {
+            rehash(level + 1);
+        }
+    }
+
+    private void checkSizeRemove() {
+        if (size < minSize && level > 0) {
+            rehash(level - 1);
+        } else if (deletedCount > maxDeleted) {
+            rehash(level);
+        }
+    }
+
+    private int getIndex(Object key) {
+        return System.identityHashCode(key) & mask;
+    }
+    
+    private void reset(int newLevel) {
+        minSize = size * 3 / 4;
+        size = 0;
+        level = newLevel;
+        len = 2 << level;
+        mask = len - 1;
+        maxSize = (int) (len * MAX_LOAD / 100L);
+        deletedCount = 0;
+        maxDeleted = 20 + len / 2;
+        keys = new WeakReference[len];
+        values = (V[]) new Object[len];
+    }
+
+    public void put(K key, V value) {
+        checkSizePut();
+        int index = getIndex(key);
+        int plus = 1;
+        int deleted = -1;
+        do {
+            WeakReference k = keys[index];
+            if (k == null) {
+                // found an empty record
+                if (deleted >= 0) {
+                    index = deleted;
+                    deletedCount--;
+                }
+                size++;
+                keys[index] = new WeakReference(key);
+                values[index] = value;
+                return;
+            } else if (k == DELETED_KEY) {
+                if (deleted < 0) {
+                    // found the first deleted record
+                    deleted = index;
+                }
+            } else {
+                Object r = k.get();
+                if (r == null) {
+                    delete(index);
+                } else if (r == key) {
+                    // update existing
+                    values[index] = value;
+                    return;
+                }
+            }
+            index = (index + plus++) & mask;
+        } while(plus <= len);
+        throw new Error("hashmap is full");
+    }
+
+    public void remove(Object key) {
+        checkSizeRemove();
+        int index = getIndex(key);
+        int plus = 1;
+        do {
+            WeakReference k = keys[index];
+            if (k == null) {
+                // found an empty record
+                return;
+            } else if (k == DELETED_KEY) {
+                // continue
+            } else {
+                Object r = k.get();
+                if (r == null) {
+                    delete(index);
+                } else if (r == key) {
+                    // found the record
+                    delete(index);
+                    return;
+                }
+            }
+            index = (index + plus++) & mask;
+            k = keys[index];
+        } while(plus <= len);
+        // not found
+    }
+    
+    private void delete(int index) {
+        keys[index] = DELETED_KEY;
+        values[index] = null;
+        deletedCount++;
+        size--;
+    }
+
+    private void rehash(int newLevel) {
+        WeakReference[] oldKeys = keys;
+        V[] oldValues = values;
+        reset(newLevel);
+        for (int i = 0; i < oldKeys.length; i++) {
+            WeakReference<K> k = oldKeys[i];
+            if (k != null && k != DELETED_KEY) {
+                K key = k.get();
+                if (key != null) {
+                    put(key, oldValues[i]);
+                }
+            }
+        }
+    }
+
+    public V get(K key) {
+        int index = getIndex(key);
+        int plus = 1;
+        do {
+            WeakReference k = keys[index];
+            if (k == null) {
+                return null;
+            } else if (k == DELETED_KEY) {
+                // continue
+            } else {
+                Object r = k.get();
+                if (r == null) {
+                    delete(index);
+                } else if (r == key) {
+                    return values[index];
+                }
+            }
+            index = (index + plus++) & mask;
+        } while(plus <= len);
+        return null;
     }
 
 }

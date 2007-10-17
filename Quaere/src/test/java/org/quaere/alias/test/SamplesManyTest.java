@@ -32,13 +32,10 @@ public class SamplesManyTest {
         int[] numbersA = { 0, 2, 4, 5, 6, 8, 9 };
         int[] numbersB = { 1, 3, 5, 7, 8 };
         Pair x = template(Pair.class);
-        // Integer a = alias(numbersA), b = alias(numbersB);
         List<Pair> pairs = from(numbersA, A)
             .join(numbersB, B)
             .where(test(A, SMALLER, B))
             .select(x, set(x.a, A), set(x.b, B));
-        
-        // List<Pair> pairs = from(a, b).where(test(a, SMALLER, b)).select(x, set(x.a, a), set(x.b, b));
         String result = "";
         for (Pair p : pairs) {
             result += p.a + "<" + p.b + ";";

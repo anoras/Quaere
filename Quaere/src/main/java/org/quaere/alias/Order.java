@@ -3,12 +3,12 @@ package org.quaere.alias;
 import java.util.Comparator;
 
 public class Order<T> {
-    private final T item;
+    private final Object item;
     private final boolean ascending;
     private final Comparator<T> comparator;
     private boolean nullsFirst;
     
-    Order(T item, boolean ascending, boolean nullsFirst, Comparator<T> comparator) {
+    Order(Object item, boolean ascending, boolean nullsFirst, Comparator<T> comparator) {
         this.item = item;
         this.ascending = ascending;
         this.nullsFirst = nullsFirst;

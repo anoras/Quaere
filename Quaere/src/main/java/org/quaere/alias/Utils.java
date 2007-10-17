@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.WeakHashMap;
 
 public class Utils {
@@ -178,6 +180,14 @@ public class Utils {
 
     public static Integer[] toIntegerArray(int[] array) {
         Integer[] a2 = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            a2[i] = array[i];
+        }
+        return a2;
+    }
+    
+    public static Double[] toDoubleArray(double[] array) {
+        Double[] a2 = new Double[array.length];
         for (int i = 0; i < array.length; i++) {
             a2[i] = array[i];
         }

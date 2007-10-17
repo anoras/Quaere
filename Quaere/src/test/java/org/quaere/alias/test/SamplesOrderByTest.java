@@ -1,6 +1,15 @@
 package org.quaere.alias.test;
 
-import static org.quaere.alias.ListProvider.*;
+import static org.quaere.alias.ListProvider.D;
+import static org.quaere.alias.ListProvider.W;
+import static org.quaere.alias.ListProvider.alias;
+import static org.quaere.alias.ListProvider.asc;
+import static org.quaere.alias.ListProvider.charAt;
+import static org.quaere.alias.ListProvider.desc;
+import static org.quaere.alias.ListProvider.equal;
+import static org.quaere.alias.ListProvider.from;
+import static org.quaere.alias.ListProvider.index;
+import static org.quaere.alias.ListProvider.length;
 
 import java.util.Comparator;
 import java.util.List;
@@ -118,6 +127,13 @@ public class SamplesOrderByTest {
 //                Console.WriteLine(d);
 //            }
 //        }
+        double[] doubles = { 1.7, 2.3, 1.9, 4.1, 2.9 };
+        List<Double> sortedDoubles = from(doubles, D).orderBy(desc(D)).select();
+        String result = "";
+        for (Double x : sortedDoubles) {
+            result += x + ";";
+        }
+        Assert.assertEquals("4.1;2.9;2.3;1.9;1.7;", result);
     }
 
     @Test
@@ -130,6 +146,17 @@ public class SamplesOrderByTest {
 //            select p;
 //        ObjectDumper.Write(sortedProducts);
 //    }
+        List<Product> products = Product.getProductList();
+        Product p = alias(Product.class);
+        List<Product> sortedProducts = 
+            from(products, p)
+            .orderBy(desc(p.unitsInStock))
+            .select();
+        Integer last = null;
+        for (Product x : sortedProducts) {
+            Assert.assertTrue(last == null || x.unitsInStock.compareTo(last) <= 0);
+            last = x.unitsInStock;
+        }
     }
     
     @Test
@@ -141,11 +168,21 @@ public class SamplesOrderByTest {
 //    }
 //    public void Linq34() {
 //        string[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
-//        
 //        var sortedWords = words.OrderByDescending(a => a, new CaseInsensitiveComparer());
-//            
 //        ObjectDumper.Write(sortedWords);
 //    }
+        class CaseInsensitiveComparer implements Comparator<String> {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        }
+        String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
+        List<String> sortedWords = from(words, W)
+            .orderBy(desc(W, new CaseInsensitiveComparer()))
+            .select();
+        Assert.assertEquals(
+                "[ClOvEr, cHeRry, bRaNcH, BlUeBeRrY, aPPLE, AbAcUs]", 
+                sortedWords.toString());
     }
     
     @Test
@@ -161,14 +198,20 @@ public class SamplesOrderByTest {
 //            Console.WriteLine(d);
 //        }
 //    }
+        String[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        List<String> sortedDigits = 
+            from(digits, D)
+            .orderBy(length(D), D)
+            .select();
+        Assert.assertEquals("[one, six, two, five, four, nine, zero, eight, seven, three]", sortedDigits.toString());
     }
     
     
     @Test
     public void testThenByComparer() {
 //        public class CaseInsensitiveComparer : IComparerspan class="qs-keyword">string> {
-//            publicint Compare(string x, string y) {
-//                returnstring.Compare(x, y, true);
+//            public int Compare(string x, string y) {
+//                return string.Compare(x, y, true);
 //            }
 //        }
 //        publicvoid Linq36() {
@@ -178,6 +221,18 @@ public class SamplesOrderByTest {
 //                        .ThenBy(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }
+        class CaseInsensitiveComparer implements Comparator<String> {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        }
+        String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
+        List<String> sortedWords = from(words, W)
+            .orderBy(length(W), asc(W, new CaseInsensitiveComparer()))
+            .select();
+        Assert.assertEquals(
+                "[aPPLE, AbAcUs, bRaNcH, cHeRry, ClOvEr, BlUeBeRrY]", 
+                sortedWords.toString());
     }
     
     @Test
@@ -190,6 +245,22 @@ public class SamplesOrderByTest {
 //
 //        ObjectDumper.Write(sortedProducts);
 //    }
+        List<Product> products = Product.getProductList();
+        Product p = alias(Product.class);
+        List<Product> sortedProducts = 
+            from(products, p)
+            .orderBy(p.category, desc(p.unitPrice))
+            .select();
+        Product last = null;
+        for (Product x : sortedProducts) {
+            if (last != null) {
+                int c = last.category.compareTo(x.category);
+                Assert.assertTrue(c >= 0);
+                if (c == 0) {
+                    Assert.assertTrue(x.unitPrice >= last.unitPrice);
+                }
+            }
+        }
     }
     
     @Test
@@ -206,6 +277,18 @@ public class SamplesOrderByTest {
 //                        .ThenByDescending(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }        
+        class CaseInsensitiveComparer implements Comparator<String> {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        }
+        String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
+        List<String> sortedWords = from(words, W)
+            .orderBy(length(W), desc(W, new CaseInsensitiveComparer()))
+            .select();
+        Assert.assertEquals(
+                "[aPPLE, ClOvEr, cHeRry, bRaNcH, AbAcUs, BlUeBeRrY]", 
+                sortedWords.toString());
     }
     
     @Test
@@ -221,6 +304,15 @@ public class SamplesOrderByTest {
 //            foreach (var d in reversedIDigits) {
 //                Console.WriteLine(d);
 //            }             
-//        }        
+//        } 
+        String[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        List<String> reversedDigits = 
+            from(digits, D)
+            .where(equal(charAt(D, 1), 'i'))
+            .orderBy(desc(index()))
+            .select();
+        Assert.assertEquals(
+                "[nine, eight, six, five]", 
+                reversedDigits.toString());
     }
 }

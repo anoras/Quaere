@@ -16,9 +16,15 @@ public class ListProvider {
     private ListProvider() {
     }
     
-    public static final Object A = alias();
-    public static final Object B = alias();
-    public static final Object C = alias();
+    public static final Object A = alias(), B = alias(), C = alias();
+    public static final Object D = alias(), E = alias(), F = alias();
+    public static final Object G = alias(), H = alias(), I = alias();
+    public static final Object J = alias(), K = alias(), L = alias();
+    public static final Object M = alias(), N = alias(), O = alias();
+    public static final Object P = alias(), Q = alias(), R = alias();
+    public static final Object S = alias(), T = alias(), U = alias();
+    public static final Object V = alias(), W = alias(), X = alias();
+    public static final Object Y = alias(), Z = alias();
     
     private static Object alias() {
         Object instance = new Object();
@@ -45,11 +51,18 @@ public class ListProvider {
     /**
      * Create a new object alias for a given class.
      * TODO: the class needs to have a public constructor without parameters
-     * TODO: each field must be public in the class
+     * TODO: each field in the class must be public
      */
     public static <T> T alias(Class<T> clazz, List<T> list) {
         T instance = Utils.createNew(clazz);
         FieldMapping<T> mapping = new FieldMapping<T>(clazz, list, instance);
+        addMapping(mapping, instance);
+        return instance;
+    }
+
+    public static <T> T alias(Class<T> clazz) {
+        T instance = Utils.createNew(clazz);
+        FieldMapping<T> mapping = new FieldMapping<T>(clazz, null, instance);
         addMapping(mapping, instance);
         return instance;
     }
@@ -63,8 +76,11 @@ public class ListProvider {
     }
     
     public static Query<Integer> from(int[] array, Object alias) {
-        Integer[] a2 = Utils.toIntegerArray(array);
-        return from(a2, alias);
+        return from(Utils.toIntegerArray(array), alias);
+    }
+    
+    public static Query<Double> from(double[] array, Object alias) {
+        return from(Utils.toDoubleArray(array), alias);
     }
     
     public static <T> Query<T> from(T[] array, Object alias) {
@@ -132,6 +148,10 @@ public class ListProvider {
     public static Object lower(Object o) {
         return new UpperLower(o, false);
     }
+    
+    public static Object charAt(Object o, Object index) {
+        return new CharAt(o, index);
+    }
 
     public static <T> ConditionCompare<T> test(Object a, CompareType type, Object b) {
         return new ConditionCompare<T>(a, b, type);
@@ -159,19 +179,19 @@ public class ListProvider {
         }
     }
     
-    public static <T> Order<T> desc(T o) {
+    public static <T> Order<T> desc(Object o) {
         return new Order<T>(o, false, false, null);
     }
 
-    public static <T> Order<T> desc(T o, Comparator<T> comp) {
+    public static <T> Order<T> desc(Object o, Comparator<T> comp) {
         return new Order<T>(o, false, false, comp);
     }
 
-    public static <T> Order<T> asc(T o) {
+    public static <T> Order<T> asc(Object o) {
         return new Order<T>(o, true, true, null);
     }
 
-    public static <T> Order<T> asc(T o, Comparator<T> comp) {
+    public static <T> Order<T> asc(Object o, Comparator<T> comp) {
         return new Order<T>(o, true, true, comp);
     }
 

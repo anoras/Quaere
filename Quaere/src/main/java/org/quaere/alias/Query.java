@@ -1,6 +1,7 @@
 package org.quaere.alias;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Query<T> extends QueryBase {
@@ -10,7 +11,21 @@ public class Query<T> extends QueryBase {
     Query(Selector<T> selector) {
         this.selector = selector;
     }
+    
+    public <U> QueryJoin join(U[] array, Object alias) {
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(selector);
+        List<U> list = Arrays.asList(array);
+        FieldMapping mapping = ListProvider.getMapping(alias);
+        Selector selector = new Selector(alias, mapping, list);
+        selectors.add(selector);
+        return new QueryJoin(selectors);
+    }
 
+    public QueryJoin join(int[] array, Object alias) {
+        return join(Utils.toIntegerArray(array), alias);
+    }
+    
     public Query<T> where(Condition condition) {
         addCondition(condition);
         return this;

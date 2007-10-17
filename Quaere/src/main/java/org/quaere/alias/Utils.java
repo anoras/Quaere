@@ -76,7 +76,9 @@ public class Utils {
             return 0;
         }
         Class clazz = a.getClass();
-        if (clazz == Boolean.class) {
+        if (clazz == Object.class) {
+            return 0;
+        } else if (clazz == Boolean.class) {
             return 1;
         } else if (clazz == Byte.class) {
             return 2;
@@ -172,5 +174,42 @@ public class Utils {
         } else {
             throw new Error("Unsupported convertion from " + a.getClass() + " to " + clazz);
         }
+    }
+
+    public static Integer[] toIntegerArray(int[] array) {
+        Integer[] a2 = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            a2[i] = array[i];
+        }
+        return a2;
+    }
+
+    public static boolean isBasicClass(Class clazz) {
+        if (clazz == Boolean.class) {
+            return true;
+        } else if (clazz == Byte.class) {
+            return true;
+        } else if (clazz == Character.class) {
+            return true;
+        } else if (clazz == Short.class) {
+            return true;
+        } else if (clazz == Integer.class) {
+            return true;
+        } else if (clazz == Long.class) {
+            return true;
+        } else if (clazz == BigInteger.class) {
+            return true;
+        } else if (clazz == Float.class) {
+            return true;
+        } else if (clazz == Double.class) {
+            return true;
+        } else if (clazz == BigDecimal.class) {
+            return true;
+        } else if (clazz == String.class) {
+            return true;
+        } else if (clazz == Object.class) {
+            return true;
+        }
+        return false;
     }
 }

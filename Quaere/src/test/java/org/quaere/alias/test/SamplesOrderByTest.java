@@ -2,6 +2,7 @@ package org.quaere.alias.test;
 
 import static org.quaere.alias.ListProvider.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -89,7 +90,19 @@ public class SamplesOrderByTest {
 //            var sortedWords = words.OrderBy(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }
-        
+        class CaseInsensitiveComparer implements Comparator<String> {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        }
+        String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
+        String a = alias(words);
+        List<String> sortedWords = from(a).orderBy(asc(a, new CaseInsensitiveComparer())).select();
+        String result = "";
+        for (String x : sortedWords) {
+            result += x + ";";
+        }
+        Assert.assertEquals("AbAcUs;aPPLE;BlUeBeRrY;bRaNcH;cHeRry;ClOvEr;", result);
     }
     
     @Test

@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class FieldMapping<T> {
-    private final Class<T> clazz;
+    private final Class clazz;
     private final List<T> list;
     private final IdentityHashMap<Object, Field> fieldMap = new IdentityHashMap<Object, Field>();
 
@@ -24,9 +24,10 @@ public class FieldMapping<T> {
         }
     }
     
-    public FieldMapping(Class<T> clazz, List<T> list, T instance, boolean basic) {
+    public FieldMapping(Class clazz, List<T> list, Object instance) {
         this.clazz = clazz;
         this.list = list;
+        boolean basic = Utils.isBasicClass(instance.getClass());
         if (basic) {
             fieldMap.put(instance, FIELD_ITSELF);
         } else {
@@ -84,7 +85,11 @@ public class FieldMapping<T> {
     }
 
     public T convert(Object object) {
-        return convert(object, clazz);
+        if (clazz == null) {
+            return (T) object;
+        } else {
+            return (T) convert(object, clazz);
+        }
     }
 
     @SuppressWarnings("unchecked")

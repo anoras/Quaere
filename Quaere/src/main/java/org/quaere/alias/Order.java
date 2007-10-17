@@ -1,14 +1,18 @@
 package org.quaere.alias;
 
-public class Order {
-    private final Object item;
+import java.util.Comparator;
+
+public class Order<T> {
+    private final T item;
     private final boolean ascending;
+    private final Comparator<T> comparator;
     private boolean nullsFirst;
     
-    Order(Object item, boolean ascending, boolean nullsFirst) {
+    Order(T item, boolean ascending, boolean nullsFirst, Comparator<T> comparator) {
         this.item = item;
         this.ascending = ascending;
         this.nullsFirst = nullsFirst;
+        this.comparator = comparator;
     }
     
     public Order nullsFirst() {
@@ -25,7 +29,7 @@ public class Order {
         return item;
     }
     
-    int compare(Object a, Object b) {
+    int compare(T a, T b) {
         boolean aNull = a == null, bNull = b == null;
         if (aNull || bNull) {
             if (aNull == bNull) {
@@ -38,10 +42,12 @@ public class Order {
             }
         }
         Class clazz = Utils.getHigherClass(a, b);
-        a = Utils.convert(a, clazz);
-        b = Utils.convert(b, clazz);
+        a = (T) Utils.convert(a, clazz);
+        b = (T) Utils.convert(b, clazz);
         int comp;
-        if (a instanceof Comparable) {
+        if (comparator != null) {
+            comp = comparator.compare(a, b);
+        } else if (a instanceof Comparable) {
             Comparable ca = (Comparable) a;
             comp = ca.compareTo(b);
         } else {

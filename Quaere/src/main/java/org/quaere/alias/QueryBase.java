@@ -19,13 +19,13 @@ public abstract class QueryBase implements RowVisitor {
         }
     }
     
-    public void addOrder(Object... orderList) {
+    protected void addOrder(Object... orderList) {
         if (this.order == null) {
             order = new ArrayList<Order>();
         }
         for (Object x : orderList) {
             if (!(x instanceof Order)) {
-                x = new Order(x, true, true);
+                x = new Order(x, true, true, null);
             }
             order.add((Order) x);
         }

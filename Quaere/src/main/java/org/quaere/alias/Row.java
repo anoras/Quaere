@@ -17,5 +17,13 @@ public class Row<T> {
     Object[] getOrderList() {
         return orderList;
     }
+    
+    public int hashCode() {
+        return data.hashCode();
+    }
+    
+    public boolean equals(Object o) {
+        return data.equals(((Row) o).data);
+    }
 
 }

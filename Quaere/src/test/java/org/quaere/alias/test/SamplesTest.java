@@ -13,6 +13,11 @@ import org.junit.Test;
  * Implementation of the 101 LINQ Samples as described in
  * http://msdn2.microsoft.com/en-us/vcsharp/aa336760.aspx
  */
+
+// TODO warn about non-public fields, and null / unknown objects passed to set
+// TODO from(customers, c).with(c.region, R)...
+
+
 public class SamplesTest {
     
     @Test
@@ -62,7 +67,7 @@ public class SamplesTest {
         for (Product x : soldOutProducts) {
             result += x.productName + ";";
         }
-        Assert.assertEquals(result, "Chef Anton's Gumbo Mix;Alice Mutton;Thüringer Rostbratwurst;Gorgonzola Telino;Perth Pasties;");
+        Assert.assertEquals(result, "Chef Anton's Gumbo Mix;Alice Mutton;Thueringer Rostbratwurst;Gorgonzola Telino;Perth Pasties;");
     }
     
     @Test    
@@ -93,24 +98,25 @@ public class SamplesTest {
                                 + "Uncle Bob's Organic Dried Pears;Northwoods Cranberry Sauce;Mishi Kobe Niku;Ikura;"
                                 + "Queso Cabrales;Queso Manchego La Pastora;Konbu;Tofu;Genen Shouyu;Pavlova;"
                                 + "Carnarvon Tigers;Teatime Chocolate Biscuits;Sir Rodney's Marmalade;Sir Rodney's Scones;"
-                                + "Gustaf's Knäckebröd;Tunnbröd;Guaraná Fantástica;NuNuCa Nuß-Nougat-Creme;Gumbär Gummibärchen;"
-                                + "Schoggi Schokolade;Rössle Sauerkraut;Nord-Ost Matjeshering;Mascarpone Fabioli;Sasquatch Ale;"
-                                + "Steeleye Stout;Inlagd Sill;Gravad lax;Côte de Blaye;"
+                                + "Gustaf's Knaeckebroed;Tunnbroed;Guarana Fantastica;NuNuCa Nuss-Nougat-Creme;Gumbaer Gummibaerchen;"
+                                + "Schoggi Schokolade;Roessle Sauerkraut;Nord-Ost Matjeshering;Mascarpone Fabioli;Sasquatch Ale;"
+                                + "Steeleye Stout;Inlagd Sill;Gravad lax;Cote de Blaye;"
                                 + "Chartreuse verte;Boston Crab Meat;Jack's New England Clam Chowder;"
                                 + "Singaporean Hokkien Fried Mee;Ipoh Coffee;Gula Malacca;Rogede sild;"
                                 + "Spegesild;Zaanse koeken;Chocolade;Maxilaku;Valkoinen suklaa;"
-                                + "Manjimup Dried Apples;Filo Mix;Tourtière;Pâté chinois;"
+                                + "Manjimup Dried Apples;Filo Mix;Tourtiere;Pate chinois;"
                                 + "Gnocchi di nonna Alice;Ravioli Angelo;Escargots de Bourgogne;"
-                                + "Raclette Courdavault;Camembert Pierrot;Sirop d'érable;"
-                                + "Tarte au sucre;Vegie-spread;Wimmers gute Semmelknödel;"
+                                + "Raclette Courdavault;Camembert Pierrot;Sirop d'erable;"
+                                + "Tarte au sucre;Vegie-spread;Wimmers gute Semmelknoedel;"
                                 + "Louisiana Fiery Hot Pepper Sauce;Louisiana Hot Spiced Okra;"
                                 + "Laughing Lumberjack Lager;Scottish Longbreads;Gudbrandsdalsost;"
-                                + "Outback Lager;Flotemysost;Mozzarella di Giovanni;Röd Kaviar;"
-                                + "Longlife Tofu;Rhönbräu Klosterbier;Lakkalikööri;"
-                                + "Original Frankfurter grüne Soße;");        
+                                + "Outback Lager;Flotemysost;Mozzarella di Giovanni;Roed Kaviar;"
+                                + "Longlife Tofu;Rhoenbraeu Klosterbier;Lakkalikoeoeri;"
+                                + "Original Frankfurter gruene Sosse;");        
     }
     
-    // GetCustomerList code is missing
+    @Test    
+    public void testWhereSimple4() {
 //    public void Linq4() {
 //        List customers = GetCustomerList();
 //        var waCustomers =
@@ -125,6 +131,13 @@ public class SamplesTest {
 //            }
 //        }
 //    }
+        List<Customer> customers = Customer.getCustomerList();
+        Customer c = alias(Customer.class);
+        List<Customer> waCustomers = from(customers, c)
+            .where(equal(c.region, "WA"))
+            .select();
+        
+    }
     
     @Test    
     public void testWhereSimple5() {
@@ -324,7 +337,6 @@ public class SamplesTest {
 //                Console.WriteLine("{0}: {1}", n.Num, n.InPlace);
 //            }
 //        }
-        // TODO warn about non-public fields, and null / unknown objects passed to set
         int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
         Integer i = alias(numbers);
         NumberInplace x = template(NumberInplace.class);

@@ -13,9 +13,12 @@ public class Query<T> extends QueryBase {
     }
     
     public <U> QueryJoin join(U[] array, Object alias) {
+        return join(Arrays.asList(array), alias);
+    }
+    
+    public <U> QueryJoin join(List<U> list, Object alias) {
         ArrayList<Selector> selectors = new ArrayList<Selector>();
         selectors.add(selector);
-        List<U> list = Arrays.asList(array);
         FieldMapping mapping = ListProvider.getMapping(alias);
         Selector selector = new Selector(alias, mapping, list);
         selectors.add(selector);
@@ -35,8 +38,16 @@ public class Query<T> extends QueryBase {
         addOrder(orderList);
         return this;
     }    
-    
+
     public List<T> select() {
+        return select(false);
+    }
+    
+    public List<T> selectDistinct() {
+        return select(true);
+    }
+    
+    private List<T> select(boolean distinct) {
         initSelect();
         final ArrayList<Row <T>> result = Utils.createArrayList();
         final Query<T> me = this;
@@ -49,10 +60,18 @@ public class Query<T> extends QueryBase {
                 index++;
             }
         });
-        return order(result);
+        return order(result, distinct);
     }
-    
+
     public <U> List<U> select(final U template, final Assign ... assign) {
+        return select(false, template, assign);
+    }
+
+    public <U> List<U> selectDistinct(final U template, final Assign ... assign) {
+        return select(true, template, assign);
+    }
+
+    private <U> List<U> select(boolean distinct, final U template, final Assign ... assign) {
         initSelect();
         final ArrayList<Row <U>> result = Utils.createArrayList();
         final Query<T> me = this;
@@ -70,10 +89,18 @@ public class Query<T> extends QueryBase {
                 index++;
             }
         });
-        return order(result);
+        return order(result, distinct);
     }
     
     public <U> List<U> select(final Object object) {
+        return select(false, object);
+    }
+    
+    public <U> List<U> selectDistinct(final Object object) {
+        return select(true, object);
+    }
+    
+    private <U> List<U> select(boolean distinct, final Object object) {
         initSelect();
         final ArrayList<Row <U>> result = Utils.createArrayList();
         final Query<T> me = this;
@@ -87,7 +114,7 @@ public class Query<T> extends QueryBase {
                 index++;
             }
         });
-        return order(result);
+        return order(result, distinct);
     }
 
     Object getValue(Object o) {

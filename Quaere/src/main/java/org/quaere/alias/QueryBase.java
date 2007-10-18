@@ -3,7 +3,9 @@ package org.quaere.alias;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class QueryBase implements RowVisitor {
 
@@ -31,7 +33,11 @@ public abstract class QueryBase implements RowVisitor {
         }
     }
     
-    <T> List<T> order(List<Row<T>> list) {
+    <T> List<T> order(List<Row<T>> list, boolean distinct) {
+        if (distinct) {
+            Set<Row<T>> set = new HashSet<Row<T>>(list);
+            list = new ArrayList<Row<T>>(set);
+        }
         if (order != null) {
             Collections.sort(list, new Comparator<Row <T>>() {
                 public int compare(Row<T> a, Row<T> b) {

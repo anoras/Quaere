@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.WeakHashMap;
 
 public class Utils {
@@ -29,10 +30,24 @@ public class Utils {
     static <T> T createNew(Class<T> clazz) {
         if (clazz == Integer.class) {
             return (T) new Integer(0);
+        } else if (clazz == Long.class) {
+            return (T) new Long(0);
+        } else if (clazz == Short.class) {
+            return (T) new Short((short) 0);
+        } else if (clazz == Byte.class) {
+            return (T) new Byte((byte) 0);
+        } else if (clazz == Float.class) {
+            return (T) new Float(0);
         } else if (clazz == Double.class) {
             return (T) new Double(0);
         } else if (clazz == Boolean.class) {
             return (T) new Boolean(false);
+        } else if (clazz == BigDecimal.class) {
+            return (T) new BigDecimal(0);
+        } else if (clazz == BigInteger.class) {
+            return (T) new BigInteger("0");
+        } else if (clazz == List.class) {
+            return (T) new ArrayList();
         }
         try {
             return clazz.newInstance();

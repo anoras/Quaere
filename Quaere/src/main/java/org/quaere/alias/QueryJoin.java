@@ -17,6 +17,14 @@ public class QueryJoin extends QueryBase {
     }
 
     public <U> List<U> select(final U template, final Assign ... assign) {
+        return select(false, template, assign);
+    }
+
+    public <U> List<U> selectDistinct(final U template, final Assign ... assign) {
+        return select(true, template, assign);
+    }
+
+    private <U> List<U> select(boolean distinct, final U template, final Assign ... assign) {
         initSelect();        
         final ArrayList<Row<U>> result = Utils.createArrayList();
         final FieldMapping<U> mapping = ListProvider.getMapping(template);
@@ -39,18 +47,7 @@ public class QueryJoin extends QueryBase {
                 index++;
             }
         });
-// List<T> list = selector.getList();
-//        for (T item : list) {
-//            if (condition == null || condition.test(item, this)) {
-//                U obj = createFromTemplate(clazz, template, item);
-//                for (Assign a : assign) {
-//                    a.set(this, mapping, obj, item);
-//                }
-//                result.add(obj);
-//            }
-//            index++;
-//        }
-        return order(result);
+        return order(result, distinct);
     }
     
     Object getValue(Object o) {

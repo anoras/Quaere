@@ -1,5 +1,6 @@
 package org.quaere.alias.test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -63,6 +64,21 @@ public class SamplesManyTest {
 //        CustomerID=ANTON OrderID=10682 Total=375.50
 //        CustomerID=AROUT OrderID=10355 Total=480.00
 //        ...
+        List<Customer> customers = Customer.getCustomerList();
+        Customer c = alias(Customer.class);
+        Order o = alias(Order.class);
+        class CustOrder {
+            String customerId;
+            Integer orderId;
+            BigDecimal total;
+        }
+        CustOrder t = template(CustOrder.class);
+        List<CustOrder> orders = from(customers, c)
+            .join(c.orders, o)
+            .where(test(o.total, SMALLER, 500.00))
+            .select(t, set(t.customerId, c.customerId), set(t.orderId, o.orderId), set(t.total, o.total));
+        int todoImplementListResolution;
+        int todoVerifyResult;
     }
     
     @Test

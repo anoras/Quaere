@@ -1,11 +1,10 @@
 package org.quaere.dsl;
 
 import org.quaere.IncompleteQueryException;
+import org.quaere.QueryEngine;
 import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
-import org.quaere.QueryEngine;
 import org.quaere.expressions.*;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
 
 import java.util.*;
 
@@ -49,9 +48,25 @@ public class QueryExpressionBuilderImpl<R> implements
         }
     }
     public QueryExpression getQueryExpression() {
-        QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
-        QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
-        return queryExpression;
+        if (parentQueryBuilder != null) {
+            QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
+            QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
+            return parentQueryBuilder.getQueryExpression(queryExpression.getQueryBody());
+        } else {
+            if (currentSelectOrGroupClause == null) {
+                throw new IncompleteQueryException("A query must have a select or group by clause.");
+            }
+            QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
+            QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
+            return queryExpression;
+        }
+    }
+    private QueryExpression getQueryExpression(QueryBody continuationQueryBody) {
+        this.queryContinuation = new QueryContinuation(
+                continuationIdentifier,
+                continuationQueryBody
+        );
+        return getQueryExpression();
     }
     public Iterator<R> iterator() {
         if (parentQueryBuilder != null) {

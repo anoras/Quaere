@@ -16,8 +16,10 @@ public class QueryContinuation implements ExpressionTreeNode {
     public QueryBody getQueryBody() {
         return queryBody;
     }
-
-// --------------------- Interface ExpressionTreeNode ---------------------
+    public String toString() {
+        return String.format("into(%s).\n%s",identifier.toString(),queryBody.toString());
+    }
+    // --------------------- Interface ExpressionTreeNode ---------------------
 
 
     public void accept(ExpressionTreeVisitor visitor) {

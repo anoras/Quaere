@@ -28,8 +28,10 @@ public class GroupClause extends SelectOrGroupClause {
     public Comparator getComparator() {
         return comparator;
     }
-
-// --------------------- Interface ExpressionTreeNode ---------------------
+    public String toString() {
+        return String.format("group(%s).by(%s).",identifier.toString(),expression.toString());
+    }
+    // --------------------- Interface ExpressionTreeNode ---------------------
 
 
     public void accept(ExpressionTreeVisitor visitor) {

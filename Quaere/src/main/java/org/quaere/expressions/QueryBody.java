@@ -24,8 +24,15 @@ public class QueryBody implements ExpressionTreeNode {
     public SelectOrGroupClause getSelectOrGroupClause() {
         return selectOrGroupClause;
     }
-
-// --------------------- Interface ExpressionTreeNode ---------------------
+    public String toString() {
+        StringBuilder sb=new StringBuilder();
+        for (QueryBodyClause clause: clauses) {
+            sb.append(clause.toString());
+            sb.append(".\n");
+        }
+        return sb.toString();
+    }
+    // --------------------- Interface ExpressionTreeNode ---------------------
 
 
     public void accept(ExpressionTreeVisitor visitor) {
@@ -39,4 +46,5 @@ public class QueryBody implements ExpressionTreeNode {
     public boolean hasSelectOrGroupClause() {
         return selectOrGroupClause != null;
     }
+    
 }

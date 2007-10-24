@@ -28,4 +28,7 @@ public class Property {
             throw new RuntimeException("Property name must be set...");
         }
     }
+    public String toString() {
+        return String.format("%s: %s",identifier.toString(),expression.toString());
+    }
 }

@@ -109,7 +109,10 @@ public class DSL {
         return new Property(new Identifier(propertyName), expression);
     }
     public static <R> Property property(String propertyName, QueryContinuationOrQueryBodyBuilder<R> subquery) {
-        throw new RuntimeException("DSL.property is not implemented");
+        QueryExpressionBuilderImpl subqueryBuilder = (QueryExpressionBuilderImpl) subquery;
+        QueryExpression queryExpression=subquery.getQueryExpression();
+        SubqueryExpression subqueryExpression=new SubqueryExpression(queryExpression.getFrom(),queryExpression.getQueryBody());
+        return property(propertyName, subqueryExpression);
     }
     // Conversion operators
     public static <T> T[] asArray(T[] tArray, Iterable<T> source) {

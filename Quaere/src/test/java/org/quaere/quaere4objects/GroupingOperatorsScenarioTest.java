@@ -1,21 +1,25 @@
 package org.quaere.quaere4objects;
 
-import static org.quaere.DSL.*;
-import org.quaere.Variant;
-import org.quaere.Group;
-import org.quaere.model.Customer;
-import org.quaere.model.Product;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.List;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Comparator;
-
 import junit.framework.Assert;
+import org.apache.log4j.BasicConfigurator;
+import org.junit.Ignore;
+import org.junit.Test;
+import static org.quaere.DSL.*;
+import org.quaere.Group;
+import org.quaere.Variant;
+import org.quaere.model.Customer;
+import org.quaere.model.Order;
+import org.quaere.model.Product;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class GroupingOperatorsScenarioTest {
+    public GroupingOperatorsScenarioTest() {
+        BasicConfigurator.configure();
+    }
     @Test
     public void canUseGroupByToPartitionAListOfNumbersByTheirRemainderWhenDividedByFive_linq40() {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
@@ -88,40 +92,51 @@ public class GroupingOperatorsScenarioTest {
             System.out.println(g.get("products"));
         }
     }
+    @SuppressWarnings({"unchecked"})
     @Test
-    @Ignore("Subqueries aren't implemented properly..")
     // TODO: Revisit subquery impl.
     public void canUseGroupByClauseToPartitionAListOfEachCustomersOrdersFirstByYearThenByMonth_linq43() {
         Customer[] customers = Customer.getAllCustomers();
         Iterable<Variant> customerOrderGroups =
                 from("c").in(customers).
-                        select(
+                select(
+                    create(
+                        property("c.getCompanyName()"),
+                        property("yearGroups",
+                            from("o1").in("c.getOrders()").
+                            group("o1").by("o1.getOrderDate().getYear()").into("yg").
+                            select(
                                 create(
-                                        property("c.getCompanyName()"),
-                                        property("yearGroups",
-                                                from("o").in("c.getOrders()").
-                                                        group("o").by("o.getOrderDate().getYear()").into("yg").
-                                                        select(
-                                                        create(
-                                                                property("year", "yg.getKey()"),
-                                                                property("monthGroups",
-                                                                        from("o").in("yg").
-                                                                                group("o").by("o.getOrderDate().getMonth()").into("mg").
-                                                                                select(
-                                                                                create(
-                                                                                        property("month", "mg.getKey()"),
-                                                                                        property("orders", "mg,getGroup()")
-                                                                                )
-                                                                        )
-                                                                )
-                                                        )
-                                                )
+                                    property("year", "yg.getKey()"),
+                                    property("monthGroups",
+                                        from("o2").in("yg.getGroup()").
+                                            orderBy("o2.getOrderDate().getMonth()").
+                                            group("o2").by("o2.getOrderDate().getMonth()").into("mg").
+                                            select(
+                                            create(
+                                                property("monthKey", "mg.getKey()"),
+                                                property("orders", "mg.getGroup()")
+                                            )
                                         )
+                                    )
                                 )
-                        );
+                            )
+                        )
+                    )
+                );
 
         for (Variant group : customerOrderGroups) {
-            System.out.println(group);
+            System.out.println("Company: "+group.get("companyName"));
+            for (Variant yearGroup: (List<Variant>) group.get("yearGroups")) {
+                System.out.println("  Year: "+yearGroup.get("year"));
+                for (Variant monthGroup: (List<Variant>) yearGroup.get("monthGroups")) {
+                    System.out.println("    Month: "+monthGroup.get("monthKey"));
+                    for (Order order: (List<Order>) monthGroup.get("orders")) {
+                        System.out.printf("      %s\n",order!=null?order.toString():"null");
+
+                    }
+                }
+            }
         }
     }
     @Test

@@ -10,8 +10,10 @@ public class SelectClause extends SelectOrGroupClause {
     public Expression getExpression() {
         return expression;
     }
-
-// --------------------- Interface ExpressionTreeNode ---------------------
+    public String toString() {
+        return String.format("select(%s)",expression.toString());
+    }
+    // --------------------- Interface ExpressionTreeNode ---------------------
 
 
     public void accept(ExpressionTreeVisitor visitor) {

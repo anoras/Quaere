@@ -23,4 +23,7 @@ public class QueryExpression extends Expression {
     public void accept(ExpressionTreeVisitor visitor) {
         visitor.visit(this);
     }
+    public String toString() {
+        return String.format("%s %s",from!=null?from.toString():"null",queryBody!=null?queryBody.toString():"null");
+    }
 }

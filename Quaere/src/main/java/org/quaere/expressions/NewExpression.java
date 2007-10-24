@@ -18,7 +18,20 @@ public class NewExpression extends Expression {
     public List<Property> getProperties() {
         return properties;
     }
+    public String toString() {
+        StringBuilder sb=new StringBuilder();
+        sb.append("new ");
+        sb.append(className != null ? className : "Variant");
+        sb.append(" {");
+        for (Property p: properties) {
+            sb.append("  ");
+            sb.append(p.toString());
+            sb.append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
 
+    }
 // --------------------- Interface ExpressionTreeNode ---------------------
 
 

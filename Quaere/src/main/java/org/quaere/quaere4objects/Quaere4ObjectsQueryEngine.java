@@ -194,8 +194,28 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(QueryExpression expression) {
-        expression.getFrom().accept(this);
-        expression.getQueryBody().accept(this);
+        if (expression instanceof SubqueryExpression) {
+            visit((SubqueryExpression) expression);
+        } else {
+            expression.getFrom().accept(this);
+            expression.getQueryBody().accept(this);
+        }
+    }
+    public void visit(SubqueryExpression expression) {
+        Quaere4ObjectsQueryEngine subqueryEngine = new Quaere4ObjectsQueryEngine();
+        List<Object> passonTuple=new ArrayList<Object>();
+        for (String sourceName: sourceNames) {
+            result = null;
+            Identifier identifier = new Identifier(sourceName);
+            visit(identifier);
+            subqueryEngine.sourceNames.add(sourceName);
+            passonTuple.add(result);
+        }
+        subqueryEngine.currentTuple=passonTuple;
+        subqueryEngine.tuples.add(passonTuple);
+
+        QueryExpression liftedExpression=new QueryExpression(expression.getFrom(),expression.getQueryBody());
+        result= subqueryEngine.evaluate(liftedExpression);
     }
 
     @SuppressWarnings({"unchecked"})

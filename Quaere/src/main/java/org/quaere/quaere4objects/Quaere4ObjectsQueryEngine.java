@@ -888,8 +888,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         return true;
     }
 
-    private int min(MethodCall methodCall) {
-        int min = Integer.MAX_VALUE;
+    private double min(MethodCall methodCall) {
+        Double min = Double.MAX_VALUE;
         if (methodCall.getLambdaExpression() == null) {
             for (Object value : (Iterable) result) {
                 min = Math.min(min, (Integer) value);
@@ -914,7 +914,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            min = Math.min(min, (Integer) result);
+            min = Math.min((Double) min, (Double) Convert.coerce(result,Double.class));
         }
         sourceNames = oldSourceNames;
         return min;

@@ -114,6 +114,37 @@ public class DSL {
         SubqueryExpression subqueryExpression=new SubqueryExpression(queryExpression.getFrom(),queryExpression.getQueryBody());
         return property(propertyName, subqueryExpression);
     }
+    public static class min {
+        // Aggregation operators
+        public static <R,T> R in(T[] source) {
+            return min.<R,T>in(Arrays.asList(source));
+        }
+        public static <R,T> R in(List<T> source) {
+            return min.<R,T>in(new QueryableIterable<T>(source));
+        }
+        private static <R,T> R in(Queryable<T> source) {
+            QueryEngine queryEngine = source.createQueryEngine();
+            Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+            Statement query = new Statement(
+                    Arrays.<Expression>asList(
+                            sourceIdentifier,
+                            new MethodCall(
+                                    new Identifier("min"),
+                                    new ArrayList<Expression>(0)
+                            )
+                    )
+            );
+            if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+                Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+                asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+            }
+            return (R) queryEngine.evaluate(query);
+        }
+        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationClauseBuilderImpl<R>("min",new Identifier(anonymousIdentifier));
+        }
+    }
+
     // Conversion operators
     public static <T> T[] asArray(T[] tArray, Iterable<T> source) {
         List<T> asList = new ArrayList<T>();

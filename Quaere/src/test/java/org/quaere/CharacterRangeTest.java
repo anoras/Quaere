@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 public class CharacterRangeTest {
     @Test
-    public void canIterateRange()
+    public void canCreateRange()
     {
         CharacterRange abcdef=new CharacterRange('A','F');
         Iterator<Character> iter=abcdef.iterator();
@@ -22,10 +22,29 @@ public class CharacterRangeTest {
     }
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void arrayIndexOutOfBoundsExceptionIsThrownWhenIteratorPassesEndOfRange() {
-        CharacterRange abcdef=new CharacterRange('A','B');
-        Iterator<Character> riter = abcdef.iterator();
+        CharacterRange ab=new CharacterRange('A','B');
+        Iterator<Character> riter = ab.iterator();
         riter.next();
         riter.next();
         riter.next();
     }
-}
+    @Test
+    public void canCreateReversedRange() {
+        CharacterRange fedcba=new CharacterRange('f','a');
+        Iterator<Character> iter=fedcba.iterator();
+        Assert.assertEquals('f',iter.next());
+        Assert.assertEquals('e',iter.next());
+        Assert.assertEquals('d',iter.next());
+        Assert.assertEquals('c',iter.next());
+        Assert.assertEquals('b',iter.next());
+        Assert.assertEquals('a',iter.next());
+        Assert.assertFalse(iter.hasNext());
+    }
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void arrayIndexOutOfBoundsExceptionIsThrownWhenIteratorPassesBeginningOfReversedRange() {
+        CharacterRange ba=new CharacterRange('B','A');
+        Iterator<Character> riter = ba.iterator();
+        riter.next();
+        riter.next();
+        riter.next();
+    }}

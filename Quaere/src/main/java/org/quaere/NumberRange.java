@@ -7,10 +7,12 @@ import java.util.Iterator;
 public class NumberRange<T extends Number> implements Iterable<T> {
     private final T from;
     private final T to;
+    private final int inc;
 
     public NumberRange(T from, T to) {
         this.from = from;
         this.to = to;
+        inc = Comparer.compare(to,from);
     }
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -19,35 +21,67 @@ public class NumberRange<T extends Number> implements Iterable<T> {
                 if (current instanceof Byte) {
                     Byte castedCurrent = (Byte) current;
                     Byte castedTo = (Byte) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof Short) {
                     Short castedCurrent = (Short) current;
                     Short castedTo = (Short) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof Integer) {
                     Integer castedCurrent = (Integer) current;
                     Integer castedTo = (Integer) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof Long) {
                     Long castedCurrent = (Long) current;
                     Long castedTo = (Long) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof Float) {
                     Float castedCurrent = (Float) current;
                     Float castedTo = (Float) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof Double) {
                     Double castedCurrent = (Double) current;
                     Double castedTo = (Double) to;
-                    return castedCurrent <= castedTo;
+                    if (inc>0) {
+                        return castedCurrent <= castedTo;
+                    } else {
+                        return castedCurrent >= castedTo;
+                    }
                 } else if (current instanceof BigInteger) {
                     BigInteger castedCurrent = (BigInteger) current;
                     BigInteger castedTo = (BigInteger) to;
-                    return castedCurrent.compareTo(castedTo) <= 0;
+                    if (inc>0) {
+                        return castedCurrent.compareTo(castedTo) <= 0;
+                    } else {
+                        return castedCurrent.compareTo(castedTo) >= 0;
+                    }
                 } else if (current instanceof BigDecimal) {
                     BigDecimal castedCurrent = (BigDecimal) current;
                     BigDecimal castedTo = (BigDecimal) to;
-                    return castedCurrent.compareTo(castedTo) <= 0;
+                    if (inc>0) {
+                        return castedCurrent.compareTo(castedTo) <= 0;
+                    } else {
+                        return castedCurrent.compareTo(castedTo) >= 0;
+                    }
                 } else {
                     throw new UnsupportedOperationException();
                 }
@@ -58,35 +92,67 @@ public class NumberRange<T extends Number> implements Iterable<T> {
                 T retVal = current;
                 if (current instanceof Byte) {
                     Byte castedCurrent = (Byte) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof Short) {
                     Short castedCurrent = (Short) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof Integer) {
                     Integer castedCurrent = (Integer) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof Long) {
                     Long castedCurrent = (Long) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof Float) {
                     Float castedCurrent = (Float) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof Double) {
                     Double castedCurrent = (Double) current;
-                    castedCurrent++;
+                    if (inc>0) {
+                        castedCurrent++;
+                    } else {
+                        castedCurrent--;
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof BigInteger) {
                     BigInteger castedCurrent = (BigInteger) current;
-                    castedCurrent = castedCurrent.add(BigInteger.ONE);
+                    if (inc>0){
+                        castedCurrent = castedCurrent.add(BigInteger.ONE);
+                    } else {
+                        castedCurrent = castedCurrent.subtract(BigInteger.ONE);
+                    }
                     current = (T) castedCurrent;
                 } else if (current instanceof BigDecimal) {
                     BigDecimal castedCurrent = (BigDecimal) current;
-                    castedCurrent = castedCurrent.add(BigDecimal.ONE);
+                    if (inc>0){
+                        castedCurrent = castedCurrent.add(BigDecimal.ONE);
+                    } else {
+                        castedCurrent = castedCurrent.subtract(BigDecimal.ONE);
+                    }
                     current = (T) castedCurrent;
                 } else {
                     throw new UnsupportedOperationException();

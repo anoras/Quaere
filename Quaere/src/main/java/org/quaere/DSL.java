@@ -122,7 +122,7 @@ public class DSL {
         public static <R,T> R in(List<T> source) {
             return min.<R,T>in(new QueryableIterable<T>(source));
         }
-        private static <R,T> R in(Queryable<T> source) {
+        public static <R,T> R in(Queryable<T> source) {
             QueryEngine queryEngine = source.createQueryEngine();
             Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
             Statement query = new Statement(
@@ -138,6 +138,7 @@ public class DSL {
                 Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
                 asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
             }
+            // TODO: <R> must be Double. Figure out how to get hold of the generic argument class and coerce!
             return (R) queryEngine.evaluate(query);
         }
         public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {

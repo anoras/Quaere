@@ -20,4 +20,12 @@ public class CharacterRangeTest {
         Assert.assertEquals('F',iter.next());
         Assert.assertFalse(iter.hasNext());
     }
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void arrayIndexOutOfBoundsExceptionIsThrownWhenIteratorPassesEndOfRange() {
+        CharacterRange abcdef=new CharacterRange('A','B');
+        Iterator<Character> riter = abcdef.iterator();
+        riter.next();
+        riter.next();
+        riter.next();
+    }
 }

@@ -13,9 +13,10 @@ public class CharacterRange implements Iterable<Character> {
         return new Iterator<Character>() {
             private Character current = from;
             public boolean hasNext() {
-                return current < to;
+                return current < (to+1);
             }
             public Character next() {
+                if (!hasNext()) throw new ArrayIndexOutOfBoundsException();
                 return current++;
             }
             public void remove() {

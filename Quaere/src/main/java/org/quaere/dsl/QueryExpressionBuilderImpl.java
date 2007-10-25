@@ -36,6 +36,7 @@ public class QueryExpressionBuilderImpl<R> implements
 
     private QueryExpressionBuilderImpl(QueryExpressionBuilderImpl<R> parentQueryBuilder) {
         this.parentQueryBuilder = parentQueryBuilder;
+        this.sources.putAll(parentQueryBuilder.sources);
     }
 
     private void addOrderByCriteria(Expression expression, OrderByCriteria.Direction direction, Comparator comparator) {
@@ -52,7 +53,8 @@ public class QueryExpressionBuilderImpl<R> implements
             QueryBody queryBody = new QueryBody(queryBodyClauses, currentSelectOrGroupClause, queryContinuation);
             QueryExpression queryExpression = new QueryExpression(fromClause, queryBody);
             return parentQueryBuilder.getQueryExpression(queryExpression.getQueryBody());
-        } else {
+        }
+        else {
             if (currentSelectOrGroupClause == null) {
                 throw new IncompleteQueryException("A query must have a select or group by clause.");
             }
@@ -69,29 +71,29 @@ public class QueryExpressionBuilderImpl<R> implements
         return getQueryExpression();
     }
     public Iterator<R> iterator() {
-        if (parentQueryBuilder != null) {
-            QueryExpression queryExpression = getQueryExpression();
-            return parentQueryBuilder.iterator(queryExpression.getQueryBody());
-        } else {
-            if (currentSelectOrGroupClause == null) {
-                throw new IncompleteQueryException("A query must have a select or group by clause.");
-            }
+//        if (parentQueryBuilder != null) {
+//            QueryExpression queryExpression = getQueryExpression();
+//            return parentQueryBuilder.iterator(queryExpression.getQueryBody());
+//        }
+//        else {
+//            if (currentSelectOrGroupClause == null) {
+//                throw new IncompleteQueryException("A query must have a select or group by clause.");
+//            }
+
             QueryExpression queryExpression = getQueryExpression();
             QueryEngine q = null;
             for (Map.Entry<Identifier, Queryable> sourceEntry : sources.entrySet()) {
-                if (q == null) q = sourceEntry.getValue().createQueryEngine();
+                if (q == null) {
+                    q = sourceEntry.getValue().createQueryEngine();
+                }
                 q.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
+            }
+            if (q==null) {
+                throw new IncompleteQueryException("There are no sources to select from.");
             }
             Iterable<R> result = q.evaluate(queryExpression);
             return result.iterator();
-        }
-    }
-    private Iterator<R> iterator(QueryBody continuationQueryBody) {
-        this.queryContinuation = new QueryContinuation(
-                continuationIdentifier,
-                continuationQueryBody
-        );
-        return iterator();
+//        }
     }
     public FromClauseBuilder<R> from(String identifier) {
         currentIdentifier = new Identifier(identifier);
@@ -184,7 +186,8 @@ public class QueryExpressionBuilderImpl<R> implements
         if (fromClause == null) {
             // This is the intial from clause
             fromClause = new FromClause(currentIdentifier, expression);
-        } else {
+        }
+        else {
             queryBodyClauses.add(new FromClause(currentIdentifier, expression));
         }
         return this;
@@ -212,7 +215,8 @@ public class QueryExpressionBuilderImpl<R> implements
             // Are we creating a source from a group by?
             this.continuationIdentifier = new Identifier(identifier);
             return new QueryExpressionBuilderImpl<R>(this);
-        } else {
+        }
+        else {
             // ..or was is a join?
             JoinClause nonGroupedJoin = (JoinClause) queryBodyClauses.get(queryBodyClauses.size() - 1);
             JoinClause groupedJoin = new JoinClause(

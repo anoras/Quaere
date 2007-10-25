@@ -14,14 +14,14 @@ public class AggregationOperatorsScenarioTest {
     @Test
     public void canUseMinToGetLowestNumberInIntegerArray_linq81() {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2}; // NOTE: Removed 0 from list to improve test case...
-        Double minNum = min.in(numbers);
-        Assert.assertEquals(1D, minNum);
+        Integer minNum = min.in(Integer.class, numbers);
+        Assert.assertEquals(1, minNum);
     }
     @Test
     public void canUseMinToGetTheTengthOfTheShortestWordInAStringArray_linq82() {
         String[] words = {"cherry", "apple", "blueberry"};
-        Double shortestWord = min.<Double>qualify("w").by("w.length()").in(words);
-        Assert.assertEquals(Convert.coerce("apple".length(), Double.class), shortestWord);
+        Integer shortestWord = min.<Integer>qualify("w").by("w.length()").in(Integer.class,words);
+        Assert.assertEquals("apple".length(), shortestWord);
     }
 
     @Test

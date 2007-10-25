@@ -1,22 +1,23 @@
 package org.quaere.quaereForJPA;
 
 import junit.framework.Assert;
-import org.hibernate.SessionFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.BasicConfigurator;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.ejb.EntityManagerFactoryImpl;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 import static org.quaere.DSL.eq;
 import static org.quaere.DSL.from;
+import org.quaere.expressions.*;
 import org.quaere.model.Customer;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Appender;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitTransactionType;
+import java.util.Arrays;
 
 public class ScenariosTest {
     private final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
@@ -48,5 +49,44 @@ public class ScenariosTest {
             log.info(c);
             Assert.assertEquals("WA", c.getRegion());
         }
+
+        Identifier c = new Identifier("c");
+        QueryExpression customersInWashington = new QueryExpression(
+                new FromClause(
+                        Customer.class,
+                        c,
+                        new Statement(
+                                Arrays.<Expression>asList(c)
+                        )
+                ),
+                new QueryBody(
+                        Arrays.<QueryBodyClause>asList(
+                                new WhereClause(
+                                        new EqualOperator(
+                                                new Statement(
+                                                        Arrays.<Expression>asList(
+                                                                c,
+                                                                new MethodCall(
+                                                                        new Identifier("getRegion"),
+                                                                        Arrays.<Expression>asList()
+                                                                )
+                                                        )
+                                                ),
+                                                new Statement(
+                                                        Arrays.<Expression>asList(
+                                                                new Constant("WA")
+                                                        )
+                                                )
+                                        )
+                                )
+                        ),
+                        new SelectClause(
+                                new Statement(
+                                        Arrays.<Expression>asList(c)
+                                )
+                        ),
+                        null
+                )
+        );
     }
 }

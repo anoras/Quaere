@@ -1,5 +1,6 @@
 package org.quaere.dsl;
 
+import org.quaere.Convert;
 import org.quaere.QueryEngine;
 import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
@@ -28,13 +29,13 @@ public class AggregationClauseBuilderImpl<R> implements AggregationClauseBuilder
         return this;
     }
 
-    public <T> R in(T[] source) {
-        return in(Arrays.asList(source));
+    public <T> R in(Class<R> rClass,T[] source) {
+        return in(rClass, Arrays.asList(source));
     }
-    public <T> R in(Iterable<T> source) {
-        return in(new QueryableIterable<T>(source));
+    public <T> R in(Class<R> rClass, Iterable<T> source) {
+        return in(rClass, new QueryableIterable<T>(source));
     }
-    public <T> R in(Queryable<T> source) {
+    public <T> R in(Class<R> rClass, Queryable<T> source) {
         QueryEngine queryEngine = source.createQueryEngine();
         Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
         Statement query = new Statement(
@@ -53,7 +54,7 @@ public class AggregationClauseBuilderImpl<R> implements AggregationClauseBuilder
             Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
             asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
         }
-        return (R) queryEngine.evaluate(query);
+        return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
     }
     public Expression in(String expression) {
         return in(LiteralExpression.parse(expression));

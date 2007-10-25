@@ -1,4 +1,4 @@
-package org.quaere.model;
+package org.quaere.quaereForJPA.model;
 
 public class Product {
     private int productID;

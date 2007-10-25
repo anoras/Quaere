@@ -397,6 +397,9 @@ public class DSL {
     public static <T extends Number> Iterable<T> range(T from, T to) {
         return new Range<T>(from, to);
     }
+    public static Iterable<Character> range(char from, char to) {
+        return new CharacterRange(from,to);
+    }
     public static <T> Iterable<T> repeater(T value, int repititions) {
         return new Repeater<T>(value, repititions);
     }

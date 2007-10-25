@@ -395,7 +395,7 @@ public class DSL {
     }
     // Generators
     public static <T extends Number> Iterable<T> range(T from, T to) {
-        return new Range<T>(from, to);
+        return new NumberRange<T>(from, to);
     }
     public static Iterable<Character> range(char from, char to) {
         return new CharacterRange(from,to);

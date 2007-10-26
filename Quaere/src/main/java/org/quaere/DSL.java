@@ -116,11 +116,20 @@ public class DSL {
     }
     public static class min {
         // Aggregation operators
+        public static <T> Double in (T[] source) {
+            return min.<Double,T>in(Double.class,source);
+        }
         public static <R,T> R in(Class<R> rClass, T[] source) {
             return min.<R,T>in(rClass, Arrays.asList(source));
         }
+        public static <T> Double in(Iterable<T> source) {
+            return min.<Double,T>in(Double.class,source);
+        }
         public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
             return min.<R,T>in(rClass,new QueryableIterable<T>(source));
+        }
+        public static <T> Double in(Queryable<T> source) {
+            return min.<Double,T>in(Double.class,source);
         }
         public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
             QueryEngine queryEngine = source.createQueryEngine();
@@ -142,6 +151,84 @@ public class DSL {
         }
         public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
             return new AggregationClauseBuilderImpl<R>("min",new Identifier(anonymousIdentifier));
+        }
+    }
+    public static class max {
+        // Aggregation operators
+        public static <T> Double in (T[] source) {
+            return max.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, T[] source) {
+            return max.<R,T>in(rClass, Arrays.asList(source));
+        }
+        public static <T> Double in(Iterable<T> source) {
+            return max.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
+            return max.<R,T>in(rClass,new QueryableIterable<T>(source));
+        }
+        public static <T> Double in(Queryable<T> source) {
+            return max.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
+            QueryEngine queryEngine = source.createQueryEngine();
+            Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+            Statement query = new Statement(
+                    Arrays.<Expression>asList(
+                            sourceIdentifier,
+                            new MethodCall(
+                                    new Identifier("max"),
+                                    new ArrayList<Expression>(0)
+                            )
+                    )
+            );
+            if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+                Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+                asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+            }
+            return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+        }
+        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationClauseBuilderImpl<R>("max",new Identifier(anonymousIdentifier));
+        }
+    }
+    public static class avg {
+        // Aggregation operators
+        public static <T> Double in (T[] source) {
+            return avg.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, T[] source) {
+            return avg.<R,T>in(rClass, Arrays.asList(source));
+        }
+        public static <T> Double in(Iterable<T> source) {
+            return avg.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
+            return avg.<R,T>in(rClass,new QueryableIterable<T>(source));
+        }
+        public static <T> Double in(Queryable<T> source) {
+            return avg.<Double,T>in(Double.class,source);
+        }
+        public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
+            QueryEngine queryEngine = source.createQueryEngine();
+            Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+            Statement query = new Statement(
+                    Arrays.<Expression>asList(
+                            sourceIdentifier,
+                            new MethodCall(
+                                    new Identifier("average"),
+                                    new ArrayList<Expression>(0)
+                            )
+                    )
+            );
+            if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+                Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+                asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+            }
+            return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+        }
+        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationClauseBuilderImpl<R>("average",new Identifier(anonymousIdentifier));
         }
     }
 

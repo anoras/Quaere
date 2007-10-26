@@ -920,8 +920,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         return min;
     }
 
-    private int max(MethodCall methodCall) {
-        int max = Integer.MIN_VALUE;
+    private double max(MethodCall methodCall) {
+        Double max = Double.MIN_VALUE;
         if (methodCall.getLambdaExpression() == null) {
             for (Object value : (Iterable) result) {
                 max = Math.max(max, (Integer) value);
@@ -946,7 +946,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            max = Math.max(max, (Integer) result);
+            max = Math.max((Double) max, (Double) Convert.coerce(result,Double.class));
         }
         sourceNames = oldSourceNames;
         return max;
@@ -958,11 +958,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         return sum / count;
     }
 
-    private int sum(MethodCall methodCall) {
-        int sum = 0;
+    private double sum(MethodCall methodCall) {
+        double sum = 0D;
         if (methodCall.getLambdaExpression() == null) {
             for (Object value : (Iterable) result) {
-                sum += (Integer) value;
+                sum += (Double) Convert.coerce(value, Double.class);
             }
             return sum;
         }
@@ -984,7 +984,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            sum += (Integer) result;
+            sum += (Double) Convert.coerce(result,Double.class);
         }
         sourceNames = oldSourceNames;
         return sum;

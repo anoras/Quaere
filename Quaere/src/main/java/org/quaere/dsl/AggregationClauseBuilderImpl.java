@@ -24,7 +24,7 @@ public class AggregationClauseBuilderImpl<R> implements AggregationClauseBuilder
     public AggregationClauseByExpressionBuilder<R> by(String expression) {
         return by(LiteralExpression.parse(expression));
     }
-    public AggregationClauseByExpressionBuilder by(Expression expression) {
+    public AggregationClauseByExpressionBuilder<R> by(Expression expression) {
         qualifier = expression;
         return this;
     }

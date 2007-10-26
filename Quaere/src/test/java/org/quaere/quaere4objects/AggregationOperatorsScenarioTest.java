@@ -4,12 +4,96 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.quaere.DSL.*;
 import org.quaere.Variant;
+import org.quaere.model.Customer;
 import org.quaere.model.Product;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class AggregationOperatorsScenarioTest {
+    @Test
+    public void canFindUniqueFactorysOf300_linq73() {
+        Integer[] factorsOf300 = {2, 2, 3, 5, 5};
+        Double uniqueFactors = count.in(distinct(factorsOf300));
+        Assert.assertEquals(3D, uniqueFactors);
+    }
+    @Test
+    public void canFindNumberOfOddElementsInIntegerArray_linq74() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        Integer oddNumbers = count.<Integer>qualify("n").by(eq("n % 2", 0)).in(Integer.class, numbers);
+        Assert.assertEquals(5, oddNumbers);
+    }
+    @Test
+    public void canUseCountToGetTheNumberOfIntegersInAnArrayWhoseValueIsOddOfItsPositionIsOddOrWhoseValueIsEvenIfItsPositionIsEven_linq75() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        Integer oddEvenMatches = count.<Integer>qualify("n").withIndexer("index").by(eq("n % 2", "index % 2")).in(Integer.class, numbers);
+        Assert.assertEquals(4, oddEvenMatches);
+    }
+
+    @Test
+    public void canUseCountToReturnAListOfCustomersAndHowManyOrdersEachHas_linq76() {
+        Customer[] customers = Customer.getAllCustomers();
+        Iterable<Variant> orderCounts =
+                from("c").in(customers).
+                        select(
+                                create(
+                                        property("CustomerID", "c.getCustomerID()"),
+                                        property("OrderCount", count("c.getOrders()"))
+                                )
+                        );
+        for (Variant orderCount : orderCounts) {
+            System.out.println(String.format("Customer: %s, Orders: %s", orderCount.get("CustomerID"), orderCount.get("OrderCount")));
+        }
+    }
+    /*
+     This sample prints each category and the number of products in that category. The sample first uses group by to group the products according to their categories. Then it uses select to create an anonymous for each category that contains the category and number of products.
+
+public void Linq77() {
+   List products = GetProductList();
+
+   var categoryCounts =
+      from p in products
+      group p by p.Category into g
+      select new {Category = g.Key, ProductCount = g.Group.Count()};
+
+   ObjectDumper.Write(categoryCounts);
+}
+
+Result
+Category=Beverages ProductCount=12
+Category=Condiments ProductCount=12
+Category=Produce ProductCount=5
+Category=Meat/Poultry ProductCount=6
+Category=Seafood ProductCount=12
+Category=Dairy Products ProductCount=10
+Category=Confections ProductCount=13
+Category=Grains/Cereals ProductCount=7
+     */
+    @Test
+    public void canUseCountWithGroupToDetermineTheNumberOfProductsInEachCategory_linq77() {
+        Product[] products= Product.getAllProducts();
+        Iterable<Variant> categoryCounts =
+                from("p").in(products).
+                group("p").by("p.getCategory()").into("g").
+                select(
+                    create(
+                        property("Category","g.getKey()"),
+                        property("ProductCount",count("g.getGroup()"))
+                    )
+                );
+        HashMap<String,Integer> expectedCounts = new HashMap<String, Integer>();
+        expectedCounts.put("Beverages",12);
+        expectedCounts.put("Condiments",12);
+        expectedCounts.put("Produce",5);
+        expectedCounts.put("Meat/Poultry",6);
+        expectedCounts.put("Seafood",12);
+        expectedCounts.put("Dairy Products",10);
+        expectedCounts.put("Confections",13);
+        expectedCounts.put("Grains/Cereals",7);
+        for (Variant count: categoryCounts) {
+            Assert.assertEquals(expectedCounts.get(count.get("Category")),count.get("ProductCount"));
+        }
+    }
     @Test
     public void canUseMinToGetLowestNumberInIntegerArray_linq81() {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2}; // NOTE: Removed 0 from list to improve test case...

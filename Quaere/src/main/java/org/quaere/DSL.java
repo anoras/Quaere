@@ -86,16 +86,14 @@ public class DSL {
                     String propertyName = methodCall.getIdentifier().getText();
                     if (propertyName.startsWith("get")) {
                         propertyName = propertyName.substring("get".length());
-                    }
-                    else if (propertyName.startsWith("is")) {
+                    } else if (propertyName.startsWith("is")) {
                         propertyName = propertyName.substring("is".length());
                     }
                     propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
                     return property(propertyName, expression);
                 }
             }
-        }
-        else {
+        } else {
             // We're looking for an identifier
             Identifier identifier = (Identifier) statment.getExpressions().get(0);
             return property(identifier.getText(), expression);
@@ -110,28 +108,82 @@ public class DSL {
     }
     public static <R> Property property(String propertyName, QueryContinuationOrQueryBodyBuilder<R> subquery) {
         QueryExpressionBuilderImpl subqueryBuilder = (QueryExpressionBuilderImpl) subquery;
-        QueryExpression queryExpression=subquery.getQueryExpression();
-        SubqueryExpression subqueryExpression=new SubqueryExpression(queryExpression.getFrom(),queryExpression.getQueryBody());
+        QueryExpression queryExpression = subquery.getQueryExpression();
+        SubqueryExpression subqueryExpression = new SubqueryExpression(queryExpression.getFrom(), queryExpression.getQueryBody());
         return property(propertyName, subqueryExpression);
     }
-    public static class min {
-        // Aggregation operators
-        public static <T> Double in (T[] source) {
-            return min.<Double,T>in(Double.class,source);
+    // Aggregation operators
+    public static Statement count(String expression) {
+        return count(LiteralExpression.parse(expression));
+    }
+    public static Statement count(Expression expression) {
+        return new Statement(
+                Arrays.<Expression>asList(
+                        expression,
+                        new MethodCall(
+                            new Identifier("count"),
+                            Arrays.<Expression>asList()
+                        )
+                )
+        );
+    }
+    public static class count {
+        public static <T> Double in(T[] source) {
+            return count.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, T[] source) {
-            return min.<R,T>in(rClass, Arrays.asList(source));
+        public static <R, T> R in(Class<R> rClass, T[] source) {
+            return count.<R, T>in(rClass, Arrays.asList(source));
         }
         public static <T> Double in(Iterable<T> source) {
-            return min.<Double,T>in(Double.class,source);
+            return count.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
-            return min.<R,T>in(rClass,new QueryableIterable<T>(source));
+        public static <R, T> R in(Class<R> rClass, Iterable<T> source) {
+            return count.<R, T>in(rClass, new QueryableIterable<T>(source));
         }
         public static <T> Double in(Queryable<T> source) {
-            return min.<Double,T>in(Double.class,source);
+            return count.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
+        public static <R, T> R in(Class<R> rClass, Queryable<T> source) {
+            QueryEngine queryEngine = source.createQueryEngine();
+            Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+            Statement query = new Statement(
+                    Arrays.<Expression>asList(
+                            sourceIdentifier,
+                            new MethodCall(
+                                    new Identifier("count"),
+                                    new ArrayList<Expression>(0)
+                            )
+                    )
+            );
+            if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+                Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+                asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+            }
+            return (R) Convert.coerce(queryEngine.evaluate(query), rClass);
+        }
+        public static <R> AggregationOperatorBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationOperatorBuilderImpl<R>("count", new Identifier(anonymousIdentifier));
+        }
+    }
+
+    public static class min {
+        // Aggregation operators
+        public static <T> Double in(T[] source) {
+            return min.<Double, T>in(Double.class, source);
+        }
+        public static <R, T> R in(Class<R> rClass, T[] source) {
+            return min.<R, T>in(rClass, Arrays.asList(source));
+        }
+        public static <T> Double in(Iterable<T> source) {
+            return min.<Double, T>in(Double.class, source);
+        }
+        public static <R, T> R in(Class<R> rClass, Iterable<T> source) {
+            return min.<R, T>in(rClass, new QueryableIterable<T>(source));
+        }
+        public static <T> Double in(Queryable<T> source) {
+            return min.<Double, T>in(Double.class, source);
+        }
+        public static <R, T> R in(Class<R> rClass, Queryable<T> source) {
             QueryEngine queryEngine = source.createQueryEngine();
             Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
             Statement query = new Statement(
@@ -147,30 +199,31 @@ public class DSL {
                 Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
                 asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
             }
-            return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+            return (R) Convert.coerce(queryEngine.evaluate(query), rClass);
         }
-        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
-            return new AggregationClauseBuilderImpl<R>("min",new Identifier(anonymousIdentifier));
+        public static <R> AggregationOperatorBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationOperatorBuilderImpl<R>("min", new Identifier(anonymousIdentifier));
         }
     }
+
     public static class max {
         // Aggregation operators
-        public static <T> Double in (T[] source) {
-            return max.<Double,T>in(Double.class,source);
+        public static <T> Double in(T[] source) {
+            return max.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, T[] source) {
-            return max.<R,T>in(rClass, Arrays.asList(source));
+        public static <R, T> R in(Class<R> rClass, T[] source) {
+            return max.<R, T>in(rClass, Arrays.asList(source));
         }
         public static <T> Double in(Iterable<T> source) {
-            return max.<Double,T>in(Double.class,source);
+            return max.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
-            return max.<R,T>in(rClass,new QueryableIterable<T>(source));
+        public static <R, T> R in(Class<R> rClass, Iterable<T> source) {
+            return max.<R, T>in(rClass, new QueryableIterable<T>(source));
         }
         public static <T> Double in(Queryable<T> source) {
-            return max.<Double,T>in(Double.class,source);
+            return max.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
+        public static <R, T> R in(Class<R> rClass, Queryable<T> source) {
             QueryEngine queryEngine = source.createQueryEngine();
             Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
             Statement query = new Statement(
@@ -186,30 +239,31 @@ public class DSL {
                 Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
                 asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
             }
-            return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+            return (R) Convert.coerce(queryEngine.evaluate(query), rClass);
         }
-        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
-            return new AggregationClauseBuilderImpl<R>("max",new Identifier(anonymousIdentifier));
+        public static <R> AggregationOperatorBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationOperatorBuilderImpl<R>("max", new Identifier(anonymousIdentifier));
         }
     }
+
     public static class avg {
         // Aggregation operators
-        public static <T> Double in (T[] source) {
-            return avg.<Double,T>in(Double.class,source);
+        public static <T> Double in(T[] source) {
+            return avg.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, T[] source) {
-            return avg.<R,T>in(rClass, Arrays.asList(source));
+        public static <R, T> R in(Class<R> rClass, T[] source) {
+            return avg.<R, T>in(rClass, Arrays.asList(source));
         }
         public static <T> Double in(Iterable<T> source) {
-            return avg.<Double,T>in(Double.class,source);
+            return avg.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Iterable<T> source) {
-            return avg.<R,T>in(rClass,new QueryableIterable<T>(source));
+        public static <R, T> R in(Class<R> rClass, Iterable<T> source) {
+            return avg.<R, T>in(rClass, new QueryableIterable<T>(source));
         }
         public static <T> Double in(Queryable<T> source) {
-            return avg.<Double,T>in(Double.class,source);
+            return avg.<Double, T>in(Double.class, source);
         }
-        public static <R,T> R in(Class<R> rClass, Queryable<T> source) {
+        public static <R, T> R in(Class<R> rClass, Queryable<T> source) {
             QueryEngine queryEngine = source.createQueryEngine();
             Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
             Statement query = new Statement(
@@ -225,10 +279,10 @@ public class DSL {
                 Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
                 asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
             }
-            return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+            return (R) Convert.coerce(queryEngine.evaluate(query), rClass);
         }
-        public static <R> AggregationClauseBuilder<R> qualify(String anonymousIdentifier) {
-            return new AggregationClauseBuilderImpl<R>("average",new Identifier(anonymousIdentifier));
+        public static <R> AggregationOperatorBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationOperatorBuilderImpl<R>("average", new Identifier(anonymousIdentifier));
         }
     }
 
@@ -433,8 +487,7 @@ public class DSL {
     public static <R> R first(R[] source) {
         if (source.length > 0) {
             return source[0];
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -445,13 +498,11 @@ public class DSL {
         // NOTE: Explicit type argument is required in the following section support Eclipse.
         if (source instanceof QueryBodyBuilder<?>) {
             return DSL.<R>firstInQueryBodyBuilder((QueryBodyBuilder) source);
-        }
-        else if (source instanceof Queryable<?>) {
+        } else if (source instanceof Queryable<?>) {
             // NOTE: The unchecked casts is required for IDEA to build the module while the call is redirected to
             // an explicitly typed method on the DSL class.
             return DSL.<R>firstInQueryable((Queryable<R>) source);
-        }
-        else if (source instanceof Iterable<?>) {
+        } else if (source instanceof Iterable<?>) {
             return DSL.<R>firstInIterable((Iterable<R>) source);
         }
         throw new IllegalArgumentException("Cannot retrieve first element from " + source.getClass().getName());
@@ -461,8 +512,7 @@ public class DSL {
         Iterator<R> iter = source.iterator();
         if (iter.hasNext()) {
             return iter.next();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -516,7 +566,7 @@ public class DSL {
         return new NumberRange<T>(from, to);
     }
     public static Iterable<Character> range(char from, char to) {
-        return new CharacterRange(from,to);
+        return new CharacterRange(from, to);
     }
     public static <T> Iterable<T> repeater(T value, int repititions) {
         return new Repeater<T>(value, repititions);

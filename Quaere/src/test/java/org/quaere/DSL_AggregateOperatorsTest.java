@@ -7,6 +7,42 @@ import java.util.Arrays;
 
 public class DSL_AggregateOperatorsTest {
     @Test
+    public void canApplyCountToArray() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
+        Double count = DSL.count.in(Double.class, numbers);
+        Assert.assertEquals(9D, count);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingCountToArray() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
+        Integer count = DSL.count.in(Integer.class, numbers);
+        Assert.assertEquals(9, count);
+    }
+    @Test
+    public void canApplyCountToIterable() {
+        Iterable<Integer> numbers = Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2);
+        Double sum = DSL.count.in(Double.class, numbers);
+        Assert.assertEquals(9D, sum);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingCountToIterable() {
+        Iterable<Integer> numbers = Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2);
+        Integer count = DSL.count.in(Integer.class, numbers);
+        Assert.assertEquals(9, count);
+    }
+    @Test
+    public void canApplyCountToQueryable() {
+        Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2));
+        Double count = DSL.count.in(Double.class, numbers);
+        Assert.assertEquals(9D, count);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingCountToQueryable() {
+        Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2));
+        Integer count = DSL.count.in(Integer.class, numbers);
+        Assert.assertEquals(9, count);
+    }
+    @Test
     public void canApplyMinToArray() {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
         Double min = DSL.min.in(Double.class, numbers);

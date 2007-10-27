@@ -165,6 +165,58 @@ public class DSL {
             return new AggregationOperatorBuilderImpl<R>("count", new Identifier(anonymousIdentifier));
         }
     }
+    public static Statement sum(String expression) {
+        return sum(LiteralExpression.parse(expression));
+    }
+    public static Statement sum(Expression expression) {
+        return new Statement(
+                Arrays.<Expression>asList(
+                        expression,
+                        new MethodCall(
+                            new Identifier("count"),
+                            Arrays.<Expression>asList()
+                        )
+                )
+        );
+    }
+    public static class sum {
+        public static <T> Double of(T[] source) {
+            return sum.<Double, T>of(Double.class, source);
+        }
+        public static <R, T> R of(Class<R> rClass, T[] source) {
+            return sum.<R, T>of(rClass, Arrays.asList(source));
+        }
+        public static <T> Double of(Iterable<T> source) {
+            return sum.<Double, T>of(Double.class, source);
+        }
+        public static <R, T> R of(Class<R> rClass, Iterable<T> source) {
+            return sum.<R, T>of(rClass, new QueryableIterable<T>(source));
+        }
+        public static <T> Double of(Queryable<T> source) {
+            return sum.<Double, T>of(Double.class, source);
+        }
+        public static <R, T> R of(Class<R> rClass, Queryable<T> source) {
+            QueryEngine queryEngine = source.createQueryEngine();
+            Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+            Statement query = new Statement(
+                    Arrays.<Expression>asList(
+                            sourceIdentifier,
+                            new MethodCall(
+                                    new Identifier("sum"),
+                                    new ArrayList<Expression>(0)
+                            )
+                    )
+            );
+            if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+                Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+                asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+            }
+            return (R) Convert.coerce(queryEngine.evaluate(query), rClass);
+        }
+        public static <R> AggregationOperatorBuilder<R> qualify(String anonymousIdentifier) {
+            return new AggregationOperatorBuilderImpl<R>("sum", new Identifier(anonymousIdentifier));
+        }
+    }
 
     public static class min {
         // Aggregation operators

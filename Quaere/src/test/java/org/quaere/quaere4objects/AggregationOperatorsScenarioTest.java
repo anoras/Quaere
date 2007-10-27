@@ -45,53 +45,68 @@ public class AggregationOperatorsScenarioTest {
             System.out.println(String.format("Customer: %s, Orders: %s", orderCount.get("CustomerID"), orderCount.get("OrderCount")));
         }
     }
-    /*
-     This sample prints each category and the number of products in that category. The sample first uses group by to group the products according to their categories. Then it uses select to create an anonymous for each category that contains the category and number of products.
-
-public void Linq77() {
-   List products = GetProductList();
-
-   var categoryCounts =
-      from p in products
-      group p by p.Category into g
-      select new {Category = g.Key, ProductCount = g.Group.Count()};
-
-   ObjectDumper.Write(categoryCounts);
-}
-
-Result
-Category=Beverages ProductCount=12
-Category=Condiments ProductCount=12
-Category=Produce ProductCount=5
-Category=Meat/Poultry ProductCount=6
-Category=Seafood ProductCount=12
-Category=Dairy Products ProductCount=10
-Category=Confections ProductCount=13
-Category=Grains/Cereals ProductCount=7
-     */
     @Test
     public void canUseCountWithGroupToDetermineTheNumberOfProductsInEachCategory_linq77() {
-        Product[] products= Product.getAllProducts();
+        Product[] products = Product.getAllProducts();
         Iterable<Variant> categoryCounts =
+                from("p").in(products).
+                        group("p").by("p.getCategory()").into("g").
+                        select(
+                                create(
+                                        property("Category", "g.getKey()"),
+                                        property("ProductCount", count("g.getGroup()"))
+                                )
+                        );
+        HashMap<String, Integer> expectedCounts = new HashMap<String, Integer>();
+        expectedCounts.put("Beverages", 12);
+        expectedCounts.put("Condiments", 12);
+        expectedCounts.put("Produce", 5);
+        expectedCounts.put("Meat/Poultry", 6);
+        expectedCounts.put("Seafood", 12);
+        expectedCounts.put("Dairy Products", 10);
+        expectedCounts.put("Confections", 13);
+        expectedCounts.put("Grains/Cereals", 7);
+        for (Variant count : categoryCounts) {
+            Assert.assertEquals(expectedCounts.get(count.get("Category")), count.get("ProductCount"));
+        }
+    }
+    @Test
+    public void canUseSumToFindTheTotalOfAllNumbersInAnIntegerArray_linq78() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        Double total = sum.of(numbers);
+        Assert.assertEquals(45D, total);
+
+    }
+    @Test
+    public void camUseSumToFindTheTotalNumberInAllOfTheWordsInAStringArray_linq79() {
+        String[] words = {"cherry", "apple", "blueberry"};
+        Integer totalChars = sum.<Integer>qualify("w").by("w.length()").in(Integer.class, words);
+        Assert.assertEquals(20, totalChars);
+    }
+
+    @Test
+    public void canUseSumToGetTheTotalNumberOfUnitsInStockForEachCategory_linq80() {
+        Product[] products= Product.getAllProducts();
+        Iterable<Variant> categories =
                 from("p").in(products).
                 group("p").by("p.getCategory()").into("g").
                 select(
                     create(
                         property("Category","g.getKey()"),
-                        property("ProductCount",count("g.getGroup()"))
+                        property("TotalUnitsInStock", sum.qualify("p").by("p.getUnitsInStock()").in("g.getGroup()"))
                     )
                 );
-        HashMap<String,Integer> expectedCounts = new HashMap<String, Integer>();
-        expectedCounts.put("Beverages",12);
-        expectedCounts.put("Condiments",12);
-        expectedCounts.put("Produce",5);
-        expectedCounts.put("Meat/Poultry",6);
-        expectedCounts.put("Seafood",12);
-        expectedCounts.put("Dairy Products",10);
-        expectedCounts.put("Confections",13);
-        expectedCounts.put("Grains/Cereals",7);
-        for (Variant count: categoryCounts) {
-            Assert.assertEquals(expectedCounts.get(count.get("Category")),count.get("ProductCount"));
+        HashMap<String, Double> expectedCategories = new HashMap<String, Double>();
+        expectedCategories.put("Beverages", 559D);
+        expectedCategories.put("Condiments", 507D);
+        expectedCategories.put("Produce", 100D);
+        expectedCategories.put("Meat/Poultry", 165D);
+        expectedCategories.put("Seafood", 701D);
+        expectedCategories.put("Dairy Products", 393D);
+        expectedCategories.put("Confections", 386D);
+        expectedCategories.put("Grains/Cereals", 308D);
+        for (Variant category : categories) {
+            Assert.assertEquals(expectedCategories.get(category.get("Category")), category.get("TotalUnitsInStock"));
         }
     }
     @Test

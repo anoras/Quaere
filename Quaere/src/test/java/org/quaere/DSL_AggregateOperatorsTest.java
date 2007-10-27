@@ -43,6 +43,42 @@ public class DSL_AggregateOperatorsTest {
         Assert.assertEquals(9, count);
     }
     @Test
+    public void canApplySumToArray() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
+        Double sum = DSL.sum.of(Double.class, numbers);
+        Assert.assertEquals(45D, sum);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingSumToArray() {
+        Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
+        Integer sum = DSL.sum.of(Integer.class, numbers);
+        Assert.assertEquals(45, sum);
+    }
+    @Test
+    public void canApplySumToIterable() {
+        Iterable<Integer> numbers = Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2);
+        Double sum = DSL.sum.of(Double.class, numbers);
+        Assert.assertEquals(45D, sum);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingSumToIterable() {
+        Iterable<Integer> numbers = Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2);
+        Integer sum = DSL.sum.of(Integer.class, numbers);
+        Assert.assertEquals(45, sum);
+    }
+    @Test
+    public void canApplySumToQueryable() {
+        Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2));
+        Double sum = DSL.sum.of(Double.class, numbers);
+        Assert.assertEquals(45D, sum);
+    }
+    @Test
+    public void canSpecifyClassWhenApplyingSumToQueryable() {
+        Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2));
+        Integer sum = DSL.sum.of(Integer.class, numbers);
+        Assert.assertEquals(45, sum);
+    }
+    @Test
     public void canApplyMinToArray() {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
         Double min = DSL.min.in(Double.class, numbers);

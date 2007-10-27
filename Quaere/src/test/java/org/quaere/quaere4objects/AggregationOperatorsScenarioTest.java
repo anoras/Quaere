@@ -2,6 +2,7 @@ package org.quaere.quaere4objects;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.quaere.DSL;
 import static org.quaere.DSL.*;
 import org.quaere.Variant;
 import org.quaere.model.Customer;
@@ -86,16 +87,16 @@ public class AggregationOperatorsScenarioTest {
 
     @Test
     public void canUseSumToGetTheTotalNumberOfUnitsInStockForEachCategory_linq80() {
-        Product[] products= Product.getAllProducts();
+        Product[] products = Product.getAllProducts();
         Iterable<Variant> categories =
                 from("p").in(products).
-                group("p").by("p.getCategory()").into("g").
-                select(
-                    create(
-                        property("Category","g.getKey()"),
-                        property("TotalUnitsInStock", sum.qualify("p").by("p.getUnitsInStock()").in("g.getGroup()"))
-                    )
-                );
+                        group("p").by("p.getCategory()").into("g").
+                        select(
+                                create(
+                                        property("Category", "g.getKey()"),
+                                        property("TotalUnitsInStock", sum.qualify("p").by("p.getUnitsInStock()").in("g.getGroup()"))
+                                )
+                        );
         HashMap<String, Double> expectedCategories = new HashMap<String, Double>();
         expectedCategories.put("Beverages", 559D);
         expectedCategories.put("Condiments", 507D);
@@ -282,4 +283,35 @@ public class AggregationOperatorsScenarioTest {
             Assert.assertEquals(expectedCategories.get(category.get("Category")), category.get("CheapestPrice"));
         }
     }
+
+    @Test
+    public void canUseAggregateToFindTheProductOfAllElementsOfAnArrayOfDoubles_linq92() {
+        Double[] doubles = {1.7, 2.3, 1.9, 4.1, 2.9};
+        Double product = DSL.<Double>aggregate("runningProduct", "nextFactor").with("runningProduct * nextFactor").in(Double.class, doubles);
+        Assert.assertEquals(88.33080999999999D, product);
+    }
+    /*
+    Fold - Seed
+
+
+This sample subtracts a sequence of integers from a starting value, simulating withdrawls from an account. While there is still cash left in the account, the withdrawal succeeds. The sample uses Fold to pass each withdrawal value in turn to the lambda expression that performs the subtraction.
+
+public void Linq93() {
+   double startBalance = 100.0;
+
+   int[] attemptedWithdrawals = { 20, 10, 40, 50, 10, 70, 30 };
+
+   double endBalance =
+      attemptedWithdrawals.Fold(startBalance,
+         (balance, nextWithdrawal) =>
+            ( (nextWithdrawal <= balance) ? (balance - nextWithdrawal) : balance ) );
+
+   Console.WriteLine("Ending balance: {0}", endBalance);
+}
+
+Result
+Ending balance: 20
+     */
+    // TODO: Support seed values.
+
 }

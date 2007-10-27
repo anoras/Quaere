@@ -203,19 +203,19 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
     public void visit(SubqueryExpression expression) {
         Quaere4ObjectsQueryEngine subqueryEngine = new Quaere4ObjectsQueryEngine();
-        List<Object> passonTuple=new ArrayList<Object>();
-        for (String sourceName: sourceNames) {
+        List<Object> passonTuple = new ArrayList<Object>();
+        for (String sourceName : sourceNames) {
             result = null;
             Identifier identifier = new Identifier(sourceName);
             visit(identifier);
             subqueryEngine.sourceNames.add(sourceName);
             passonTuple.add(result);
         }
-        subqueryEngine.currentTuple=passonTuple;
+        subqueryEngine.currentTuple = passonTuple;
         subqueryEngine.tuples.add(passonTuple);
 
-        QueryExpression liftedExpression=new QueryExpression(expression.getFrom(),expression.getQueryBody());
-        result= subqueryEngine.evaluate(liftedExpression);
+        QueryExpression liftedExpression = new QueryExpression(expression.getFrom(), expression.getQueryBody());
+        result = subqueryEngine.evaluate(liftedExpression);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -553,6 +553,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             return max(methodCall);
         } else if (methodName.equals("average")) {
             return average(methodCall);
+        } else if (methodName.equals("aggregate")) {
+            return aggregate(methodCall);
         } else {
             return null;
         }
@@ -914,7 +916,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            min = Math.min((Double) min, (Double) Convert.coerce(result,Double.class));
+            min = Math.min((Double) min, (Double) Convert.coerce(result, Double.class));
         }
         sourceNames = oldSourceNames;
         return min;
@@ -946,7 +948,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            max = Math.max((Double) max, (Double) Convert.coerce(result,Double.class));
+            max = Math.max((Double) max, (Double) Convert.coerce(result, Double.class));
         }
         sourceNames = oldSourceNames;
         return max;
@@ -984,11 +986,39 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            sum += (Double) Convert.coerce(result,Double.class);
+            sum += (Double) Convert.coerce(result, Double.class);
         }
         sourceNames = oldSourceNames;
         return sum;
     }
+    public Object aggregate(MethodCall methodCall) {
+        List<String> oldSourceNames = sourceNames;
+        sourceNames = new ArrayList<String>();
+        if (methodCall.getAnonymousIdentifier() != null) {
+            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+        }
+        // NOTE: Index identigier doubles for accumulate identifier...
+        if (methodCall.getIndexedIdentifier() != null) {
+            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+        }
+
+        Iterator resultIter=((Iterable)result).iterator();
+        Object accumulation=resultIter.next();
+        while (resultIter.hasNext()) {
+            currentTuple = new ArrayList<Object>();
+            if (methodCall.getAnonymousIdentifier() != null) {
+                currentTuple.add(resultIter.next());
+            }
+            if (methodCall.getIndexedIdentifier() != null) {
+                currentTuple.add(accumulation);
+            }
+            methodCall.getLambdaExpression().accept(this);
+            accumulation=result;
+        }
+        sourceNames = oldSourceNames;
+        return accumulation;
+    }
+
     static String getSourceName(Identifier identifier) {
         if (!identifier.getText().startsWith("__src_")) {
             return "__src_" + identifier.getText();

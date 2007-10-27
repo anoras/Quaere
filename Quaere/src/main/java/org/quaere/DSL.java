@@ -337,7 +337,10 @@ public class DSL {
             return new AggregationOperatorBuilderImpl<R>("average", new Identifier(anonymousIdentifier));
         }
     }
-
+    public static <R> AggregateOperatorBuilder<R> aggregate(String accumulationIdentifier, String anonymousIdentifier) {
+        return new AggregateOperatorBuilderImpl<R>(new Identifier(accumulationIdentifier), new Identifier(anonymousIdentifier));
+    }
+    
     // Conversion operators
     public static <T> T[] asArray(T[] tArray, Iterable<T> source) {
         List<T> asList = new ArrayList<T>();

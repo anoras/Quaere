@@ -11,7 +11,6 @@ import static org.quaere.alias.ListProvider.from;
 import static org.quaere.alias.ListProvider.index;
 import static org.quaere.alias.ListProvider.length;
 
-import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -99,14 +98,9 @@ public class SamplesOrderByTest {
 //            var sortedWords = words.OrderBy(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }
-        class CaseInsensitiveComparer implements Comparator<String> {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        }
         String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
         String a = alias(words);
-        List<String> sortedWords = from(a).orderBy(asc(a, new CaseInsensitiveComparer())).select();
+        List<String> sortedWords = from(a).orderBy(asc(a, String.CASE_INSENSITIVE_ORDER)).select();
         String result = "";
         for (String x : sortedWords) {
             result += x + ";";
@@ -171,14 +165,9 @@ public class SamplesOrderByTest {
 //        var sortedWords = words.OrderByDescending(a => a, new CaseInsensitiveComparer());
 //        ObjectDumper.Write(sortedWords);
 //    }
-        class CaseInsensitiveComparer implements Comparator<String> {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        }
         String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
         List<String> sortedWords = from(words, W)
-            .orderBy(desc(W, new CaseInsensitiveComparer()))
+            .orderBy(desc(W, String.CASE_INSENSITIVE_ORDER))
             .select();
         Assert.assertEquals(
                 "[ClOvEr, cHeRry, bRaNcH, BlUeBeRrY, aPPLE, AbAcUs]", 
@@ -221,14 +210,9 @@ public class SamplesOrderByTest {
 //                        .ThenBy(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }
-        class CaseInsensitiveComparer implements Comparator<String> {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        }
         String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
         List<String> sortedWords = from(words, W)
-            .orderBy(length(W), asc(W, new CaseInsensitiveComparer()))
+            .orderBy(length(W), asc(W, String.CASE_INSENSITIVE_ORDER))
             .select();
         Assert.assertEquals(
                 "[aPPLE, AbAcUs, bRaNcH, cHeRry, ClOvEr, BlUeBeRrY]", 
@@ -277,14 +261,9 @@ public class SamplesOrderByTest {
 //                        .ThenByDescending(a => a, new CaseInsensitiveComparer());
 //            ObjectDumper.Write(sortedWords);
 //        }        
-        class CaseInsensitiveComparer implements Comparator<String> {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        }
         String[] words = { "aPPLE", "AbAcUs", "bRaNcH", "BlUeBeRrY", "ClOvEr", "cHeRry"};
         List<String> sortedWords = from(words, W)
-            .orderBy(length(W), desc(W, new CaseInsensitiveComparer()))
+            .orderBy(length(W), desc(W, String.CASE_INSENSITIVE_ORDER))
             .select();
         Assert.assertEquals(
                 "[aPPLE, ClOvEr, cHeRry, bRaNcH, AbAcUs, BlUeBeRrY]", 

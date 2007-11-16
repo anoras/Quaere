@@ -4,98 +4,154 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Convert {
+    private static final String EMTPY_STRING = "";
+
     public static byte toByte(Object obj) {
-        return (Byte) coerce(obj, Byte.class);
-    }
-    public static short toShort(Object obj) {
-        return (Short) coerce(obj, Short.class);
-    }
-    public static int toInteger(Object obj) {
-        return (Integer) coerce(obj, Integer.class);
-    }
-    public static long toLong(Object obj) {
-        return (Long) coerce(obj, Long.class);
-    }
-    public static float toFloat(Object obj) {
-        return (Float) coerce(obj, Float.class);
-    }
-    public static double toDouble(Object obj) {
-        return (Double) coerce(obj, Double.class);
-    }
-    public static boolean toBoolean(Object obj) {
-        if (obj == null || "".equals(obj)) {
-            return Boolean.FALSE;
-        } else if (obj instanceof Boolean) {
-            return (Boolean) obj;
-        } else if (obj instanceof String) {
-            return Boolean.valueOf((String) obj);
-        } else {
-            throw createCoercionException(obj, Boolean.class);
-        }
-    }
-    @SuppressWarnings({"unchecked"})
-    public static Object coerce(Object obj, Class<? extends Object> toClass) {
-        if (String.class.equals(toClass)) {
-            return toString(obj);
-        } else if (isNumber(toClass)) {
-            return toNumber(obj, (Class<? extends Number>) toClass);
-        } else if (Character.class.equals(toClass)) {
-            return toCharacter(obj);
-        } else if (Boolean.class.equals(toClass)) {
-            return toBoolean(obj);
-        } else {
-            throw createCoercionException(obj, toClass);
-        }
-    }
-    private static boolean isNumber(Class clazz) {
-        return clazz.equals(Byte.class) || clazz.equals(Short.class) ||
-                clazz.equals(Integer.class) || clazz.equals(Long.class) ||
-                clazz.equals(Float.class) || clazz.equals(Double.class) ||
-                clazz.equals(BigInteger.class) || clazz.equals(BigDecimal.class);
-    }
-    private static RuntimeException createCoercionException(Object obj, Class toClass) {
-        return new RuntimeException(String.format("Cannot coerce %s to %s", obj.getClass().getName(), toClass.getName()));
+        return (Byte) toType(obj, Byte.class);
     }
 
-    private static Character toCharacter(Object obj) {
-        if (obj == null || "".equals(obj) || obj instanceof Boolean) {
+    public static short toShort(Object obj) {
+        return (Short) toType(obj, Short.class);
+    }
+
+    public static int toInteger(Object obj) {
+        return (Integer) toType(obj, Integer.class);
+    }
+
+    public static long toLong(Object obj) {
+        return (Long) toType(obj, Long.class);
+    }
+
+    public static float toFloat(Object obj) {
+        return (Float) toType(obj, Float.class);
+    }
+
+    public static double toDouble(Object obj) {
+        return (Double) toType(obj, Double.class);
+    }
+
+    public static boolean toBoolean(Object obj) {
+        if (isNullOrEmptyString(obj)) {
+            return false;
+        } else if (isBoolean(obj)) {
+            return (Boolean) obj;
+        } else if (isNumber(obj)) {
+            return ((Number) obj).intValue() != 0;
+        } else if (isCharSequence(obj)) {
+            return Boolean.valueOf(toString(obj));
+        } else {
+            throw createConversionException(obj, Boolean.class);
+        }
+    }
+
+    public static boolean isNumber(final Object obj) {
+        return obj instanceof Number;
+    }
+
+    /** @deprecated */
+    @SuppressWarnings({"unchecked"})
+    public static Object coerce(Object obj, Class<?> toClass) {
+        return toType(obj, toClass);
+    }
+
+    public static Object toType(Object obj, Class<?> toClass) {
+        if (isInstance(obj, toClass)) {
+            return obj;
+        }
+        if (isStringType(toClass)) {
+            return toString(obj);
+        }
+        if (isNumberType(toClass)) {
+            return toNumber(obj, (Class<? extends Number>) toClass);
+        }
+        if (isCharacterType(toClass)) {
+            return toCharacter(obj);
+        }
+        if (isBooleanType(toClass)) {
+            return toBoolean(obj);
+        }
+        throw createConversionException(obj, toClass);
+    }
+
+    public static boolean isInstance(final Object obj, final Class<?> toClass) {
+        return toClass.isInstance(obj);
+    }
+
+    public static boolean isStringType(final Class<?> toClass) {
+        return String.class.equals(toClass);
+    }
+
+    public static boolean isBooleanType(final Class<?> toClass) {
+        return Boolean.class.equals(toClass);
+    }
+
+    public static boolean isCharacterType(final Class<?> toClass) {
+        return Character.class.equals(toClass);
+    }
+
+    public static boolean isNumberType(Class clazz) {
+        return Number.class.isAssignableFrom(clazz);
+    }
+
+    private static RuntimeException createConversionException(Object obj, Class toClass) {
+        return new RuntimeException(String.format("Cannot convert %s to %s", obj.getClass().getName(), toClass.getName()));
+    }
+
+    public static Character toCharacter(Object obj) {
+        if (isNullOrEmptyString(obj) || isBoolean(obj)) { // TODO why ignore boolean value?
             return (char) 0;
-        } else if (obj instanceof Character) return (Character) obj;
-        if (obj instanceof Number) {
+        } else if (isCharacter(obj)) return (Character) obj;
+        if (isNumber(obj)) {
             return (char) ((Number) obj).shortValue();
-        } else if (obj instanceof String) {
+        } else if (isCharSequence(obj)) {
             return ((String) obj).charAt(0);
         } else {
-            throw createCoercionException(obj, Character.class);
+            throw createConversionException(obj, Character.class);
         }
     }
-    private static String toString(Object obj) {
+
+    public static boolean isCharacter(final Object obj) {
+        return obj instanceof Character;
+    }
+
+    public static boolean isCharSequence(final Object obj) {
+        return obj instanceof CharSequence;
+    }
+
+    public static String toString(Object obj) {
         if (obj == null) {
-            return "";
-        } else if (obj instanceof String) {
-            return (String) obj;
-        } else {
-            return obj.toString();
+            return EMTPY_STRING;
         }
+        return obj.toString();
     }
+
     private static Number toNumber(Object obj, Class<? extends Number> toClass) {
-        if (obj == null || "".equals(obj)) {
+        if (isNullOrEmptyString(obj)) {
             return toNumber(0, toClass);
-        } else if (obj instanceof Character) {
+        } else if (isCharacter(obj)) {
             char val = (Character) obj;
             return toNumber(new Short((short) val), toClass);
-        } else if (obj instanceof Boolean) {
+        } else if (isBoolean(obj)) {
             return (Boolean) obj ? toNumber(1, toClass) : toNumber(0, toClass);
-        } else if (toClass.equals(obj.getClass())) {
+        } else if (isInstance(obj, toClass)) {
             return (Number) obj;
-        } else if (obj instanceof Number) {
+        } else if (isNumber(obj)) {
             return toNumber((Number) obj, toClass);
-        } else if (obj instanceof String) {
+        } else if (isCharSequence(obj)) {
             return toNumber((String) obj, toClass);
         } else {
-            throw createCoercionException(obj, toClass);
+            throw createConversionException(obj, toClass);
         }
     }
+
+    public static boolean isBoolean(final Object obj) {
+        return obj instanceof Boolean;
+    }
+
+    public static boolean isNullOrEmptyString(final Object obj) {
+        return obj == null || EMTPY_STRING.equals(obj);
+    }
+
     public static Number toNumber(String val, Class<? extends Number> toClass) {
         if (Byte.class.equals(toClass)) {
             return Byte.valueOf(val);
@@ -114,10 +170,14 @@ public class Convert {
         } else if (BigDecimal.class.equals(toClass)) {
             return new BigDecimal(val);
         } else {
-            throw createCoercionException(val, toClass);
+            throw createConversionException(val, toClass);
         }
     }
+
     public static Number toNumber(Number val, Class<? extends Number> toClass) {
+        if (isInstance(val, toClass)) {
+            return val;
+        }
         if (Byte.class.equals(toClass)) {
             return Primitives.getByte(val.byteValue());
         } else if (Short.class.equals(toClass)) {
@@ -143,9 +203,10 @@ public class Convert {
                 return new BigDecimal(val.doubleValue());
             }
         } else {
-            throw createCoercionException(val, toClass);
+            throw createConversionException(val, toClass);
         }
     }
+
     public static Number toNumber(long val, Class<? extends Number> toClass) {
         if (Byte.class.equals(toClass)) {
             return Primitives.getByte((byte) val);
@@ -164,7 +225,7 @@ public class Convert {
         } else if (BigDecimal.class.equals(toClass)) {
             return BigDecimal.valueOf(Primitives.getLong(val));
         } else {
-            throw createCoercionException(val, toClass);
+            throw createConversionException(val, toClass);
         }
 
     }

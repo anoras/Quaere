@@ -118,13 +118,16 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     public void visit(UnaryExpression expression) {
         throw new RuntimeException("The method is not implemented");
     }
+    
+    int parameterIndex = 1;
+    private Map<Integer,Object> parameterMap = new HashMap<Integer,Object>();
+    
     public void visit(Constant expression) {
-        // TODO: Refactor to escape method...
-        currentFragment = String.valueOf(expression.getValue());
-        if (expression.getValue() instanceof String) {
-            currentFragment = "'" + currentFragment + "'";
-        }
+    	currentFragment = "?" + parameterIndex;
+    	parameterMap.put(parameterIndex, expression.getValue());
+    	parameterIndex++;
     }
+    
     public void visit(Identifier expression) {
         if (sourceNames.contains(expression.getText())) {
             currentFragment = expression.getText();
@@ -171,7 +174,7 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     }
     public <T> T evaluate(Expression query) {
         query.accept(this);
-        return this.entityManager.<T>query(getJPQL());
+        return this.entityManager.<T>query(getJPQL(), parameterMap);
     }
     public String getJPQL() {
         return String.format("%s %s %s",

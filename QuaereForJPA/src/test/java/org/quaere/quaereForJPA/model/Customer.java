@@ -1,4 +1,4 @@
-package org.quaere.model;
+package org.quaere.quaereForJPA.model;
 
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;

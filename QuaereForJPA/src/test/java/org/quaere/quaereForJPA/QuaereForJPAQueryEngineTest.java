@@ -81,8 +81,10 @@ public class QuaereForJPAQueryEngineTest {
         final EntityManager entityManager = context.mock(EntityManager.class);
         context.checking(new Expectations() {
             {
-                one(entityManager).createQuery("SELECT c FROM Customer AS c WHERE c.country = 'USA' AND c.region <> 'WA'");
+                one(entityManager).createQuery("SELECT c FROM Customer AS c WHERE c.country = ?1 AND c.region <> ?2");
                 will(returnValue(emptyQuery));
+                one(emptyQuery).setParameter(1, "USA");
+                one(emptyQuery).setParameter(2, "WA");
             }
         });
 

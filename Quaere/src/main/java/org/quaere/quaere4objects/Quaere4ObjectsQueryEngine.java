@@ -822,7 +822,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Object o = result;
         methodCall.getParameters().get(0).accept(this);
         if (((List) o).size() > (Integer) result) {
-            return ((List) result).get((Integer) result);
+            return ((List) o).get((Integer) result);
         } else {
             return null;
         }

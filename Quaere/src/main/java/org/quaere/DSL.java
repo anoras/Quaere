@@ -547,6 +547,15 @@ public class DSL {
         }
     }
 
+    public static <R> R elementAt(R[] source, int index) {
+        if (source.length > index) {
+            return source[index];
+        } else {
+            return null;
+        }
+    }
+
+
     // NOTE: This method is a facade for the typed firstXxx methods to enable the module to be built with Eclipse.
     @SuppressWarnings({"RedundantTypeArguments", "unchecked"})
     public static <R> R first(Object source) {
@@ -616,6 +625,68 @@ public class DSL {
             return builder.in(source);
         }
     }
+
+    @SuppressWarnings({"RedundantTypeArguments", "unchecked"})
+    public static <R> R elementAt(Object source, int index) {
+        // NOTE: Explicit type argument is required in the following section support Eclipse.
+        if (source instanceof QueryBodyBuilder<?>) {
+            return DSL.<R>elementAtInQueryBodyBuilder((QueryBodyBuilder) source,index);
+        } else if (source instanceof Queryable<?>) {
+            // NOTE: The unchecked casts is required for IDEA to build the module while the call is redirected to
+            // an explicitly typed method on the DSL class.
+            return DSL.<R>elementAtInQueryable((Queryable<R>) source,index);
+        } else if (source instanceof Iterable<?>) {
+            return DSL.<R>elementAtInIterable((Iterable<R>) source,index);
+        }
+        throw new IllegalArgumentException("Cannot retrieve element at index "+index+ " from " + source.getClass().getName());
+    }
+
+    private static <R> R elementAtInIterable(Iterable<R> source, int index) {
+        Iterator<R> iter = source.iterator();
+        while (index>0&&(iter.hasNext())){
+            iter.next();
+            index--;
+        }
+        if (iter.hasNext()) {
+            return iter.next();
+        } else {
+            return null;
+        }
+    }
+    private static <R> R elementAtInQueryable(Queryable<R> source, int index) {
+        QueryEngine queryEngine = source.createQueryEngine();
+        Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
+        Statement query = new Statement(
+                Arrays.<Expression>asList(
+                        sourceIdentifier,
+                        new MethodCall(
+                                new Identifier("elementAt"),
+                                 Arrays.<Expression>asList(new Constant(Integer.valueOf(index)))
+                        )
+                )
+        );
+        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
+            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
+            asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+        }
+        //noinspection RedundantTypeArguments
+        return queryEngine.<R>evaluate(query); // <-- IntelliJ suggests that <R> can be inferred, but this leads to a compilation error.
+    }
+    private static <R> R elementAtInQueryBodyBuilder(QueryBodyBuilder<?> query, int index) {
+        QueryExpressionBuilderImpl<R> impl = (QueryExpressionBuilderImpl<R>) query;
+        Statement statement = new Statement(Arrays.<Expression>asList(
+                query.getQueryExpression(),
+                new MethodCall(new Identifier("elementAt"), new ArrayList<Expression>(index)))
+
+        );
+        Quaere4ObjectsQueryEngine engine = new Quaere4ObjectsQueryEngine();
+        for (Map.Entry<Identifier, Queryable> sourceEntry : impl.getSources().entrySet()) {
+            engine.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
+        }
+        //noinspection RedundantTypeArguments
+        return engine.<R>evaluate(statement); // <-- IntelliJ suggests that <R> can be inferred, but we get a compilation error if its not specified.
+    }
+
     // Generators
     public static <T extends Number> Iterable<T> range(T from, T to) {
         return new NumberRange<T>(from, to);

@@ -102,8 +102,6 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 Object left = result;
                 expression.getEqualsExpression().accept(this);
                 Object right = result;
-//                System.out.println(String.format("%s (%s) == %s (%s) is %s",left,left.getClass(),right,right.getClass(),left.equals(right)));
-//                if (left.equals(right)) {
                 if (Comparer.compare(left, right) == 0) {
                     tuples.add(newTuple);
                 }
@@ -111,7 +109,6 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             }
         }
         if (expression.getIntoIdentifier() != null) {
-            // sourceNames.remove(expression.getIdentifier().getText());
             sourceNames.add(expression.getIntoIdentifier().getText());
         }
     }
@@ -227,7 +224,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         expression.rightExpression.accept(this);
         Object right = result;
         result = old;
-        // TODO: Use coercion and comapre for all operators...
+        // TODO: Replace usage of deprecated coerce method with toType.
         switch (expression.operator) {
             case AND:
                 result = (Boolean) left && (Boolean) right;
@@ -235,94 +232,92 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             case OR:
                 result = (Boolean) left || (Boolean) right;
                 break;
-            case DIVIDE:
-                // TODO: result should be coerced to left's class.
-                result = Convert.toDouble(left) / Convert.toDouble(right);
-                break;
             case EQUAL:
                 if (left == null && right == null) {
-                    result = true;
+                        result = true;
                 } else if (left == null) {
-                    result = false;
+                        result = false;
                 } else {
-                    result = left.equals(right);
+                        result = left.equals(right);
                 }
                 break;
             case NOT_EQUAL:
                 if (left == null && right == null) {
-                    result = true;
+                        result = false;
                 } else if (left == null) {
-                    result = false;
+                        result = true;
                 } else {
-                    result = !left.equals(right);
+                        result = !left.equals(right);
                 }
                 break;
             case GREATER_THAN:
                 if (left == null && right == null) {
-                    result = true;
+                        result = false;
                 } else if (left == null) {
-                    result = false;
+                        result = false;
                 } else {
-                    result = ((Comparable) left).compareTo(right) > 0;
+                        result = ((Comparable) left).compareTo(right) > 0;
                 }
                 break;
             case GREATER_THAN_OR_EQUAL:
                 if (left == null && right == null) {
-                    result = true;
+                        result = false;
                 } else if (left == null) {
-                    result = false;
+                        result = false;
                 } else {
-                    result = ((Comparable) left).compareTo(right) >= 0;
+                        result = ((Comparable) left).compareTo(right) >= 0;
                 }
                 break;
             case LESS_THAN:
                 if (left == null && right == null) {
-                    result = true;
+                        result = false;
                 } else if (left == null) {
-                    result = false;
+                        result = false;
                 } else {
-                    result = ((Comparable) left).compareTo(right) < 0;
+                        result = ((Comparable) left).compareTo(right) < 0;
                 }
                 break;
             case LESS_THAN_OR_EQUAL:
                 if (left == null && right == null) {
-                    result = true;
+                        result = false;
                 } else if (left == null) {
-                    result = false;
+                        result = false;
                 } else {
-                    result = ((Comparable) left).compareTo(right) <= 0;
+                        result = ((Comparable) left).compareTo(right) <= 0;
                 }
                 break;
             case MINUS:
-                // TODO: result should be coerced to left's class
                 result = Convert.coerce(
                         Convert.toDouble(left) - Convert.toDouble(right),
                         left.getClass()
                 );
                 break;
-            case MODULO:
-                // TODO: result should be coerced to left's class
-                result = Convert.coerce(
-                        Convert.toDouble(left) % Convert.toDouble(right),
-                        left.getClass()
-                );
-                break;
             case PLUS:
-                if (left instanceof String) {
-                    result = String.valueOf(left) + String.valueOf(right);
+                if ((left instanceof String) || (right instanceof String)) {
+                        result = String.valueOf(left) + String.valueOf(right);
                 } else {
-                    result = Convert.coerce(
+                        result = Convert.coerce(
                             Convert.toDouble(left) + Convert.toDouble(right),
                             left.getClass()
                     );
                 }
                 break;
+            case MULTIPLY:
+                result = Convert.toType(
+                        Convert.toDouble(left) * Convert.toDouble(right),
+                        left.getClass());
+                break;
+            case DIVIDE:
+                result =  Convert.toType(Convert.toDouble(left) / Convert.toDouble(right),left.getClass());
+                break;
+            case MODULO:
+                result = Convert.coerce(
+                        Convert.toDouble(left) % Convert.toDouble(right),
+                        left.getClass()
+                );
+                break;
             case POW:
                 result = Math.pow(Convert.toDouble(left), Convert.toDouble(right));
-                break;
-            case MULTIPLY:
-                // TODO: result should be coerced to left's class
-                result = Convert.toDouble(left) * Convert.toDouble(right);
                 break;
         }
     }
@@ -339,7 +334,6 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(UnaryExpression expression) {
-        // Recursively evaluates the underlying expression
         expression.expression.accept(this);
 
         switch (expression.operator) {
@@ -348,7 +342,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 break;
 
             case NEGATE:
-                result = -Convert.toDouble(result);
+                result = Convert.toType(-Convert.toDouble(result),result.getClass());
                 break;
         }
     }
@@ -436,7 +430,6 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                     try {
                         return findMethod(clazz, methodName, new Class[]{i});
                     } catch (Throwable e1) {
-
                     }
                 }
             }
@@ -457,24 +450,13 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Object indexed = result;
         result = null;
         expression.getParameter().accept(this);
-        if (result instanceof List) {
+        if (indexed instanceof List) {
             result = ((List) indexed).get((Integer) result);
-        } else if (result instanceof CharSequence) {
-            // TODO: We need to keep the index paramter so that we can pass it to charAt here!
-//            result = ((CharSequence) result).charAt()
+        } else if (indexed instanceof CharSequence) {
+            result = ((CharSequence) indexed).charAt((Integer) result);
         } else {
             throw new IllegalArgumentException(String.format("Cannot apply indexer to '%s'.", result.getClass().getName()));
         }
-//        try {
-//            Method getItemMethod = old.getClass().getMethod("get", Integer.class);
-//            getItemMethod.invoke(old, result);
-//        } catch (NoSuchMethodException e) {
-//            throw new RuntimeException(e);
-//        } catch (IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        } catch (InvocationTargetException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     public void visit(Statement expression) {
@@ -497,7 +479,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             }
             result = v;
         }
-        // TODO: Allow users to create instances of existing classes...
+        // TODO: Allow users to create instances of declared classes...
     }
 
     // --------------------- Interface QueryEngine ---------------------

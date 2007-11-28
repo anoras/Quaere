@@ -41,7 +41,6 @@ public class ProjectionOperatorsScenarioTest {
         Assert.assertFalse(productNameIterator.hasNext());
     }
     @Test
-    @Ignore("Indexers need to be fixed..")
     public void canUseProjectionToProduceASequenceOfStringsRepresentingTheTextVersionOfASequenceOfInts_linq8() {
         final Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         final String[] strings = {
@@ -97,7 +96,6 @@ public class ProjectionOperatorsScenarioTest {
         }
     }
     @Test
-    @Ignore("Boy, these indexers are really broken...")
     public void canUseProjectionToProduceASequenceOfTextRepresentationOfDigitsAndWhetherTheLengthIsEvenOrOdd_linq10() {
         final Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         final String[] strings = {
@@ -185,7 +183,6 @@ public class ProjectionOperatorsScenarioTest {
 //        }
     }
     @Test
-    @Ignore("The damn indexer thing again... FIX IT ANDERS!")
     public void canCombineProjectionAndRestrictionToReturnTextFormOfEachDigitLessThanFive_linq13() {
         final Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         final String[] strings = {

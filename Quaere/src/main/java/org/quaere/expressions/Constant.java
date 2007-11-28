@@ -1,6 +1,7 @@
 package org.quaere.expressions;
 
 public class Constant extends Expression {
+
     private final Object value;
     private final Class clazz;
 

@@ -11,7 +11,7 @@ public class Customer {
     private String customerID;
     private String companyName;
     private String address;
-    private String city;
+    public String city;
     private String region;
     private String postalCode;
     private String country;
@@ -123,6 +123,13 @@ public class Customer {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getInformation(String header, Boolean includeCompanyName, Boolean includeCity) {
+        String retString = header;
+        if (includeCompanyName) retString += companyName;
+        if (includeCity) retString +=","+city;
+        return retString;
     }
 
     public boolean equals(Object o) {

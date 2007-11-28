@@ -44,7 +44,7 @@ public class GroupingOperatorsScenarioTest {
         }
     }
     @Test
-    @Ignore("Indexers don't work...")
+    @Ignore("There seems to be a problem with array indexing parsing in the ANTLR grammar")
     public void canUseGroupByToPartitionAListOfWordsByTheirFirstLetter_linq41() {
         String[] words = {"blueberry", "chimpanzee", "abacus", "banana", "apple", "cheese"};
         Iterable<Variant> wordGroups =
@@ -94,7 +94,6 @@ public class GroupingOperatorsScenarioTest {
     }
     @SuppressWarnings({"unchecked"})
     @Test
-    // TODO: Revisit subquery impl.
     public void canUseGroupByClauseToPartitionAListOfEachCustomersOrdersFirstByYearThenByMonth_linq43() {
         Customer[] customers = Customer.getAllCustomers();
         Iterable<Variant> customerOrderGroups =

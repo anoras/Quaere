@@ -10,14 +10,11 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.ejb.EntityManagerFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
-import static org.quaere.DSL.eq;
-import static org.quaere.DSL.from;
-import org.quaere.expressions.*;
+import static org.quaere.DSL.*;
 import org.quaere.model.Customer;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitTransactionType;
-import java.util.Arrays;
 
 public class ScenariosTest {
     private final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
@@ -49,5 +46,77 @@ public class ScenariosTest {
             log.info(c);
             Assert.assertEquals("WA", c.getRegion());
         }
+    }
+    @Test
+    public void canUseSkipOperatorToSkipRows() {
+        EntityManagerFactory entityManagerFactory = new EntityManagerFactoryImpl(sessionFactory, PersistenceUnitTransactionType.RESOURCE_LOCAL, true);
+        QueryableEntityManager entityManager = new QueryableEntityManager(entityManagerFactory.createEntityManager());
+
+        Iterable<Customer> allCustomersExcept10First =
+                skip(10).in(
+                        from("c").in(entityManager.entity(Customer.class)).
+                                select("c")
+                );
+
+        int counter = 0;
+        for (Customer c : allCustomersExcept10First) {
+            log.info(c);
+            counter++;
+        }
+        Assert.assertEquals(Customer.getAllCustomers().length - 10, counter);
+    }
+    @Test
+    public void canUseTakeToLimitSelection() {
+        EntityManagerFactory entityManagerFactory = new EntityManagerFactoryImpl(sessionFactory, PersistenceUnitTransactionType.RESOURCE_LOCAL, true);
+        QueryableEntityManager entityManager = new QueryableEntityManager(entityManagerFactory.createEntityManager());
+
+        Iterable<Customer> allCustomersExcept10First =
+                take(2).from(
+                        from("c").in(entityManager.entity(Customer.class)).
+                                select("c")
+                );
+
+        int counter = 0;
+        for (Customer c : allCustomersExcept10First) {
+            log.info(c);
+            counter++;
+        }
+        Assert.assertEquals(2, counter);
+    }
+    @Test
+    public void canPageSelectionByCombiningTakeAndSkip() {
+        EntityManagerFactory entityManagerFactory;
+        QueryableEntityManager entityManager;
+        entityManagerFactory = new EntityManagerFactoryImpl(sessionFactory, PersistenceUnitTransactionType.RESOURCE_LOCAL, true);
+        entityManager = new QueryableEntityManager(entityManagerFactory.createEntityManager());
+
+        Customer tenthCustomer =
+                first(
+                        skip(10).in(
+                                from("c").in(entityManager.entity(Customer.class)).
+                                        select("c")
+                        )
+                );
+
+        entityManagerFactory = new EntityManagerFactoryImpl(sessionFactory, PersistenceUnitTransactionType.RESOURCE_LOCAL, true);
+        entityManager = new QueryableEntityManager(entityManagerFactory.createEntityManager());
+
+        Iterable<Object> customers10To20 =
+                take(10).from(
+                        skip(10).in(
+                                from("c").in(entityManager.entity(Customer.class)).
+                                        select("c")
+                        )
+                );
+
+        int counter = 0;
+        Customer firstInResult = null;
+        for (Object c : customers10To20) {
+            log.info(c);
+            if (counter == 0) firstInResult = (Customer) c;
+            counter++;
+        }
+        Assert.assertEquals(10, counter);
+        Assert.assertEquals(tenthCustomer, firstInResult);
     }
 }

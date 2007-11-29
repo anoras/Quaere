@@ -49,44 +49,5 @@ public class ScenariosTest {
             log.info(c);
             Assert.assertEquals("WA", c.getRegion());
         }
-
-        Identifier c = new Identifier("c");
-        QueryExpression customersInWashington = new QueryExpression(
-                new FromClause(
-                        Customer.class,
-                        c,
-                        new Statement(
-                                Arrays.<Expression>asList(c)
-                        )
-                ),
-                new QueryBody(
-                        Arrays.<QueryBodyClause>asList(
-                                new WhereClause(
-                                        new EqualOperator(
-                                                new Statement(
-                                                        Arrays.<Expression>asList(
-                                                                c,
-                                                                new MethodCall(
-                                                                        new Identifier("getRegion"),
-                                                                        Arrays.<Expression>asList()
-                                                                )
-                                                        )
-                                                ),
-                                                new Statement(
-                                                        Arrays.<Expression>asList(
-                                                                new Constant("WA")
-                                                        )
-                                                )
-                                        )
-                                )
-                        ),
-                        new SelectClause(
-                                new Statement(
-                                        Arrays.<Expression>asList(c)
-                                )
-                        ),
-                        null
-                )
-        );
     }
 }

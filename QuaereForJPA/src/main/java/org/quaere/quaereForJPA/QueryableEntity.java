@@ -1,13 +1,13 @@
 package org.quaere.quaereForJPA;
 
-import org.quaere.Queryable;
-import org.quaere.QueryEngine;
-import org.quaere.quaereForJPA.QuaereForJPAQueryEngine;
-import org.quaere.expressions.Identifier;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.persistence.Entity;
-import java.util.Iterator;
-import java.util.ArrayList;
+
+import org.quaere.QueryEngine;
+import org.quaere.Queryable;
+import org.quaere.expressions.Identifier;
 
 public class QueryableEntity<T> implements Queryable<T> {
     private final QueryableEntityManager entityManager;
@@ -28,10 +28,13 @@ public class QueryableEntity<T> implements Queryable<T> {
     }
     public String getEntityName() {
         Entity entityAnnotation = entityClass.getAnnotation(Entity.class);
-        if (entityAnnotation != null) {
+        if (entityAnnotation != null && isNotEmpty(entityAnnotation.name())) {
             return entityAnnotation.name();
         } else {
-            return entityClass.getName().substring(entityClass.getName().lastIndexOf(".") + 1);
+            return entityClass.getSimpleName();
         }
+    }
+    private boolean isNotEmpty(String s) {
+        return s == null ? false : !"".equals(s);
     }
 }

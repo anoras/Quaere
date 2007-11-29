@@ -6,6 +6,7 @@ import org.quaere.quaereForJPA.model.NamedEntity;
 import org.quaere.quaereForJPA.model.UnnamedEntity;
 import org.quaere.expressions.Identifier;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -33,5 +34,17 @@ public class QueryableEntityTest {
         QueryableEntity<UnnamedEntity> queryableEntity = manager.entity(UnnamedEntity.class);
         Assert.assertSame(identifer, queryableEntity.getSourceIdentifier(identifer));
 
+    }
+
+    @Test
+    public void annotationIsPresentWithNoName() {
+        QueryableEntityManager manager = new QueryableEntityManager(dummyManager);
+        QueryableEntity<AnnotatedUnnamedEntity> queryableEntity = manager.entity(AnnotatedUnnamedEntity.class);
+        Assert.assertEquals("AnnotatedUnnamedEntity", queryableEntity.getEntityName());
+
+    }
+
+    @Entity
+    static class AnnotatedUnnamedEntity {
     }
 }

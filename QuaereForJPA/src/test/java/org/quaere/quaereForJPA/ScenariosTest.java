@@ -119,4 +119,18 @@ public class ScenariosTest {
         Assert.assertEquals(10, counter);
         Assert.assertEquals(tenthCustomer, firstInResult);
     }
+
+    @Test
+    public void duplicateQueryElementsRegessionTest() {
+        EntityManagerFactory entityManagerFactory = new EntityManagerFactoryImpl(sessionFactory, PersistenceUnitTransactionType.RESOURCE_LOCAL, true);
+        QueryableEntityManager entityManager = new QueryableEntityManager(entityManagerFactory.createEntityManager());
+
+        Iterable<Customer> waCustomers =
+                from("c").in(entityManager.entity(Customer.class)).
+                        where(eq("c.getRegion()", "WA")).
+                        select("c");
+
+        waCustomers.iterator();
+        waCustomers.iterator();
+    }
 }

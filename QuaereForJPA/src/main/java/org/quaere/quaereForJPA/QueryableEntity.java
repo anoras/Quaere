@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 
 import org.quaere.QueryEngine;
 import org.quaere.Queryable;
 import org.quaere.expressions.Identifier;
 
 public class QueryableEntity<T> implements Queryable<T> {
-    private final QueryableEntityManager entityManager;
+    private final EntityManager entityManager;
     private final Class<T> entityClass;
 
-    public QueryableEntity(QueryableEntityManager entityManager, Class<T> entityClass) {
+    public QueryableEntity(EntityManager entityManager, Class<T> entityClass) {
         this.entityManager = entityManager;
         this.entityClass = entityClass;
     }
     public QueryEngine createQueryEngine() {
-        return entityManager.createQueryEngine(this);
+        return new QuaereForJPAQueryEngine(entityManager);
     }
     public Identifier getSourceIdentifier(Identifier identifier) {
         return identifier;

@@ -1,18 +1,41 @@
 package org.quaere.quaereForJPA;
 
-import org.quaere.expressions.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.quaere.QueryEngine;
 import org.quaere.Queryable;
-import org.quaere.Convert;
-import org.quaere.quaereForJPA.QueryableEntityManager;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import org.quaere.expressions.BinaryExpression;
+import org.quaere.expressions.Constant;
+import org.quaere.expressions.DeclareClause;
+import org.quaere.expressions.Expression;
+import org.quaere.expressions.ExpressionTreeVisitor;
+import org.quaere.expressions.FromClause;
+import org.quaere.expressions.GroupClause;
+import org.quaere.expressions.Identifier;
+import org.quaere.expressions.Indexer;
+import org.quaere.expressions.JoinClause;
+import org.quaere.expressions.MethodCall;
+import org.quaere.expressions.NewExpression;
+import org.quaere.expressions.OrderByClause;
+import org.quaere.expressions.Parameter;
+import org.quaere.expressions.QueryBody;
+import org.quaere.expressions.QueryBodyClause;
+import org.quaere.expressions.QueryContinuation;
+import org.quaere.expressions.QueryExpression;
+import org.quaere.expressions.SelectClause;
+import org.quaere.expressions.Statement;
+import org.quaere.expressions.TernaryExpression;
+import org.quaere.expressions.UnaryExpression;
+import org.quaere.expressions.WhereClause;
 
 public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngine {
-    private final QueryableEntityManager entityManager;
+    private final EntityManager entityManager;
     private List<String> sourceNames = new ArrayList<String>();
     private Map<String, QueryableEntity> sources = new HashMap<String, QueryableEntity>();
     private StringBuilder selectFragment = new StringBuilder();
@@ -20,7 +43,7 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     private StringBuilder whereFragment = new StringBuilder();
     private String currentFragment;
 
-    public QuaereForJPAQueryEngine(QueryableEntityManager entityManager) {
+    public QuaereForJPAQueryEngine(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
     public void visit(FromClause expression) {
@@ -118,16 +141,16 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     public void visit(UnaryExpression expression) {
         throw new RuntimeException("The method is not implemented");
     }
-    
+
     int parameterIndex = 1;
-    private Map<Integer,Object> parameterMap = new HashMap<Integer,Object>();
-    
+    private Map<Integer, Object> parameterMap = new HashMap<Integer, Object>();
+
     public void visit(Constant expression) {
-    	currentFragment = "?" + parameterIndex;
-    	parameterMap.put(parameterIndex, expression.getValue());
-    	parameterIndex++;
+        currentFragment = "?" + parameterIndex;
+        parameterMap.put(parameterIndex, expression.getValue());
+        parameterIndex++;
     }
-    
+
     public void visit(Identifier expression) {
         if (sourceNames.contains(expression.getText())) {
             currentFragment = expression.getText();
@@ -174,9 +197,19 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     }
     public <T> T evaluate(Expression query) {
         query.accept(this);
-        return this.entityManager.<T>query(getJPQL(), parameterMap);
+        return (T) query(getJPQL(), parameterMap);
     }
-    public String getJPQL() {
+
+    @SuppressWarnings("unchecked")
+    private <T> T query(String jpql, Map<Integer, Object> parameterMap) {
+        Query query = entityManager.createQuery(jpql);
+        for (Integer parameterIndex : parameterMap.keySet()) {
+            query.setParameter(parameterIndex, parameterMap.get(parameterIndex));
+        }
+        return (T) query.getResultList();
+    }
+
+    private String getJPQL() {
         return String.format("%s %s %s",
                 getFragment("SELECT", selectFragment),
                 getFragment("FROM", fromFragment),

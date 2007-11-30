@@ -121,8 +121,8 @@ public class DSL {
                 Arrays.<Expression>asList(
                         expression,
                         new MethodCall(
-                            new Identifier("count"),
-                            Arrays.<Expression>asList()
+                                new Identifier("count"),
+                                Arrays.<Expression>asList()
                         )
                 )
         );
@@ -173,8 +173,8 @@ public class DSL {
                 Arrays.<Expression>asList(
                         expression,
                         new MethodCall(
-                            new Identifier("count"),
-                            Arrays.<Expression>asList()
+                                new Identifier("sum"),
+                                Arrays.<Expression>asList()
                         )
                 )
         );
@@ -340,7 +340,7 @@ public class DSL {
     public static <R> AggregateOperatorBuilder<R> aggregate(String accumulationIdentifier, String anonymousIdentifier) {
         return new AggregateOperatorBuilderImpl<R>(new Identifier(accumulationIdentifier), new Identifier(anonymousIdentifier));
     }
-    
+
     // Conversion operators
     public static <T> T[] asArray(T[] tArray, Iterable<T> source) {
         List<T> asList = new ArrayList<T>();

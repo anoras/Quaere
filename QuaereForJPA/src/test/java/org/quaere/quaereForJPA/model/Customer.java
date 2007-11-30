@@ -112,7 +112,7 @@ public class Customer {
             Unmarshaller unmarshaller = new Unmarshaller(mapping);
             unmarshaller.setIgnoreExtraElements(true);
             CustomersContainer customersContainer = (CustomersContainer) unmarshaller.unmarshal(
-                    new InputSource(Thread.currentThread().getContextClassLoader().getResource("customers.xml").getFile())
+                    new InputSource(Thread.currentThread().getContextClassLoader().getResource("Customers.xml").getFile())
             );
             Customer[] customers = new Customer[customersContainer.getCustomers().size()];
             for (int i = 0; i < customersContainer.getCustomers().size(); i++) {

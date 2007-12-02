@@ -87,6 +87,7 @@ public class ScenariosTest {
         Assert.assertEquals(2, counter);
     }
     @Test
+    @Ignore
     public void canPageSelectionByCombiningTakeAndSkip() {
 //        EntityManagerFactory entityManagerFactory;
 //        QueryableEntityManager entityManager;

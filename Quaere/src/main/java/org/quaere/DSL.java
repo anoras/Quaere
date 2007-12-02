@@ -16,7 +16,7 @@ public class DSL {
     public static EqualOperator eq(String leftHandSide, String rightHandSide) {
         return new EqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static EqualOperator eq(String leftHandSide, Comparable<Integer> rightHandSide) {
+    public static EqualOperator eq(String leftHandSide, Comparable rightHandSide) {
         return new EqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
     public static EqualOperator eq(Comparable leftHandSide, String rightHandSide) {
@@ -26,7 +26,7 @@ public class DSL {
     public static NotEqualOperator ne(String leftHandSide, String rightHandSide) {
         return new NotEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
-    public static NotEqualOperator ne(String leftHandSide, Comparable<Integer> rightHandSide) {
+    public static NotEqualOperator ne(String leftHandSide, Comparable rightHandSide) {
         return new NotEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
     public static NotEqualOperator ne(Comparable leftHandSide, String rightHandSide) {
@@ -173,7 +173,7 @@ public class DSL {
                 Arrays.<Expression>asList(
                         expression,
                         new MethodCall(
-                                new Identifier("sum"),
+                                new Identifier("count"),
                                 Arrays.<Expression>asList()
                         )
                 )

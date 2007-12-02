@@ -15,6 +15,9 @@ import java.util.List;
 public class PartitioningOperatorBuilderImpl implements PartitioningOperatorBuilder {
     private final String operator;
     private final int count;
+    public PartitioningOperatorBuilderImpl(PartitionOperator operator, int count) {
+        this(operator.operationName(), count);
+    }
     public PartitioningOperatorBuilderImpl(String operator, int count) {
         this.operator = operator;
         this.count = count;

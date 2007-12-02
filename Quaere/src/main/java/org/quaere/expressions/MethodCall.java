@@ -1,5 +1,6 @@
 package org.quaere.expressions;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MethodCall extends Expression {
@@ -13,6 +14,11 @@ public class MethodCall extends Expression {
     public MethodCall(Identifier identifier, List<Expression> parameters) {
         this.identifier = identifier;
         this.parameters = parameters;
+    }
+
+    public MethodCall(Identifier identifier, Expression...parameters) {
+        this.identifier = identifier;
+        this.parameters = Arrays.asList(parameters);
     }
 
     public MethodCall(Identifier identifier, List<Expression> parameters, Identifier anonymousIdentifier, Identifier indexedIdentifier, Expression lambdaExpression) {

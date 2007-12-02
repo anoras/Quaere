@@ -23,7 +23,7 @@ public class Property {
         }
         if (expression instanceof Statement) {
             Statement s = (Statement) expression;
-            return s.getLasIdentifier().getText();
+            return s.getLastIdentifier().getText();
         } else {
             throw new RuntimeException("Property name must be set...");
         }

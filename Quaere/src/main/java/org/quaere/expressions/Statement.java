@@ -1,5 +1,6 @@
 package org.quaere.expressions;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Statement extends Expression {
@@ -7,6 +8,9 @@ public class Statement extends Expression {
 
     public Statement(List<Expression> expressions) {
         this.expressions = expressions;
+    }
+    public Statement(Expression...expressions) {
+        this.expressions = Arrays.asList(expressions);
     }
 
     public List<Expression> getExpressions() {
@@ -35,7 +39,7 @@ public class Statement extends Expression {
         return (Identifier) expressions.get(0);
     }
 
-    public Identifier getLasIdentifier() {
+    public Identifier getLastIdentifier() {
         return (Identifier) expressions.get(expressions.size() - 1);
     }
 }

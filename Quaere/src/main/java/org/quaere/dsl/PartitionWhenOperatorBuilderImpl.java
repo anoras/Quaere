@@ -17,6 +17,9 @@ public class PartitionWhenOperatorBuilderImpl implements PartitionWhenOperatorBu
     private Identifier anonymousIdentifier;
     private Identifier indexerIdentifier;
 
+    public PartitionWhenOperatorBuilderImpl(PartitionOperator operator, String anonymousIdentifier) {
+        this(operator.operationName(),anonymousIdentifier);
+    }
     public PartitionWhenOperatorBuilderImpl(String operator, String anonymousIdentifier) {
         this.operator = operator;
         this.anonymousIdentifier = new Identifier(anonymousIdentifier);

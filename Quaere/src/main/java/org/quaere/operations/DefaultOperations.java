@@ -27,7 +27,7 @@ public class DefaultOperations {
     }
 
     public static Statement createMethodCallStatement(final Expression leftExpression, final DefaultOperation operation, final Expression... parameters) {
-        return createMethodCallStatement(leftExpression, operation.operationName(),parameters);
+        return createMethodCallStatement(leftExpression, operation.operationName(), parameters);
     }
 
     public static <R> QueryEngine createEngineAndAddSource(final Identifier sourceIdentifier, final Queryable<R> source) {
@@ -72,8 +72,12 @@ public class DefaultOperations {
     }
 
     public static NewExpression createDefaultNewExpression(final Property... properties) {
-        return new NewExpression(null, Arrays.asList(properties));
+        return new NewExpression((Class<?>) null, Arrays.asList(properties));
     }
+    public static NewExpression creatDefaultNewExpresion(Class<?> clazz, Property[] properties) {
+        return new NewExpression(clazz, Arrays.asList(properties));
+    }
+
 
     public static <R> AggregateOperatorBuilder<R> createAggregateOperationBuilder(String accumulationIdentifier, String anonymousIdentifier) {
         return new AggregateOperatorBuilderImpl<R>(new Identifier(accumulationIdentifier), new Identifier(anonymousIdentifier));

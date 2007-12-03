@@ -183,13 +183,25 @@ public class Quaere4ObjectsQueryEngineTest {
     }
     @Test
     public void canCreateVariants() {
-        NewExpression newExpression = new NewExpression(null, Arrays.asList(new Property(new Identifier("a"), new Constant("a"))));
+        NewExpression newExpression = new NewExpression((Class<?>) null, new Property(new Identifier("a"), new Constant("a")));
         queryEngine.visit(newExpression);
         Assert.assertTrue(queryEngine.result instanceof Variant);
         Variant v = (Variant) queryEngine.result;
         Assert.assertEquals("a", v.get("a"));
     }
-    // TODO: Implement new experession (DI) for declared types
+    @Test
+    public void canCreateDefinedType() {
+        NewExpression newExpression = new NewExpression(
+                Customer.class,
+                new Property(new Identifier("customerID"), new Constant("ALFKI")),
+                new Property(new Identifier("companyName"), new Constant("Alfred's Futterkiste"))
+        );
+        queryEngine.visit(newExpression);
+        Assert.assertTrue(queryEngine.result instanceof Customer);
+        Customer alfki = (Customer) queryEngine.result;
+        Assert.assertEquals("ALFKI", alfki.getCustomerID());
+        Assert.assertEquals("Alfred's Futterkiste", alfki.getCompanyName());
+    }
     @Test
     public void canApplyIndexerToArray() {
         final Integer[] numbers = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
@@ -275,8 +287,7 @@ public class Quaere4ObjectsQueryEngineTest {
         Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4)));
     }
     @Test
-    public void fromClauseCreatesScalarProductForMultipleSources()
-    {
+    public void fromClauseCreatesScalarProductForMultipleSources() {
         FromClause fromClause1 = new FromClause(new Identifier("id1"),
                 new Expression() {
                     public void accept(ExpressionTreeVisitor visitor) {
@@ -293,22 +304,22 @@ public class Quaere4ObjectsQueryEngineTest {
         );
         queryEngine.visit(fromClause1);
         queryEngine.visit(fromClause2);
-        Assert.assertEquals(16,queryEngine.tuples.size());
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1,5)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2,5)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3,5)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4,5)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1,6)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2,6)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3,6)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4,6)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1,7)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2,7)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3,7)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4,7)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1,8)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2,8)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3,8)));
-        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4,8)));
+        Assert.assertEquals(16, queryEngine.tuples.size());
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1, 5)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2, 5)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3, 5)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4, 5)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1, 6)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2, 6)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3, 6)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4, 6)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1, 7)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2, 7)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3, 7)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4, 7)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(1, 8)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(2, 8)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(3, 8)));
+        Assert.assertTrue(queryEngine.tuples.contains(Arrays.<Object>asList(4, 8)));
     }
 }

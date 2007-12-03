@@ -1,14 +1,14 @@
 package org.quaere.quaere4objects;
 
 import junit.framework.Assert;
-import org.junit.Test;
 import org.junit.Ignore;
-
+import org.junit.Test;
 import static org.quaere.DSL.*;
-import org.quaere.model.Product;
-import org.quaere.model.Customer;
-import org.quaere.expressions.*;
 import org.quaere.Variant;
+import org.quaere.expressions.*;
+import org.quaere.model.Customer;
+import org.quaere.model.Order;
+import org.quaere.model.Product;
 
 import java.util.*;
 
@@ -244,10 +244,10 @@ public class ProjectionOperatorsScenarioTest {
         //assertions:
         List<String> expectedCustomerIds = new ArrayList<String>(Arrays.asList("ALFKI", "ALFKI", "ANATR", "ANATR", "ANATR", "ANTON", "ANTON", "AROUT", "AROUT", "AROUT", "AROUT", "AROUT", "AROUT", "AROUT", "AROUT", "BERGS", "BERGS", "BERGS", "BLAUS", "BLAUS", "BLAUS", "BLAUS", "BLONP", "BOLID", "BONAP", "BONAP", "BONAP", "BONAP", "BSBEV", "BSBEV", "BSBEV", "BSBEV", "BSBEV", "BSBEV", "BSBEV", "CACTU", "CACTU", "CACTU", "CACTU", "CACTU", "CENTC", "COMMI", "COMMI", "COMMI", "CONSH", "DRACD", "DRACD", "DRACD", "DRACD", "DUMON", "DUMON", "DUMON", "ERNSH", "FAMIA", "FAMIA", "FAMIA", "FAMIA", "FOLKO", "FOLKO", "FOLKO", "FOLKO", "FOLKO", "FOLKO", "FRANS", "FRANS", "FRANS", "FRANS", "FRANS", "FURIB", "FURIB", "FURIB", "FURIB", "GALED", "GALED", "GALED", "GALED", "GALED", "GODOS", "GODOS", "GOURL", "GOURL", "GOURL", "GOURL", "GREAL", "GREAL", "GREAL", "GREAL", "GREAL", "GROSR", "HANAR", "HANAR", "HILAA", "HILAA", "HILAA", "HILAA", "HILAA", "HUNGC", "HUNGC", "HUNGC", "HUNGC", "ISLAT", "ISLAT", "ISLAT", "ISLAT", "ISLAT", "KOENE", "KOENE", "KOENE", "LACOR", "LACOR", "LAMAI", "LAMAI", "LAMAI", "LAMAI", "LAMAI", "LAMAI", "LAMAI", "LAMAI", "LAUGB", "LAUGB", "LAUGB", "LAZYK", "LAZYK", "LEHMS", "LEHMS", "LEHMS", "LETSS", "LILAS", "LILAS", "LILAS", "LILAS", "LINOD", "LINOD", "LINOD", "LONEP", "LONEP", "LONEP", "LONEP", "LONEP", "LONEP", "MAGAA", "MAGAA", "MAGAA", "MAGAA", "MAISD", "MEREP", "MEREP", "MORGK", "MORGK", "NORTS", "NORTS", "NORTS", "OCEAN", "OCEAN", "OCEAN", "OTTIK", "PERIC", "PERIC", "PICCO", "PRINI", "QUEDE", "QUEDE", "QUEDE", "QUICK", "RANCH", "RANCH", "REGGC", "REGGC", "REGGC", "REGGC", "REGGC", "REGGC", "RICAR", "RICAR", "RICSU", "RICSU", "ROMEY", "ROMEY", "ROMEY", "ROMEY", "ROMEY", "SANTG", "SAVEA", "SIMOB", "SIMOB", "SPECD", "SPECD", "SPECD", "SPLIR", "SPLIR", "SPLIR", "SPLIR", "SUPRD", "THEBI", "THEBI", "THEBI", "THECR", "THECR", "TOMSP", "TOMSP", "TOMSP", "TORTU", "TORTU", "TRADH", "TRAIH", "VAFFE", "VICTE", "VICTE", "VICTE", "VICTE", "VICTE", "VINET", "VINET", "VINET", "WANDK", "WANDK", "WARTH", "WARTH", "WARTH", "WARTH", "WELLI", "WELLI", "WELLI", "WELLI", "WHITC", "WILMK", "WILMK", "WILMK", "WILMK", "WILMK", "WOLZA", "WOLZA", "WOLZA", "WOLZA"));
         for (Variant order : orders) { //for each order in the result
-            Assert.assertTrue("did not get customer "+order.get("customerID")+" as many times as expected",expectedCustomerIds.contains(order.get("customerID"))); //assert that the order belongs to a customer we expect
+            Assert.assertTrue("did not get customer " + order.get("customerID") + " as many times as expected", expectedCustomerIds.contains(order.get("customerID"))); //assert that the order belongs to a customer we expect
             expectedCustomerIds.remove(order.get("customerID"));  //and remove that customer from the expected object - to make sure we didn't get less copies of the same customer than we expect
         }
-        Assert.assertTrue("got the same customer too many times",expectedCustomerIds.isEmpty()); //finally, to make sure we didn't get MORE of the customer than expected - assert the expected list was emptied
+        Assert.assertTrue("got the same customer too many times", expectedCustomerIds.isEmpty()); //finally, to make sure we didn't get MORE of the customer than expected - assert the expected list was emptied
     }
     @Test
     public void canUseCompundFromClauseToSelectAllOrdersWhereTheOrderWasMadeIn1998OrLater_linq16() {
@@ -273,6 +273,22 @@ public class ProjectionOperatorsScenarioTest {
             inspectedOrderIds.add((Integer) o.get("orderID"));
             Assert.assertTrue(((Date) o.get("orderDate")).compareTo(cutOffDate) > 0);
         }
+    }
+    @Test
+    public void canUseCreateToCreateNewInstancesOfDefinedTypes() {
 
+        Integer[] orderNumbers = {1, 2, 4, 8, 16};
+
+        Iterable<Order> orders = from("n").in(orderNumbers).
+                select(
+                        create(
+                                Order.class,
+                                property("orderID", "n")
+                        )
+                );
+        int idx = 0;
+        for (Order o : orders) {
+            Assert.assertEquals((int) orderNumbers[idx++], o.getOrderID());
+        }
     }
 }

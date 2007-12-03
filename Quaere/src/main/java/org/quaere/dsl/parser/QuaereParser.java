@@ -2411,7 +2411,11 @@ public class QuaereParser extends Parser {
                 char_literal57_tree = (CommonTree) adaptor.create(char_literal57);
                 adaptor.addChild(root_0, char_literal57_tree);
 
-                retval.value = new NewExpression(typ, parameters);
+                try {
+                    retval.value = new NewExpression(Class.forName(typ), parameters);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
 
             }
 

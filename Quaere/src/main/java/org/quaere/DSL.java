@@ -97,6 +97,10 @@ public class DSL {
         return createDefaultNewExpression(properties);
     }
 
+    public static NewExpression create(Class<?> clazz, Property... properties) {
+        return creatDefaultNewExpresion(clazz, properties);
+    }
+
     public static Property property(String expression) {
         return PropertyOperation.createPropertyFromStringExpression(expression);
     }

@@ -1,29 +1,34 @@
 package org.quaere.expressions;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class NewExpression extends Expression {
-    private final String className;
+    private final Class<?> clazz;
     private final List<Property> properties;
 
-    public NewExpression(String className, List<Property> properties) {
-        this.className = className;
+    public NewExpression(Class<?> clazz, List<Property> properties) {
+        this.clazz = clazz;
         this.properties = properties;
     }
+    public NewExpression(Class<?> clazz, Property... properties) {
+        this(clazz, Arrays.asList(properties));
+    }
 
-    public String getClassName() {
-        return className;
+
+    public Class getClazz() {
+        return clazz;
     }
 
     public List<Property> getProperties() {
         return properties;
     }
     public String toString() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("new ");
-        sb.append(className != null ? className : "Variant");
+        sb.append(clazz != null ? clazz.getName() : "Variant");
         sb.append(" {");
-        for (Property p: properties) {
+        for (Property p : properties) {
             sb.append("  ");
             sb.append(p.toString());
             sb.append("\n");

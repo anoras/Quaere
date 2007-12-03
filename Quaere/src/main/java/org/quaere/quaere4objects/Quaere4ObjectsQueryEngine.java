@@ -369,7 +369,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         } else {
             Class clazz = result.getClass();
             try {
-                Field f = clazz.getField(expression.getText());
+                Field f = clazz.getDeclaredField(expression.getText());
                 f.setAccessible(true);
                 result = f.get(result);
             } catch (NoSuchFieldException e) {
@@ -471,15 +471,29 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(NewExpression expression) {
-        if (expression.getClassName() == null) {
+        if (expression.getClazz() == null) {
             Variant v = new Variant();
             for (Property p : expression.getProperties()) {
                 p.getExpression().accept(this);
                 v.add(p.getPropertyName(), result);
             }
             result = v;
+        } else {
+            try {
+                // TODO: Support setter (and ctor) injection
+                Class<?> clazz = expression.getClazz();
+                Object instance = clazz.newInstance();
+                for (Property p : expression.getProperties()) {
+                    p.getExpression().accept(this);
+                    Field field = clazz.getDeclaredField(p.getPropertyName());
+                    field.setAccessible(true);
+                    field.set(instance, result);
+                }
+                result = instance;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        // TODO: Allow users to create instances of declared classes...
     }
 
     // --------------------- Interface QueryEngine ---------------------

@@ -11,7 +11,7 @@ public class Customer {
     private String customerID;
     private String companyName;
     private String address;
-    public String city;
+    private String city;
     private String region;
     private String postalCode;
     private String country;

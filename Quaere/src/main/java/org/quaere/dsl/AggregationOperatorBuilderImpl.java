@@ -33,11 +33,11 @@ public class AggregationOperatorBuilderImpl<R> implements
         return this;
     }
     public AggregationOperatorWhereClauseOrIndexerArgumentBuilder<R> withIndexer(String indexerIdentifer) {
-        this.indexerIdentifier=new Identifier(indexerIdentifer);
+        this.indexerIdentifier = new Identifier(indexerIdentifer);
         return this;
     }
 
-    public <T> R in(Class<R> rClass,T[] source) {
+    public <T> R in(Class<R> rClass, T[] source) {
         return in(rClass, Arrays.asList(source));
     }
     public <T> R in(Class<R> rClass, Iterable<T> source) {
@@ -62,7 +62,7 @@ public class AggregationOperatorBuilderImpl<R> implements
             Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
             asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
         }
-        return (R) Convert.coerce(queryEngine.evaluate(query),rClass);
+        return (R) Convert.toType(queryEngine.evaluate(query), rClass);
     }
     public Expression in(String expression) {
         return in(LiteralExpression.parse(expression));

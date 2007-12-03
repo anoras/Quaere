@@ -234,69 +234,69 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 break;
             case EQUAL:
                 if (left == null && right == null) {
-                        result = true;
+                    result = true;
                 } else if (left == null) {
-                        result = false;
+                    result = false;
                 } else {
-                        result = left.equals(right);
+                    result = left.equals(right);
                 }
                 break;
             case NOT_EQUAL:
                 if (left == null && right == null) {
-                        result = false;
+                    result = false;
                 } else if (left == null) {
-                        result = true;
+                    result = true;
                 } else {
-                        result = !left.equals(right);
+                    result = !left.equals(right);
                 }
                 break;
             case GREATER_THAN:
                 if (left == null && right == null) {
-                        result = false;
+                    result = false;
                 } else if (left == null) {
-                        result = false;
+                    result = false;
                 } else {
-                        result = ((Comparable) left).compareTo(right) > 0;
+                    result = ((Comparable) left).compareTo(right) > 0;
                 }
                 break;
             case GREATER_THAN_OR_EQUAL:
                 if (left == null && right == null) {
-                        result = false;
+                    result = false;
                 } else if (left == null) {
-                        result = false;
+                    result = false;
                 } else {
-                        result = ((Comparable) left).compareTo(right) >= 0;
+                    result = ((Comparable) left).compareTo(right) >= 0;
                 }
                 break;
             case LESS_THAN:
                 if (left == null && right == null) {
-                        result = false;
+                    result = false;
                 } else if (left == null) {
-                        result = false;
+                    result = false;
                 } else {
-                        result = ((Comparable) left).compareTo(right) < 0;
+                    result = ((Comparable) left).compareTo(right) < 0;
                 }
                 break;
             case LESS_THAN_OR_EQUAL:
                 if (left == null && right == null) {
-                        result = false;
+                    result = false;
                 } else if (left == null) {
-                        result = false;
+                    result = false;
                 } else {
-                        result = ((Comparable) left).compareTo(right) <= 0;
+                    result = ((Comparable) left).compareTo(right) <= 0;
                 }
                 break;
             case MINUS:
-                result = Convert.coerce(
+                result = Convert.toType(
                         Convert.toDouble(left) - Convert.toDouble(right),
                         left.getClass()
                 );
                 break;
             case PLUS:
                 if ((left instanceof String) || (right instanceof String)) {
-                        result = String.valueOf(left) + String.valueOf(right);
+                    result = String.valueOf(left) + String.valueOf(right);
                 } else {
-                        result = Convert.coerce(
+                    result = Convert.toType(
                             Convert.toDouble(left) + Convert.toDouble(right),
                             left.getClass()
                     );
@@ -308,10 +308,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                         left.getClass());
                 break;
             case DIVIDE:
-                result =  Convert.toType(Convert.toDouble(left) / Convert.toDouble(right),left.getClass());
+                result = Convert.toType(Convert.toDouble(left) / Convert.toDouble(right), left.getClass());
                 break;
             case MODULO:
-                result = Convert.coerce(
+                result = Convert.toType(
                         Convert.toDouble(left) % Convert.toDouble(right),
                         left.getClass()
                 );
@@ -342,7 +342,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 break;
 
             case NEGATE:
-                result = Convert.toType(-Convert.toDouble(result),result.getClass());
+                result = Convert.toType(-Convert.toDouble(result), result.getClass());
                 break;
         }
     }
@@ -898,7 +898,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            min = Math.min((Double) min, (Double) Convert.coerce(result, Double.class));
+            min = Math.min((Double) min, (Double) Convert.toType(result, Double.class));
         }
         sourceNames = oldSourceNames;
         return min;
@@ -930,7 +930,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            max = Math.max((Double) max, (Double) Convert.coerce(result, Double.class));
+            max = Math.max((Double) max, (Double) Convert.toType(result, Double.class));
         }
         sourceNames = oldSourceNames;
         return max;
@@ -946,7 +946,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         double sum = 0D;
         if (methodCall.getLambdaExpression() == null) {
             for (Object value : (Iterable) result) {
-                sum += (Double) Convert.coerce(value, Double.class);
+                sum += (Double) Convert.toType(value, Double.class);
             }
             return sum;
         }
@@ -968,7 +968,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(i++);
             }
             methodCall.getLambdaExpression().accept(this);
-            sum += (Double) Convert.coerce(result, Double.class);
+            sum += (Double) Convert.toType(result, Double.class);
         }
         sourceNames = oldSourceNames;
         return sum;
@@ -984,8 +984,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             sourceNames.add(methodCall.getIndexedIdentifier().getText());
         }
 
-        Iterator resultIter=((Iterable)result).iterator();
-        Object accumulation=resultIter.next();
+        Iterator resultIter = ((Iterable) result).iterator();
+        Object accumulation = resultIter.next();
         while (resultIter.hasNext()) {
             currentTuple = new ArrayList<Object>();
             if (methodCall.getAnonymousIdentifier() != null) {
@@ -995,7 +995,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 currentTuple.add(accumulation);
             }
             methodCall.getLambdaExpression().accept(this);
-            accumulation=result;
+            accumulation = result;
         }
         sourceNames = oldSourceNames;
         return accumulation;

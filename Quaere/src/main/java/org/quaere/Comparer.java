@@ -11,14 +11,12 @@ public class Comparer {
             throw new IllegalArgumentException("Argument must implement Comparable");
         }
         Comparable comparableA = (Comparable) a;
-        return comparableA.compareTo(Convert.coerce(b,a.getClass()));
+        return comparableA.compareTo(Convert.toType(b, a.getClass()));
     }
     public static int compare(Object a, Object b, Comparator comparator) {
-        if (comparator==null)
-        {
-            return compare(a,b);
-        }
-        else {
+        if (comparator == null) {
+            return compare(a, b);
+        } else {
             return comparator.compare(a, b);
         }
     }

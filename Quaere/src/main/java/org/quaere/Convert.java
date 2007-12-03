@@ -48,12 +48,6 @@ public class Convert {
         return obj instanceof Number;
     }
 
-    /** @deprecated */
-    @SuppressWarnings({"unchecked"})
-    public static Object coerce(Object obj, Class<?> toClass) {
-        return toType(obj, toClass);
-    }
-
     public static Object toType(Object obj, Class<?> toClass) {
         if (isInstance(obj, toClass)) {
             return obj;

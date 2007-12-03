@@ -27,17 +27,17 @@ public class AggregateOperatorBuilderImpl<R> implements
         return with(LiteralExpression.parse(expression));
     }
     public AggregateOperatorInClauseBuilder<R> with(Expression expression) {
-        this.lambdaExpression=expression;
+        this.lambdaExpression = expression;
         return this;
     }
     public <T> R in(Class<R> rClass, T[] source) {
-        return in(rClass,Arrays.asList(source));
+        return in(rClass, Arrays.asList(source));
     }
     public <T> R in(Class<R> rClass, Iterable<T> source) {
-        return in(rClass,new QueryableIterable<T>(source));
+        return in(rClass, new QueryableIterable<T>(source));
     }
     public <T> R in(Class<R> rClass, Queryable<T> source) {
-       QueryEngine queryEngine = source.createQueryEngine();
+        QueryEngine queryEngine = source.createQueryEngine();
         Identifier sourceIdentifier = Identifier.createUniqueIdentfier();
         Statement query = new Statement(
                 Arrays.<Expression>asList(
@@ -55,5 +55,6 @@ public class AggregateOperatorBuilderImpl<R> implements
             Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
             asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
         }
-        return (R) Convert.coerce(queryEngine.evaluate(query),rClass);    }
+        return (R) Convert.toType(queryEngine.evaluate(query), rClass);
+    }
 }

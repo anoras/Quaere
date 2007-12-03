@@ -8,11 +8,11 @@ public class DivideOperatorTest extends BinaryExpressionTest {
         return BinaryExpression.OperatorType.DIVIDE;
     }
     Expression createInstance() {
-        return new DivideOperator(UnimplementExpression.instance, UnimplementExpression.instance);
+        return BinaryExpression.divide(UnimplementExpression.instance, UnimplementExpression.instance);
     }
     @Test
     public void toStringReturnsStringRepresentation() {
-        DivideOperator divide = new DivideOperator(new Constant(4), new Constant(2));
+        BinaryExpression divide = BinaryExpression.divide(new Constant(4), new Constant(2));
         Assert.assertEquals("(4 / 2)", divide.toString());
     }
 }

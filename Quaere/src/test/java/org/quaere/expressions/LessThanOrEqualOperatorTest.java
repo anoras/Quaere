@@ -8,11 +8,11 @@ public class LessThanOrEqualOperatorTest extends BinaryExpressionTest {
         return BinaryExpression.OperatorType.LESS_THAN_OR_EQUAL;
     }
     Expression createInstance() {
-        return new LessThanOrEqualOperator(UnimplementExpression.instance, UnimplementExpression.instance);
+        return BinaryExpression.lessThanOrEqual(UnimplementExpression.instance, UnimplementExpression.instance);
     }
     @Test
     public void toStringReturnsStringRepresentation() {
-        LessThanOrEqualOperator lteq = new LessThanOrEqualOperator(new Constant(4), new Constant(2));
+        BinaryExpression lteq = BinaryExpression.lessThanOrEqual(new Constant(4), new Constant(2));
         Assert.assertEquals("(4 <= 2)", lteq.toString());
     }
 }

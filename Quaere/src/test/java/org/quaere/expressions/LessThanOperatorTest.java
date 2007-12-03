@@ -8,11 +8,11 @@ public class LessThanOperatorTest extends BinaryExpressionTest {
         return BinaryExpression.OperatorType.LESS_THAN;
     }
     Expression createInstance() {
-        return new LessThanOperator(UnimplementExpression.instance, UnimplementExpression.instance);
+        return BinaryExpression.lessThan(UnimplementExpression.instance, UnimplementExpression.instance);
     }
     @Test
     public void toStringReturnsStringRepresentation() {
-        LessThanOperator lt = new LessThanOperator(new Constant(4), new Constant(2));
+        BinaryExpression lt = BinaryExpression.lessThan(new Constant(4), new Constant(2));
         Assert.assertEquals("(4 < 2)", lt.toString());
     }
 

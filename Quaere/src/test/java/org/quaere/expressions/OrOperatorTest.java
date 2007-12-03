@@ -7,7 +7,7 @@ import org.junit.Test;
 public class OrOperatorTest extends BinaryExpressionTest {
     public final Mockery context = new Mockery();
     Expression createInstance() {
-        return new OrOperator(new UnimplementExpression(), new UnimplementExpression());
+        return BinaryExpression.or(new UnimplementExpression(), new UnimplementExpression());
     }
     public BinaryExpression.OperatorType expectedOperator() {
         return BinaryExpression.OperatorType.OR;

@@ -16,81 +16,81 @@ public class DSL {
 
     // Expressions
     // eq
-    public static EqualOperator eq(String leftHandSide, String rightHandSide) {
-        return new EqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression eq(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.equal(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static EqualOperator eq(String leftHandSide, Comparable<Integer> rightHandSide) {
-        return new EqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression eq(String leftHandSide, Comparable<Integer> rightHandSide) {
+        return BinaryExpression.equal(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static EqualOperator eq(Comparable leftHandSide, String rightHandSide) {
-        return new EqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression eq(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.equal(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     // ne
-    public static NotEqualOperator ne(String leftHandSide, String rightHandSide) {
-        return new NotEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression ne(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.notEqual(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static NotEqualOperator ne(String leftHandSide, Comparable<Integer> rightHandSide) {
-        return new NotEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression ne(String leftHandSide, Comparable<Integer> rightHandSide) {
+        return BinaryExpression.notEqual(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static NotEqualOperator ne(Comparable leftHandSide, String rightHandSide) {
-        return new NotEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression ne(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.notEqual(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     // le
-    public static LessThanOrEqualOperator le(String leftHandSide, String rightHandSide) {
-        return new LessThanOrEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression le(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.lessThanOrEqual(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static LessThanOrEqualOperator le(String leftHandSide, Comparable rightHandSide) {
-        return new LessThanOrEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression le(String leftHandSide, Comparable rightHandSide) {
+        return BinaryExpression.lessThanOrEqual(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static LessThanOrEqualOperator le(Comparable leftHandSide, String rightHandSide) {
-        return new LessThanOrEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression le(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.lessThanOrEqual(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     // lt
-    public static LessThanOperator lt(String leftHandSide, String rightHandSide) {
-        return new LessThanOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression lt(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.lessThan(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static LessThanOperator lt(String leftHandSide, Comparable rightHandSide) {
-        return new LessThanOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression lt(String leftHandSide, Comparable rightHandSide) {
+        return BinaryExpression.lessThan(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static LessThanOperator lt(Comparable leftHandSide, String rightHandSide) {
-        return new LessThanOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression lt(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.lessThan(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     // ge
-    public static GreaterThanOrEqualOperator ge(String leftHandSide, String rightHandSide) {
-        return new GreaterThanOrEqualOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression ge(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.greaterThanOrEqual(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static GreaterThanOrEqualOperator ge(String leftHandSide, Comparable rightHandSide) {
-        return new GreaterThanOrEqualOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression ge(String leftHandSide, Comparable rightHandSide) {
+        return BinaryExpression.greaterThanOrEqual(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static GreaterThanOrEqualOperator ge(Comparable leftHandSide, String rightHandSide) {
-        return new GreaterThanOrEqualOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression ge(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.greaterThanOrEqual(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     // gt
-    public static GreaterThanOperator gt(String leftHandSide, String rightHandSide) {
-        return new GreaterThanOperator(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression gt(String leftHandSide, String rightHandSide) {
+        return BinaryExpression.greaterThan(LiteralExpression.parse(leftHandSide), LiteralExpression.parse(rightHandSide));
     }
 
-    public static GreaterThanOperator gt(String leftHandSide, Comparable rightHandSide) {
-        return new GreaterThanOperator(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
+    public static BinaryExpression gt(String leftHandSide, Comparable rightHandSide) {
+        return BinaryExpression.greaterThan(LiteralExpression.parse(leftHandSide), new Constant(rightHandSide, rightHandSide.getClass()));
     }
 
-    public static GreaterThanOperator gt(Comparable leftHandSide, String rightHandSide) {
-        return new GreaterThanOperator(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
+    public static BinaryExpression gt(Comparable leftHandSide, String rightHandSide) {
+        return BinaryExpression.greaterThan(new Constant(leftHandSide, leftHandSide.getClass()), LiteralExpression.parse(rightHandSide));
     }
 
     public static NewExpression create(Property... properties) {

@@ -8,11 +8,11 @@ public class GreaterThanOrEqualOperatorTest extends BinaryExpressionTest {
         return BinaryExpression.OperatorType.GREATER_THAN_OR_EQUAL;
     }
     Expression createInstance() {
-        return new GreaterThanOrEqualOperator(UnimplementExpression.instance, UnimplementExpression.instance);
+        return BinaryExpression.greaterThanOrEqual(UnimplementExpression.instance, UnimplementExpression.instance);
     }
     @Test
     public void toStringReturnsStringRepresentation() {
-        GreaterThanOrEqualOperator gteq = new GreaterThanOrEqualOperator(new Constant(4), new Constant(2));
+        BinaryExpression gteq = BinaryExpression.greaterThanOrEqual(new Constant(4), new Constant(2));
         Assert.assertEquals("(4 >= 2)", gteq.toString());
     }
 }

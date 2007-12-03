@@ -7,7 +7,7 @@ import junit.framework.Assert;
 public class AndOperatorTest extends BinaryExpressionTest {
     public final Mockery context = new Mockery();
     Expression createInstance() {
-        return new AndOperator(new UnimplementExpression(), new UnimplementExpression());
+        return BinaryExpression.and(new UnimplementExpression(), new UnimplementExpression());
     }
     public BinaryExpression.OperatorType expectedOperator() {
         return BinaryExpression.OperatorType.AND;

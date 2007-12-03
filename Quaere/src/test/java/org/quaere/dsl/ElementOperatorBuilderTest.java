@@ -27,7 +27,7 @@ public class ElementOperatorBuilderTest {
     public void canUsePredicateToRestrictSelection() {
         Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(5, 4, 1, 3, 9, 8, 6, 7, 2, 0));
         ElementOperatorBuilder elementOperatorBuilder = new ElementOperatorBuilderImpl("first");
-        LessThanOperator nLessThanFour = new LessThanOperator(
+        BinaryExpression nLessThanFour = BinaryExpression.lessThan(
                 new Statement(
                         Arrays.<Expression>asList(
                                 new Identifier("n")
@@ -46,7 +46,7 @@ public class ElementOperatorBuilderTest {
     public void canUsePredicateWithIndexerToRestrictSelection() {
         Queryable<Integer> numbers = new QueryableIterable<Integer>(Arrays.asList(0, 1, 5, 4, 3, 9, 8, 6, 7, 2, 0));
         ElementOperatorBuilder elementOperatorBuilder = new ElementOperatorBuilderImpl("first");
-        GreaterThanOperator nGreaterThanIndex = new GreaterThanOperator (
+        BinaryExpression nGreaterThanIndex = BinaryExpression.greaterThan(
                 new Statement(
                         Arrays.<Expression>asList(
                                 new Identifier("n")

@@ -1,6 +1,5 @@
 package org.quaere.dsl;
 
-import org.quaere.expressions.LessThanOperator;
 import org.quaere.expressions.Expression;
 
 

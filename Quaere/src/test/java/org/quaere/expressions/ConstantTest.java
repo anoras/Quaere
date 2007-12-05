@@ -10,7 +10,7 @@ public class ConstantTest extends ExpressionTest {
     @Test
     public void canInferType() {
         Constant constant = new Constant("String");
-        Assert.assertSame(String.class, constant.getClazz());
+        Assert.assertSame(String.class, constant.clazz);
     }
     @Test(expected = IllegalArgumentException.class)
     public void cannotInferNullValueType() {
@@ -19,7 +19,7 @@ public class ConstantTest extends ExpressionTest {
     @Test
     public void canSpecifyClass() {
         Constant constant = new Constant(42, Long.class);
-        Assert.assertSame(Long.class, constant.getClazz());
+        Assert.assertSame(Long.class, constant.clazz);
     }
     @Test
     public void toStringReturnsStringValue() {

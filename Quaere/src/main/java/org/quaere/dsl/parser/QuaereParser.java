@@ -62,7 +62,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start quaereExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:21:1: quaereExpression returns [Expression value] : expression EOF ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:21:1: quaereExpression returns [Expression name] : sourceExpression EOF ;
     public final quaereExpression_return quaereExpression() throws RecognitionException {
         quaereExpression_return retval = new quaereExpression_return();
         retval.start = input.LT(1);
@@ -76,8 +76,8 @@ public class QuaereParser extends Parser {
         CommonTree EOF2_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:22:2: ( expression EOF )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:22:4: expression EOF
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:22:2: ( sourceExpression EOF )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:22:4: sourceExpression EOF
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -118,8 +118,8 @@ public class QuaereParser extends Parser {
 
     ;
 
-    // $ANTLR start expression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:25:1: expression returns [Expression value] : expressionItem ( '[' expression ']' )? ;
+    // $ANTLR start sourceExpression
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:25:1: sourceExpression returns [Expression name] : expressionItem ( '[' sourceExpression ']' )? ;
     @SuppressWarnings({"RedundantCast"})
     public final expression_return expression() throws RecognitionException {
         expression_return retval = new expression_return();
@@ -138,8 +138,8 @@ public class QuaereParser extends Parser {
         CommonTree char_literal6_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:2: ( expressionItem ( '[' expression ']' )? )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:4: expressionItem ( '[' expression ']' )?
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:2: ( expressionItem ( '[' sourceExpression ']' )? )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:4: expressionItem ( '[' sourceExpression ']' )?
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -149,7 +149,7 @@ public class QuaereParser extends Parser {
 
                 adaptor.addChild(root_0, expressionItem3.getTree());
                 retval.value = expressionItem3.value;
-                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:54: ( '[' expression ']' )?
+                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:54: ( '[' sourceExpression ']' )?
                 int alt1 = 2;
                 int LA1_0 = input.LA(1);
 
@@ -158,7 +158,7 @@ public class QuaereParser extends Parser {
                 }
                 switch (alt1) {
                     case 1:
-                        // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:55: '[' expression ']'
+                        // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:26:55: '[' sourceExpression ']'
                     {
                         char_literal4 = (Token) input.LT(1);
                         match(input, 14, FOLLOW_14_in_expression76);
@@ -199,7 +199,7 @@ public class QuaereParser extends Parser {
         }
         return retval;
     }
-    // $ANTLR end expression
+    // $ANTLR end sourceExpression
 
     public static class expressionItem_return extends ParserRuleReturnScope {
         public Expression value;
@@ -212,7 +212,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start expressionItem
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:29:1: expressionItem returns [Expression value] : left= conditionalExpression ( '?' middle= conditionalExpression ':' right= conditionalExpression )? ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:29:1: expressionItem returns [Expression name] : left= conditionalExpression ( '?' middle= conditionalExpression ':' right= conditionalExpression )? ;
     public final expressionItem_return expressionItem() throws RecognitionException {
         expressionItem_return retval = new expressionItem_return();
         retval.start = input.LT(1);
@@ -311,7 +311,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start conditionalExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:33:1: conditionalExpression returns [Expression value] : left= booleanAndExpression ( '||' right= booleanAndExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:33:1: conditionalExpression returns [Expression name] : left= booleanAndExpression ( '||' right= booleanAndExpression )* ;
     public final conditionalExpression_return conditionalExpression() throws RecognitionException {
         conditionalExpression_return retval = new conditionalExpression_return();
         retval.start = input.LT(1);
@@ -375,7 +375,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop3;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -407,7 +408,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start booleanAndExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:43:1: booleanAndExpression returns [Expression value] : left= equalityExpression ( '&&' right= equalityExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:43:1: booleanAndExpression returns [Expression name] : left= equalityExpression ( '&&' right= equalityExpression )* ;
     public final booleanAndExpression_return booleanAndExpression() throws RecognitionException {
         booleanAndExpression_return retval = new booleanAndExpression_return();
         retval.start = input.LT(1);
@@ -471,7 +472,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop4;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -503,7 +505,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start equalityExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:53:1: equalityExpression returns [Expression value] : left= relationalExpression ( ( '==' | '!=' ) right= relationalExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:53:1: equalityExpression returns [Expression name] : left= relationalExpression ( ( '==' | '!=' ) right= relationalExpression )* ;
     public final equalityExpression_return equalityExpression() throws RecognitionException {
         equalityExpression_return retval = new equalityExpression_return();
         retval.start = input.LT(1);
@@ -543,7 +545,8 @@ public class QuaereParser extends Parser {
 
                     if ((LA6_0 == 20)) {
                         alt6 = 1;
-                    } else if ((LA6_0 == 21)) {
+                    }
+                    else if ((LA6_0 == 21)) {
                         alt6 = 1;
                     }
 
@@ -558,9 +561,11 @@ public class QuaereParser extends Parser {
 
                             if ((LA5_0 == 20)) {
                                 alt5 = 1;
-                            } else if ((LA5_0 == 21)) {
+                            }
+                            else if ((LA5_0 == 21)) {
                                 alt5 = 2;
-                            } else {
+                            }
+                            else {
                                 NoViableAltException nvae =
                                         new NoViableAltException("58:4: ( '==' | '!=' )", 5, 0, input);
 
@@ -607,7 +612,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop6;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -639,7 +645,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start relationalExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:64:1: relationalExpression returns [Expression value] : left= additiveExpression ( ( '<' | '<=' | '>' | '>=' ) right= additiveExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:64:1: relationalExpression returns [Expression name] : left= additiveExpression ( ( '<' | '<=' | '>' | '>=' ) right= additiveExpression )* ;
     public final relationalExpression_return relationalExpression() throws RecognitionException {
         relationalExpression_return retval = new relationalExpression_return();
         retval.start = input.LT(1);
@@ -794,7 +800,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop8;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -826,7 +833,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start additiveExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:77:1: additiveExpression returns [Expression value] : left= multiplicativeExpression ( ( '+' | '-' ) right= multiplicativeExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:77:1: additiveExpression returns [Expression name] : left= multiplicativeExpression ( ( '+' | '-' ) right= multiplicativeExpression )* ;
     public final additiveExpression_return additiveExpression() throws RecognitionException {
         additiveExpression_return retval = new additiveExpression_return();
         retval.start = input.LT(1);
@@ -866,7 +873,8 @@ public class QuaereParser extends Parser {
 
                     if ((LA10_0 == 26)) {
                         alt10 = 1;
-                    } else if ((LA10_0 == 27)) {
+                    }
+                    else if ((LA10_0 == 27)) {
                         alt10 = 1;
                     }
 
@@ -881,9 +889,11 @@ public class QuaereParser extends Parser {
 
                             if ((LA9_0 == 26)) {
                                 alt9 = 1;
-                            } else if ((LA9_0 == 27)) {
+                            }
+                            else if ((LA9_0 == 27)) {
                                 alt9 = 2;
-                            } else {
+                            }
+                            else {
                                 NoViableAltException nvae =
                                         new NoViableAltException("82:4: ( '+' | '-' )", 9, 0, input);
 
@@ -898,7 +908,7 @@ public class QuaereParser extends Parser {
                                     char_literal17_tree = (CommonTree) adaptor.create(char_literal17);
                                     adaptor.addChild(root_0, char_literal17_tree);
 
-                                    type = BinaryExpression.OperatorType.PLUS;
+                                    type = BinaryExpression.OperatorType.ADDITION;
 
                                 }
                                 break;
@@ -910,7 +920,7 @@ public class QuaereParser extends Parser {
                                     char_literal18_tree = (CommonTree) adaptor.create(char_literal18);
                                     adaptor.addChild(root_0, char_literal18_tree);
 
-                                    type = BinaryExpression.OperatorType.MINUS;
+                                    type = BinaryExpression.OperatorType.SUBTRACTION;
 
                                 }
                                 break;
@@ -930,7 +940,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop10;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -962,7 +973,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start multiplicativeExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:88:1: multiplicativeExpression returns [Expression value] : left= unaryExpression ( ( '*' | '/' | '%' ) right= unaryExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:88:1: multiplicativeExpression returns [Expression name] : left= unaryExpression ( ( '*' | '/' | '%' ) right= unaryExpression )* ;
     public final multiplicativeExpression_return multiplicativeExpression() throws RecognitionException {
         multiplicativeExpression_return retval = new multiplicativeExpression_return();
         retval.start = input.LT(1);
@@ -1051,7 +1062,7 @@ public class QuaereParser extends Parser {
                                     char_literal19_tree = (CommonTree) adaptor.create(char_literal19);
                                     adaptor.addChild(root_0, char_literal19_tree);
 
-                                    type = BinaryExpression.OperatorType.MULTIPLY;
+                                    type = BinaryExpression.OperatorType.MULTIPLICATION;
 
                                 }
                                 break;
@@ -1063,7 +1074,7 @@ public class QuaereParser extends Parser {
                                     char_literal20_tree = (CommonTree) adaptor.create(char_literal20);
                                     adaptor.addChild(root_0, char_literal20_tree);
 
-                                    type = BinaryExpression.OperatorType.DIVIDE;
+                                    type = BinaryExpression.OperatorType.DIVISION;
 
                                 }
                                 break;
@@ -1095,7 +1106,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop12;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -1127,7 +1139,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start unaryExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:101:1: unaryExpression returns [Expression value] : ( statement | '!' statement | '-' statement );
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:101:1: unaryExpression returns [Expression name] : ( statement | '!' statement | '-' statement );
     public final unaryExpression_return unaryExpression() throws RecognitionException {
         unaryExpression_return retval = new unaryExpression_return();
         retval.start = input.LT(1);
@@ -1172,7 +1184,7 @@ public class QuaereParser extends Parser {
                 break;
                 default:
                     NoViableAltException nvae =
-                            new NoViableAltException("101:1: unaryExpression returns [Expression value] : ( statement | '!' statement | '-' statement );", 13, 0, input);
+                            new NoViableAltException("101:1: unaryExpression returns [Expression name] : ( statement | '!' statement | '-' statement );", 13, 0, input);
 
                     throw nvae;
             }
@@ -1259,7 +1271,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start statement
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:107:1: statement returns [Statement value] : first= primaryExpression ( '.' follow= primaryExpression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:107:1: statement returns [Statement name] : first= primaryExpression ( '.' follow= primaryExpression )* ;
     public final statement_return statement() throws RecognitionException {
         statement_return retval = new statement_return();
         retval.start = input.LT(1);
@@ -1322,7 +1334,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop14;
                     }
-                } while (true);
+                }
+                while (true);
 
                 retval.value = new Statement(expressions);
 
@@ -1355,7 +1368,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start primaryExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:116:1: primaryExpression returns [Expression name] : ( '(' sourceExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );
     public final primaryExpression_return primaryExpression() throws RecognitionException {
         primaryExpression_return retval = new primaryExpression_return();
         retval.start = input.LT(1);
@@ -1383,7 +1396,7 @@ public class QuaereParser extends Parser {
         CommonTree char_literal30_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:117:2: ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:117:2: ( '(' sourceExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression )
             int alt16 = 6;
             switch (input.LA(1)) {
                 case 33: {
@@ -1449,12 +1462,14 @@ public class QuaereParser extends Parser {
 
                                                 if ((LA16_13 == 36)) {
                                                     alt16 = 5;
-                                                } else
+                                                }
+                                                else
                                                 if ((LA16_13 == 14 || LA16_13 == 16 || (LA16_13 >= 18 && LA16_13 <= 30) || LA16_13 == 32 || (LA16_13 >= 34 && LA16_13 <= 35))) {
                                                     alt16 = 4;
-                                                } else {
+                                                }
+                                                else {
                                                     NoViableAltException nvae =
-                                                            new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 13, input);
+                                                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 13, input);
 
                                                     throw nvae;
                                                 }
@@ -1466,7 +1481,7 @@ public class QuaereParser extends Parser {
                                             break;
                                             default:
                                                 NoViableAltException nvae =
-                                                        new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 11, input);
+                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 11, input);
 
                                                 throw nvae;
                                         }
@@ -1479,7 +1494,7 @@ public class QuaereParser extends Parser {
                                     break;
                                     default:
                                         NoViableAltException nvae =
-                                                new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 8, input);
+                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 8, input);
 
                                         throw nvae;
                                 }
@@ -1530,20 +1545,24 @@ public class QuaereParser extends Parser {
 
                                             if ((LA16_14 == 14 || LA16_14 == 16 || (LA16_14 >= 18 && LA16_14 <= 30) || (LA16_14 >= 32 && LA16_14 <= 35))) {
                                                 alt16 = 4;
-                                            } else if ((LA16_14 == 36)) {
+                                            }
+                                            else if ((LA16_14 == 36)) {
                                                 alt16 = 5;
-                                            } else {
+                                            }
+                                            else {
                                                 NoViableAltException nvae =
-                                                        new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 14, input);
+                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 14, input);
 
                                                 throw nvae;
                                             }
-                                        } else
+                                        }
+                                        else
                                         if (((LA16_12 >= INTEGER && LA16_12 <= STRING) || LA16_12 == 27 || LA16_12 == 31 || LA16_12 == 33 || LA16_12 == 37 || LA16_12 == 41 || (LA16_12 >= 55 && LA16_12 <= 56))) {
                                             alt16 = 4;
-                                        } else {
+                                        }
+                                        else {
                                             NoViableAltException nvae =
-                                                    new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 12, input);
+                                                    new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 12, input);
 
                                             throw nvae;
                                         }
@@ -1555,7 +1574,7 @@ public class QuaereParser extends Parser {
                                     break;
                                     default:
                                         NoViableAltException nvae =
-                                                new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 9, input);
+                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 9, input);
 
                                         throw nvae;
                                 }
@@ -1568,17 +1587,19 @@ public class QuaereParser extends Parser {
                             break;
                             default:
                                 NoViableAltException nvae =
-                                        new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 6, input);
+                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 6, input);
 
                                 throw nvae;
                         }
 
-                    } else
+                    }
+                    else
                     if ((LA16_4 == EOF || (LA16_4 >= 14 && LA16_4 <= 30) || LA16_4 == 32 || (LA16_4 >= 34 && LA16_4 <= 35) || (LA16_4 >= 40 && LA16_4 <= 41) || (LA16_4 >= 43 && LA16_4 <= 53))) {
                         alt16 = 4;
-                    } else {
+                    }
+                    else {
                         NoViableAltException nvae =
-                                new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 4, input);
+                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 4, input);
 
                         throw nvae;
                     }
@@ -1590,14 +1611,14 @@ public class QuaereParser extends Parser {
                 break;
                 default:
                     NoViableAltException nvae =
-                            new NoViableAltException("116:1: primaryExpression returns [Expression value] : ( '(' expression ')' | expr= value | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 0, input);
+                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 0, input);
 
                     throw nvae;
             }
 
             switch (alt16) {
                 case 1:
-                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:117:4: '(' expression ')'
+                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:117:4: '(' sourceExpression ')'
                 {
                     root_0 = (CommonTree) adaptor.nil();
 
@@ -1621,7 +1642,7 @@ public class QuaereParser extends Parser {
                 }
                 break;
                 case 2:
-                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:118:4: expr= value
+                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:118:4: expr= name
                 {
                     root_0 = (CommonTree) adaptor.nil();
 
@@ -1741,8 +1762,8 @@ public class QuaereParser extends Parser {
 
     ;
 
-    // $ANTLR start value
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:125:1: value returns [Constant value] : ( INTEGER | FLOAT | STRING | booleanValue );
+    // $ANTLR start name
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:125:1: name returns [Constant name] : ( INTEGER | FLOAT | STRING | booleanValue );
     public final value_return value() throws RecognitionException {
         value_return retval = new value_return();
         retval.start = input.LT(1);
@@ -1782,7 +1803,7 @@ public class QuaereParser extends Parser {
                 break;
                 default:
                     NoViableAltException nvae =
-                            new NoViableAltException("125:1: value returns [Constant value] : ( INTEGER | FLOAT | STRING | booleanValue );", 17, 0, input);
+                            new NoViableAltException("125:1: name returns [Constant name] : ( INTEGER | FLOAT | STRING | booleanValue );", 17, 0, input);
 
                     throw nvae;
             }
@@ -1860,7 +1881,7 @@ public class QuaereParser extends Parser {
         }
         return retval;
     }
-    // $ANTLR end value
+    // $ANTLR end name
 
     public static class methodCall_return extends ParserRuleReturnScope {
         public MethodCall value;
@@ -1873,7 +1894,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start methodCall
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:132:1: methodCall returns [MethodCall value] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= sourceExpression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= sourceExpression ')' );
     public final methodCall_return methodCall() throws RecognitionException {
         methodCall_return retval = new methodCall_return();
         retval.start = input.LT(1);
@@ -1926,7 +1947,7 @@ public class QuaereParser extends Parser {
         Expression lambdaExpression = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:140:2: (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:140:2: (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= sourceExpression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= sourceExpression ')' )
             int alt22 = 2;
             int LA22_0 = input.LA(1);
 
@@ -1938,29 +1959,33 @@ public class QuaereParser extends Parser {
 
                     if ((LA22_2 == 33)) {
                         alt22 = 2;
-                    } else if ((LA22_2 == ID || LA22_2 == 36)) {
+                    }
+                    else if ((LA22_2 == ID || LA22_2 == 36)) {
                         alt22 = 1;
-                    } else {
+                    }
+                    else {
                         NoViableAltException nvae =
-                                new NoViableAltException("132:1: methodCall returns [MethodCall value] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 2, input);
+                                new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 2, input);
 
                         throw nvae;
                     }
-                } else {
+                }
+                else {
                     NoViableAltException nvae =
-                            new NoViableAltException("132:1: methodCall returns [MethodCall value] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 1, input);
+                            new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 1, input);
 
                     throw nvae;
                 }
-            } else {
+            }
+            else {
                 NoViableAltException nvae =
-                        new NoViableAltException("132:1: methodCall returns [MethodCall value] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 0, input);
+                        new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 0, input);
 
                 throw nvae;
             }
             switch (alt22) {
                 case 1:
-                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:141:2: n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')'
+                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:141:2: n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= sourceExpression ')'
                 {
                     root_0 = (CommonTree) adaptor.nil();
 
@@ -2047,7 +2072,7 @@ public class QuaereParser extends Parser {
                 }
                 break;
                 case 2:
-                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:143:4: n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')'
+                    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:143:4: n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= sourceExpression ')'
                 {
                     root_0 = (CommonTree) adaptor.nil();
 
@@ -2172,7 +2197,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start identifier
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:147:1: identifier returns [Identifier value] : ID ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:147:1: identifier returns [Identifier name] : ID ;
     public final identifier_return identifier() throws RecognitionException {
         identifier_return retval = new identifier_return();
         retval.start = input.LT(1);
@@ -2225,7 +2250,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start newExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:151:1: newExpression returns [Expression value] : 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= expression ( ',' (followid= identifier '=' )? followexp= expression )* '}' ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:151:1: newExpression returns [Expression name] : 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= sourceExpression ( ',' (followid= identifier '=' )? followexp= sourceExpression )* '}' ;
     public final newExpression_return newExpression() throws RecognitionException {
         newExpression_return retval = new newExpression_return();
         retval.start = input.LT(1);
@@ -2262,8 +2287,8 @@ public class QuaereParser extends Parser {
         List<Property> parameters = new ArrayList<Property>();
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:2: ( 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= expression ( ',' (followid= identifier '=' )? followexp= expression )* '}' )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:4: 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= expression ( ',' (followid= identifier '=' )? followexp= expression )* '}'
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:2: ( 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= sourceExpression ( ',' (followid= identifier '=' )? followexp= sourceExpression )* '}' )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:4: 'create' ( type )? '{' (firstid= identifier '=' )? firstexp= sourceExpression ( ',' (followid= identifier '=' )? followexp= sourceExpression )* '}'
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -2339,7 +2364,7 @@ public class QuaereParser extends Parser {
 
                 adaptor.addChild(root_0, firstexp.getTree());
                 parameters.add(new Property(id, firstexp.value));
-                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:186: ( ',' (followid= identifier '=' )? followexp= expression )*
+                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:186: ( ',' (followid= identifier '=' )? followexp= sourceExpression )*
                 loop26:
                 do {
                     int alt26 = 2;
@@ -2352,7 +2377,7 @@ public class QuaereParser extends Parser {
 
                     switch (alt26) {
                         case 1:
-                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:187: ',' (followid= identifier '=' )? followexp= expression
+                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:157:187: ',' (followid= identifier '=' )? followexp= sourceExpression
                         {
                             char_literal55 = (Token) input.LT(1);
                             match(input, 35, FOLLOW_35_in_newExpression908);
@@ -2404,7 +2429,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop26;
                     }
-                } while (true);
+                }
+                while (true);
 
                 char_literal57 = (Token) input.LT(1);
                 match(input, 40, FOLLOW_40_in_newExpression929);
@@ -2413,7 +2439,8 @@ public class QuaereParser extends Parser {
 
                 try {
                     retval.value = new NewExpression(Class.forName(typ), parameters);
-                } catch (ClassNotFoundException e) {
+                }
+                catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
 
@@ -2446,7 +2473,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start queryExpression
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:163:1: queryExpression returns [QueryExpression value] : fromClause queryBody ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:163:1: queryExpression returns [QueryExpression name] : fromClause queryBody ;
     public final queryExpression_return queryExpression() throws RecognitionException {
         queryExpression_return retval = new queryExpression_return();
         retval.start = input.LT(1);
@@ -2505,7 +2532,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start fromClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:167:1: fromClause returns [FromClause value] : 'from' ( type )? identifier 'in' expression ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:167:1: fromClause returns [FromClause name] : 'from' ( type )? identifier 'in' sourceExpression ;
     public final fromClause_return fromClause() throws RecognitionException {
         fromClause_return retval = new fromClause_return();
         retval.start = input.LT(1);
@@ -2528,8 +2555,8 @@ public class QuaereParser extends Parser {
         String t = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:171:2: ( 'from' ( type )? identifier 'in' expression )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:171:4: 'from' ( type )? identifier 'in' expression
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:171:2: ( 'from' ( type )? identifier 'in' sourceExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:171:4: 'from' ( type )? identifier 'in' sourceExpression
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -2611,7 +2638,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start queryBody
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:174:1: queryBody returns [QueryBody value] : ( queryBodyClause )* ( selectClause | groupClause ) ( queryContinuation )? ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:174:1: queryBody returns [QueryBody name] : ( queryBodyClause )* ( selectClause | groupClause ) ( queryContinuation )? ;
     public final queryBody_return queryBody() throws RecognitionException {
         queryBody_return retval = new queryBody_return();
         retval.start = input.LT(1);
@@ -2665,7 +2692,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop28;
                     }
-                } while (true);
+                }
+                while (true);
 
                 // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:180:65: ( selectClause | groupClause )
                 int alt29 = 2;
@@ -2673,9 +2701,11 @@ public class QuaereParser extends Parser {
 
                 if ((LA29_0 == 52)) {
                     alt29 = 1;
-                } else if ((LA29_0 == 53)) {
+                }
+                else if ((LA29_0 == 53)) {
                     alt29 = 2;
-                } else {
+                }
+                else {
                     NoViableAltException nvae =
                             new NoViableAltException("180:65: ( selectClause | groupClause )", 29, 0, input);
 
@@ -2763,7 +2793,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start queryBodyClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:184:1: queryBodyClause returns [QueryBodyClause value] : ( fromClause | letClause | whereClause | joinClause | orderByClause );
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:184:1: queryBodyClause returns [QueryBodyClause name] : ( fromClause | letClause | whereClause | joinClause | orderByClause );
     public final queryBodyClause_return queryBodyClause() throws RecognitionException {
         queryBodyClause_return retval = new queryBodyClause_return();
         retval.start = input.LT(1);
@@ -2807,7 +2837,7 @@ public class QuaereParser extends Parser {
                 break;
                 default:
                     NoViableAltException nvae =
-                            new NoViableAltException("184:1: queryBodyClause returns [QueryBodyClause value] : ( fromClause | letClause | whereClause | joinClause | orderByClause );", 31, 0, input);
+                            new NoViableAltException("184:1: queryBodyClause returns [QueryBodyClause name] : ( fromClause | letClause | whereClause | joinClause | orderByClause );", 31, 0, input);
 
                     throw nvae;
             }
@@ -2912,7 +2942,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start queryContinuation
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:192:1: queryContinuation returns [QueryContinuation value] : 'into' identifier queryBody ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:192:1: queryContinuation returns [QueryContinuation name] : 'into' identifier queryBody ;
     public final queryContinuation_return queryContinuation() throws RecognitionException {
         queryContinuation_return retval = new queryContinuation_return();
         retval.start = input.LT(1);
@@ -2979,7 +3009,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start whereClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:196:1: whereClause returns [WhereClause value] : 'where' expression ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:196:1: whereClause returns [WhereClause name] : 'where' sourceExpression ;
     public final whereClause_return whereClause() throws RecognitionException {
         whereClause_return retval = new whereClause_return();
         retval.start = input.LT(1);
@@ -2993,8 +3023,8 @@ public class QuaereParser extends Parser {
         CommonTree string_literal77_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:197:2: ( 'where' expression )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:197:4: 'where' expression
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:197:2: ( 'where' sourceExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:197:4: 'where' sourceExpression
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3039,7 +3069,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start letClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:199:1: letClause returns [LetClause value] : 'let' identifier '=' expression ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:199:1: letClause returns [LetClause name] : 'let' identifier '=' sourceExpression ;
     public final letClause_return letClause() throws RecognitionException {
         letClause_return retval = new letClause_return();
         retval.start = input.LT(1);
@@ -3057,8 +3087,8 @@ public class QuaereParser extends Parser {
         CommonTree char_literal81_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:200:2: ( 'let' identifier '=' expression )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:200:4: 'let' identifier '=' expression
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:200:2: ( 'let' identifier '=' sourceExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:200:4: 'let' identifier '=' sourceExpression
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3113,7 +3143,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start joinClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:203:1: joinClause returns [JoinClause value] : 'join' ( type )? join= identifier 'in' inid= expression 'on' on= expression 'equals' equals= expression ( 'into' into= identifier )? ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:203:1: joinClause returns [JoinClause name] : 'join' ( type )? join= identifier 'in' inid= sourceExpression 'on' on= sourceExpression 'equals' equals= sourceExpression ( 'into' into= identifier )? ;
     public final joinClause_return joinClause() throws RecognitionException {
         joinClause_return retval = new joinClause_return();
         retval.start = input.LT(1);
@@ -3149,8 +3179,8 @@ public class QuaereParser extends Parser {
         Identifier i = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:208:2: ( 'join' ( type )? join= identifier 'in' inid= expression 'on' on= expression 'equals' equals= expression ( 'into' into= identifier )? )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:208:4: 'join' ( type )? join= identifier 'in' inid= expression 'on' on= expression 'equals' equals= expression ( 'into' into= identifier )?
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:208:2: ( 'join' ( type )? join= identifier 'in' inid= sourceExpression 'on' on= sourceExpression 'equals' equals= sourceExpression ( 'into' into= identifier )? )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:208:4: 'join' ( type )? join= identifier 'in' inid= sourceExpression 'on' on= sourceExpression 'equals' equals= sourceExpression ( 'into' into= identifier )?
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3249,7 +3279,7 @@ public class QuaereParser extends Parser {
 
                 }
 
-                retval.value = new JoinClause(t, join.value, inid.value, on.value, equals.value, i);
+                retval.value = new JoinClause(join.value, inid.value, on.value, equals.value, i);
 
             }
 
@@ -3280,7 +3310,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start orderByClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:212:1: orderByClause returns [OrderByClause value] : 'orderby' fis= expression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= expression (foo= ( 'ascending' | 'descending' ) )? )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:212:1: orderByClause returns [OrderByClause name] : 'orderby' fis= sourceExpression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= sourceExpression (foo= ( 'ascending' | 'descending' ) )? )* ;
     public final orderByClause_return orderByClause() throws RecognitionException {
         orderByClause_return retval = new orderByClause_return();
         retval.start = input.LT(1);
@@ -3305,8 +3335,8 @@ public class QuaereParser extends Parser {
         List<OrderByCriteria> criterias = new ArrayList<OrderByCriteria>();
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:2: ( 'orderby' fis= expression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= expression (foo= ( 'ascending' | 'descending' ) )? )* )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:4: 'orderby' fis= expression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= expression (foo= ( 'ascending' | 'descending' ) )? )*
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:2: ( 'orderby' fis= sourceExpression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= sourceExpression (foo= ( 'ascending' | 'descending' ) )? )* )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:4: 'orderby' fis= sourceExpression (fio= ( 'ascending' | 'descending' ) )? ( ',' fos= sourceExpression (foo= ( 'ascending' | 'descending' ) )? )*
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3336,7 +3366,8 @@ public class QuaereParser extends Parser {
                             input.consume();
                             adaptor.addChild(root_0, adaptor.create(fio));
                             errorRecovery = false;
-                        } else {
+                        }
+                        else {
                             MismatchedSetException mse =
                                     new MismatchedSetException(null, input);
                             recoverFromMismatchedSet(input, mse, FOLLOW_set_in_orderByClause1257);
@@ -3350,7 +3381,7 @@ public class QuaereParser extends Parser {
                 }
 
                 criterias.add(new OrderByCriteria(fis.value, (fio == null || fio.getText() == "ascending") ? OrderByCriteria.Direction.ASCENDING : OrderByCriteria.Direction.DESCENDING));
-                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:232: ( ',' fos= expression (foo= ( 'ascending' | 'descending' ) )? )*
+                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:232: ( ',' fos= sourceExpression (foo= ( 'ascending' | 'descending' ) )? )*
                 loop36:
                 do {
                     int alt36 = 2;
@@ -3363,7 +3394,7 @@ public class QuaereParser extends Parser {
 
                     switch (alt36) {
                         case 1:
-                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:233: ',' fos= expression (foo= ( 'ascending' | 'descending' ) )?
+                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:216:233: ',' fos= sourceExpression (foo= ( 'ascending' | 'descending' ) )?
                         {
                             char_literal90 = (Token) input.LT(1);
                             match(input, 35, FOLLOW_35_in_orderByClause1270);
@@ -3391,7 +3422,8 @@ public class QuaereParser extends Parser {
                                         input.consume();
                                         adaptor.addChild(root_0, adaptor.create(foo));
                                         errorRecovery = false;
-                                    } else {
+                                    }
+                                    else {
                                         MismatchedSetException mse =
                                                 new MismatchedSetException(null, input);
                                         recoverFromMismatchedSet(input, mse, FOLLOW_set_in_orderByClause1278);
@@ -3412,7 +3444,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop36;
                     }
-                } while (true);
+                }
+                while (true);
 
                 retval.value = new OrderByClause(criterias);
 
@@ -3445,7 +3478,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start selectClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:220:1: selectClause returns [SelectClause value] : 'select' expression ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:220:1: selectClause returns [SelectClause name] : 'select' sourceExpression ;
     public final selectClause_return selectClause() throws RecognitionException {
         selectClause_return retval = new selectClause_return();
         retval.start = input.LT(1);
@@ -3459,8 +3492,8 @@ public class QuaereParser extends Parser {
         CommonTree string_literal91_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:221:2: ( 'select' expression )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:221:4: 'select' expression
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:221:2: ( 'select' sourceExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:221:4: 'select' sourceExpression
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3505,7 +3538,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start groupClause
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:225:1: groupClause returns [GroupClause value] : 'group' identifier 'by' expression ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:225:1: groupClause returns [GroupClause name] : 'group' identifier 'by' sourceExpression ;
     public final groupClause_return groupClause() throws RecognitionException {
         groupClause_return retval = new groupClause_return();
         retval.start = input.LT(1);
@@ -3523,8 +3556,8 @@ public class QuaereParser extends Parser {
         CommonTree string_literal95_tree = null;
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:226:2: ( 'group' identifier 'by' expression )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:226:4: 'group' identifier 'by' expression
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:226:2: ( 'group' identifier 'by' sourceExpression )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:226:4: 'group' identifier 'by' sourceExpression
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3636,7 +3669,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop37;
                     }
-                } while (true);
+                }
+                while (true);
 
 
             }
@@ -3668,7 +3702,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start expressionList
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:233:1: expressionList returns [List<Expression> value] : first= expression ( ',' follow= expression )* ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:233:1: expressionList returns [List<Expression> name] : first= sourceExpression ( ',' follow= sourceExpression )* ;
     public final expressionList_return expressionList() throws RecognitionException {
         expressionList_return retval = new expressionList_return();
         retval.start = input.LT(1);
@@ -3687,8 +3721,8 @@ public class QuaereParser extends Parser {
         List<Expression> expressions = new ArrayList<Expression>();
 
         try {
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:2: (first= expression ( ',' follow= expression )* )
-            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:4: first= expression ( ',' follow= expression )*
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:2: (first= sourceExpression ( ',' follow= sourceExpression )* )
+            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:4: first= sourceExpression ( ',' follow= sourceExpression )*
             {
                 root_0 = (CommonTree) adaptor.nil();
 
@@ -3698,7 +3732,7 @@ public class QuaereParser extends Parser {
 
                 adaptor.addChild(root_0, first.getTree());
                 expressions.add(first.value);
-                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:55: ( ',' follow= expression )*
+                // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:55: ( ',' follow= sourceExpression )*
                 loop38:
                 do {
                     int alt38 = 2;
@@ -3711,7 +3745,7 @@ public class QuaereParser extends Parser {
 
                     switch (alt38) {
                         case 1:
-                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:57: ',' follow= expression
+                            // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:237:57: ',' follow= sourceExpression
                         {
                             char_literal100 = (Token) input.LT(1);
                             match(input, 35, FOLLOW_35_in_expressionList1386);
@@ -3731,7 +3765,8 @@ public class QuaereParser extends Parser {
                         default:
                             break loop38;
                     }
-                } while (true);
+                }
+                while (true);
 
                 retval.value = expressions;
 
@@ -3764,7 +3799,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start arguments
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:241:1: arguments returns [List<Expression> value] : '(' ( expressionList )? ')' ;
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:241:1: arguments returns [List<Expression> name] : '(' ( expressionList )? ')' ;
     public final arguments_return arguments() throws RecognitionException {
         arguments_return retval = new arguments_return();
         retval.start = input.LT(1);
@@ -3851,7 +3886,7 @@ public class QuaereParser extends Parser {
     ;
 
     // $ANTLR start booleanValue
-    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:264:1: booleanValue returns [boolean value] : ( 'true' | 'false' );
+    // /Users/anders/IdeaProjects/q2/src/main/resources/Quaere.g:264:1: booleanValue returns [boolean name] : ( 'true' | 'false' );
     public final booleanValue_return booleanValue() throws RecognitionException {
         booleanValue_return retval = new booleanValue_return();
         retval.start = input.LT(1);
@@ -3871,11 +3906,13 @@ public class QuaereParser extends Parser {
 
             if ((LA40_0 == 55)) {
                 alt40 = 1;
-            } else if ((LA40_0 == 56)) {
+            }
+            else if ((LA40_0 == 56)) {
                 alt40 = 2;
-            } else {
+            }
+            else {
                 NoViableAltException nvae =
-                        new NoViableAltException("264:1: booleanValue returns [boolean value] : ( 'true' | 'false' );", 40, 0, input);
+                        new NoViableAltException("264:1: booleanValue returns [boolean name] : ( 'true' | 'false' );", 40, 0, input);
 
                 throw nvae;
             }

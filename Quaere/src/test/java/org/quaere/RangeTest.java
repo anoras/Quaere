@@ -13,37 +13,49 @@ public class RangeTest {
     public void canCreateByteRange() {
         NumberRange<Byte> r = new NumberRange<Byte>((byte) 0, (byte) 10);
         Iterator<Byte> riter = r.iterator();
-        for (Byte i = 0; i <= 10; i++) Assert.assertEquals(i, riter.next());
+        for (Byte i = 0; i <= 10; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateShortRange() {
         NumberRange<Short> r = new NumberRange<Short>((short) 0, (short) 10);
         Iterator<Short> riter = r.iterator();
-        for (Short i = 0; i <= 10; i++) Assert.assertEquals(i, riter.next());
+        for (Short i = 0; i <= 10; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateIntegerRange() {
         NumberRange<Integer> r = new NumberRange<Integer>(0, 10);
         Iterator<Integer> riter = r.iterator();
-        for (Integer i = 0; i <= 10; i++) Assert.assertEquals(i, riter.next());
+        for (Integer i = 0; i <= 10; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateLongRange() {
         NumberRange<Long> r = new NumberRange<Long>(0L, 10L);
         Iterator<Long> riter = r.iterator();
-        for (Long i = 0L; i <= 10L; i++) Assert.assertEquals(i, riter.next());
+        for (Long i = 0L; i <= 10L; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateFloatRange() {
         NumberRange<Float> r = new NumberRange<Float>(0.4F, 10F);
         Iterator<Float> riter = r.iterator();
-        for (Float i = 0.4F; i <= 10L; i++) Assert.assertEquals(i, riter.next());
+        for (Float i = 0.4F; i <= 10L; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateDoubleRange() {
         NumberRange<Double> r = new NumberRange<Double>(0.4D, 10D);
         Iterator<Double> riter = r.iterator();
-        for (Double i = 0.4D; i <= 10D; i++) Assert.assertEquals(i, riter.next());
+        for (Double i = 0.4D; i <= 10D; i++) {
+            Assert.assertEquals(i, riter.next());
+        }
     }
     @Test
     public void canCreateBigIntegerRange() {
@@ -77,4 +89,5 @@ public class RangeTest {
         riter.next();
         riter.next();
     }
+
 }

@@ -47,13 +47,13 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
         this.entityManager = entityManager;
     }
     public void visit(FromClause expression) {
-        sourceNames.add(expression.getIdentifier().getText());
-        expression.getExpression().accept(this);
+        sourceNames.add(expression.identifier.name);
+        expression.sourceExpression.accept(this);
         if (sources.containsKey(currentFragment)) {
             currentFragment = sources.get(currentFragment).getEntityName();
         }
         fromFragment.append(currentFragment);
-        expression.getIdentifier().accept(this);
+        expression.identifier.accept(this);
         fromFragment.append(" AS ");
         fromFragment.append(currentFragment);
         fromFragment.append(',');
@@ -147,27 +147,30 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
 
     public void visit(Constant expression) {
         currentFragment = "?" + parameterIndex;
-        parameterMap.put(parameterIndex, expression.getValue());
+        parameterMap.put(parameterIndex, expression.value);
         parameterIndex++;
     }
 
     public void visit(Identifier expression) {
-        if (sourceNames.contains(expression.getText())) {
-            currentFragment = expression.getText();
-        } else {
-            Constant asConstant = new Constant(expression.getText(), String.class);
+        if (sourceNames.contains(expression.name)) {
+            currentFragment = expression.name;
+        }
+        else {
+            Constant asConstant = new Constant(expression.name, String.class);
             this.visit(asConstant);
         }
     }
     public void visit(MethodCall expression) {
-        String methodName = expression.getIdentifier().getText();
+        String methodName = expression.getIdentifier().name;
         if (methodName.startsWith("get")) {
             currentFragment = methodName.substring("get".length());
             currentFragment = currentFragment.substring(0, 1).toLowerCase() + currentFragment.substring(1);
-        } else if (methodName.startsWith("is")) {
+        }
+        else if (methodName.startsWith("is")) {
             currentFragment = methodName.substring("is".length());
             currentFragment = currentFragment.substring(0, 1).toLowerCase() + currentFragment.substring(1);
-        } else {
+        }
+        else {
             throw new RuntimeException("Cannot translate method " + methodName + " to property");
         }
         currentFragment = "." + currentFragment;
@@ -193,7 +196,7 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
         if (!(source instanceof QueryableEntity)) {
             throw new IllegalArgumentException("Only QueryableEnity can be used as a source");
         }
-        this.sources.put(identifer.getText(), (QueryableEntity) source);
+        this.sources.put(identifer.name, (QueryableEntity) source);
     }
     public <T> T evaluate(Expression query) {
         query.accept(this);
@@ -218,10 +221,13 @@ public class QuaereForJPAQueryEngine implements ExpressionTreeVisitor, QueryEngi
     private String getFragment(String clause, StringBuilder fragmentBuilder) {
         if (fragmentBuilder.length() == 0) {
             return "";
-        } else {
+        }
+        else {
             fragmentBuilder.insert(0, clause + " ");
             String fragment = fragmentBuilder.toString();
-            if (fragment.endsWith(",")) fragment = fragment.substring(0, fragment.length() - 1);
+            if (fragment.endsWith(",")) {
+                fragment = fragment.substring(0, fragment.length() - 1);
+            }
             return fragment;
         }
     }

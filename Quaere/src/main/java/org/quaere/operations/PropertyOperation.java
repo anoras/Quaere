@@ -21,22 +21,24 @@ public class PropertyOperation {
             for (Expression statementExpression : statment.getExpressions()) {
                 if (statementExpression instanceof MethodCall) {
                     MethodCall methodCall = (MethodCall) statementExpression;
-                    String propertyName = methodCall.getIdentifier().getText();
+                    String propertyName = methodCall.getIdentifier().name;
                     if (propertyName.startsWith("get")) {
                         propertyName = propertyName.substring("get".length());
-                    } else if (propertyName.startsWith("is")) {
+                    }
+                    else if (propertyName.startsWith("is")) {
                         propertyName = propertyName.substring("is".length());
                     }
                     propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
                     return createProperty(propertyName, expression);
                 }
             }
-        } else {
+        }
+        else {
             // We're looking for an identifier
             Identifier identifier = (Identifier) statment.getExpressions().get(0);
-            return createProperty(identifier.getText(), expression);
+            return createProperty(identifier.name, expression);
         }
-        throw new IllegalArgumentException(String.format("\"%s\" is not a vaild property expression.", expression));
+        throw new IllegalArgumentException(String.format("\"%s\" is not a vaild property sourceExpression.", expression));
     }
 
     public static <R> Property createSubQueryProperty(final String propertyName, final QueryContinuationOrQueryBodyBuilder<R> subquery) {

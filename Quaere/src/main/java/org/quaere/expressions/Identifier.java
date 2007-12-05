@@ -2,12 +2,23 @@ package org.quaere.expressions;
 
 import java.util.UUID;
 
+/**
+ * Represents a textual identifier used for variables and other named references.
+ */
 public class Identifier extends Expression {
-    private final String text;
-
-    public Identifier(String text) {
-        validateIdentifier(text);
-        this.text = text;
+    /**
+     * Gets the textual identifier.
+     */
+    public final String name;
+    /**
+     * Creates a new @see Identifier.
+     *
+     * @param identifier The name of the identifier.
+     * @throws IllegalArgumentException The identifier is not a valid Java identifier.
+     */
+    public Identifier(String identifier) throws IllegalArgumentException {
+        validateIdentifier(identifier);
+        this.name = identifier;
     }
     private void validateIdentifier(String text) throws IllegalArgumentException {
         if (text == null || text.equals("")) {
@@ -22,13 +33,22 @@ public class Identifier extends Expression {
             }
         }
     }
-
-    public String getText() {
-        return text;
-    }
-
+    /**
+     * Gets a textual representation of the @see Identifier.
+     *
+     * @return A textual representation of the @see Identifier.
+     */
+    @Override
     public String toString() {
-        return text;
+        return name;
+    }
+    /**
+     * Creates a new, uniquely named @see identifier.
+     *
+     * @return A new, uniquely named @see identifier.
+     */
+    public static Identifier createUniqueIdentfier() {
+        return new Identifier("Id_" + UUID.randomUUID().toString().replace("-", ""));
     }
 
 // --------------------- Interface ExpressionTreeNode ---------------------
@@ -37,7 +57,5 @@ public class Identifier extends Expression {
     public void accept(ExpressionTreeVisitor visitor) {
         visitor.visit(this);
     }
-    public static Identifier createUniqueIdentfier() {
-        return new Identifier("Id_" + UUID.randomUUID().toString().replace("-", ""));
-    }
+
 }

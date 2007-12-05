@@ -80,19 +80,19 @@ public class QueryExpressionBuilderImpl<R> implements
 //                throw new IncompleteQueryException("A query must have a select or group by clause.");
 //            }
 
-            QueryExpression queryExpression = getQueryExpression();
-            QueryEngine q = null;
-            for (Map.Entry<Identifier, Queryable> sourceEntry : sources.entrySet()) {
-                if (q == null) {
-                    q = sourceEntry.getValue().createQueryEngine();
-                }
-                q.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
+        QueryExpression queryExpression = getQueryExpression();
+        QueryEngine q = null;
+        for (Map.Entry<Identifier, Queryable> sourceEntry : sources.entrySet()) {
+            if (q == null) {
+                q = sourceEntry.getValue().createQueryEngine();
             }
-            if (q==null) {
-                throw new IncompleteQueryException("There are no sources to select from.");
-            }
-            Iterable<R> result = q.evaluate(queryExpression);
-            return result.iterator();
+            q.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());
+        }
+        if (q == null) {
+            throw new IncompleteQueryException("There are no sources to select from.");
+        }
+        Iterable<R> result = q.evaluate(queryExpression);
+        return result.iterator();
 //        }
     }
     public FromClauseBuilder<R> from(String identifier) {
@@ -174,7 +174,7 @@ public class QueryExpressionBuilderImpl<R> implements
         return in(
                 new Statement(
                         Arrays.<Expression>asList(
-                                new Identifier(source.getSourceIdentifier(currentIdentifier).getText())
+                                new Identifier(source.getSourceIdentifier(currentIdentifier).name)
                         )
                 )
         );
@@ -220,11 +220,10 @@ public class QueryExpressionBuilderImpl<R> implements
             // ..or was is a join?
             JoinClause nonGroupedJoin = (JoinClause) queryBodyClauses.get(queryBodyClauses.size() - 1);
             JoinClause groupedJoin = new JoinClause(
-                    nonGroupedJoin.getClassName(),
-                    nonGroupedJoin.getIdentifier(),
-                    nonGroupedJoin.getInIndentifier(),
-                    nonGroupedJoin.getOnExpression(),
-                    nonGroupedJoin.getEqualsExpression(),
+                    nonGroupedJoin.identifier,
+                    nonGroupedJoin.inIndentifier,
+                    nonGroupedJoin.onExpression,
+                    nonGroupedJoin.keyEqualityExpression,
                     new Identifier(identifier)
             );
             queryBodyClauses.remove(nonGroupedJoin);

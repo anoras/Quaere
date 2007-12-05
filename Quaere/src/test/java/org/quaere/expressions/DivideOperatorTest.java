@@ -5,7 +5,7 @@ import junit.framework.Assert;
 
 public class DivideOperatorTest extends BinaryExpressionTest {
     public BinaryExpression.OperatorType expectedOperator() {
-        return BinaryExpression.OperatorType.DIVIDE;
+        return BinaryExpression.OperatorType.DIVISION;
     }
     Expression createInstance() {
         return BinaryExpression.divide(UnimplementExpression.instance, UnimplementExpression.instance);

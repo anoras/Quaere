@@ -19,7 +19,7 @@ import org.junit.Test;
 
 
 public class SamplesTest {
-    
+
     @Test
     public void testWhereSimple1() {
 //        public void Linq1() {
@@ -33,19 +33,19 @@ public class SamplesTest {
 //                Console.WriteLine(x);
 //            }
 //        }
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         Integer n = alias(numbers);
         List<Integer> lowNums = from(n)
-            .where(test(n, SMALLER, 5))
-            .select();
+                .where(test(n, SMALLER, 5))
+                .select();
         String result = "";
         for (int x : lowNums) {
             result += x + ";";
         }
         Assert.assertEquals(result, "4;1;3;2;0;");
     }
-    
-    @Test    
+
+    @Test
     public void testWhereSimple2() {
 //        public void Linq2() {
 //            List products = GetProductList();
@@ -61,16 +61,16 @@ public class SamplesTest {
         List<Product> products = Product.getProductList();
         Product p = alias(Product.class, products);
         List<Product> soldOutProducts = from(p)
-            .where(equal(p.unitsInStock, 0))
-            .select();
+                .where(equal(p.unitsInStock, 0))
+                .select();
         String result = "";
         for (Product x : soldOutProducts) {
             result += x.productName + ";";
         }
         Assert.assertEquals(result, "Chef Anton's Gumbo Mix;Alice Mutton;Thueringer Rostbratwurst;Gorgonzola Telino;Perth Pasties;");
     }
-    
-    @Test    
+
+    @Test
     public void testWhereSimple3() {
 //        public void Linq3() {
 //            List products = GetProductList();
@@ -86,36 +86,36 @@ public class SamplesTest {
         List<Product> products = Product.getProductList();
         Product p = alias(Product.class, products);
         List<Product> expensiveInStockProducts = from(p)
-            .where(test(p.unitsInStock, BIGGER, 0).and(p.unitPrice, BIGGER, 3.0))
-            .select();
+                .where(test(p.unitsInStock, BIGGER, 0).and(p.unitPrice, BIGGER, 3.0))
+                .select();
         String result = "";
         for (Product x : expensiveInStockProducts) {
             result += x.productName + ";";
         }
         Assert.assertEquals(
-                        result,
-                        "Chai;Chang;Aniseed Syrup;Chef Anton's Cajun Seasoning;Grandma's Boysenberry Spread;"
-                                + "Uncle Bob's Organic Dried Pears;Northwoods Cranberry Sauce;Mishi Kobe Niku;Ikura;"
-                                + "Queso Cabrales;Queso Manchego La Pastora;Konbu;Tofu;Genen Shouyu;Pavlova;"
-                                + "Carnarvon Tigers;Teatime Chocolate Biscuits;Sir Rodney's Marmalade;Sir Rodney's Scones;"
-                                + "Gustaf's Knaeckebroed;Tunnbroed;Guarana Fantastica;NuNuCa Nuss-Nougat-Creme;Gumbaer Gummibaerchen;"
-                                + "Schoggi Schokolade;Roessle Sauerkraut;Nord-Ost Matjeshering;Mascarpone Fabioli;Sasquatch Ale;"
-                                + "Steeleye Stout;Inlagd Sill;Gravad lax;Cote de Blaye;"
-                                + "Chartreuse verte;Boston Crab Meat;Jack's New England Clam Chowder;"
-                                + "Singaporean Hokkien Fried Mee;Ipoh Coffee;Gula Malacca;Rogede sild;"
-                                + "Spegesild;Zaanse koeken;Chocolade;Maxilaku;Valkoinen suklaa;"
-                                + "Manjimup Dried Apples;Filo Mix;Tourtiere;Pate chinois;"
-                                + "Gnocchi di nonna Alice;Ravioli Angelo;Escargots de Bourgogne;"
-                                + "Raclette Courdavault;Camembert Pierrot;Sirop d'erable;"
-                                + "Tarte au sucre;Vegie-spread;Wimmers gute Semmelknoedel;"
-                                + "Louisiana Fiery Hot Pepper Sauce;Louisiana Hot Spiced Okra;"
-                                + "Laughing Lumberjack Lager;Scottish Longbreads;Gudbrandsdalsost;"
-                                + "Outback Lager;Flotemysost;Mozzarella di Giovanni;Roed Kaviar;"
-                                + "Longlife Tofu;Rhoenbraeu Klosterbier;Lakkalikoeoeri;"
-                                + "Original Frankfurter gruene Sosse;");        
+                result,
+                "Chai;Chang;Aniseed Syrup;Chef Anton's Cajun Seasoning;Grandma's Boysenberry Spread;"
+                        + "Uncle Bob's Organic Dried Pears;Northwoods Cranberry Sauce;Mishi Kobe Niku;Ikura;"
+                        + "Queso Cabrales;Queso Manchego La Pastora;Konbu;Tofu;Genen Shouyu;Pavlova;"
+                        + "Carnarvon Tigers;Teatime Chocolate Biscuits;Sir Rodney's Marmalade;Sir Rodney's Scones;"
+                        + "Gustaf's Knaeckebroed;Tunnbroed;Guarana Fantastica;NuNuCa Nuss-Nougat-Creme;Gumbaer Gummibaerchen;"
+                        + "Schoggi Schokolade;Roessle Sauerkraut;Nord-Ost Matjeshering;Mascarpone Fabioli;Sasquatch Ale;"
+                        + "Steeleye Stout;Inlagd Sill;Gravad lax;Cote de Blaye;"
+                        + "Chartreuse verte;Boston Crab Meat;Jack's New England Clam Chowder;"
+                        + "Singaporean Hokkien Fried Mee;Ipoh Coffee;Gula Malacca;Rogede sild;"
+                        + "Spegesild;Zaanse koeken;Chocolade;Maxilaku;Valkoinen suklaa;"
+                        + "Manjimup Dried Apples;Filo Mix;Tourtiere;Pate chinois;"
+                        + "Gnocchi di nonna Alice;Ravioli Angelo;Escargots de Bourgogne;"
+                        + "Raclette Courdavault;Camembert Pierrot;Sirop d'erable;"
+                        + "Tarte au sucre;Vegie-spread;Wimmers gute Semmelknoedel;"
+                        + "Louisiana Fiery Hot Pepper Sauce;Louisiana Hot Spiced Okra;"
+                        + "Laughing Lumberjack Lager;Scottish Longbreads;Gudbrandsdalsost;"
+                        + "Outback Lager;Flotemysost;Mozzarella di Giovanni;Roed Kaviar;"
+                        + "Longlife Tofu;Rhoenbraeu Klosterbier;Lakkalikoeoeri;"
+                        + "Original Frankfurter gruene Sosse;");
     }
-    
-    @Test    
+
+    @Test
     public void testWhereSimple4() {
 //    public void Linq4() {
 //        List customers = GetCustomerList();
@@ -134,33 +134,33 @@ public class SamplesTest {
         List<Customer> customers = Customer.getCustomerList();
         Customer c = alias(Customer.class);
         List<Customer> waCustomers = from(customers, c)
-            .where(equal(c.region, "WA"))
-            .select();
-        
+                .where(equal(c.region, "WA"))
+                .select();
+
     }
-    
-    @Test    
+
+    @Test
     public void testWhereSimple5() {
 //        public void Linq5() {
 //            string[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
 //            var shortDigits = digits.Where((digit, index) => digit.Length < index);
 //            Console.WriteLine("Short digits:");
 //            foreach (var d in shortDigits) {
-//                Console.WriteLine("The word {0} is shorter than its value.", d);
+//                Console.WriteLine("The word {0} is shorter than its name.", d);
 //            }
 //        }        
-        String[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        String[] digits = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         String digit = alias(digits);
         List<String> shortDigits = from(digit)
-            .where(test(length(digit), SMALLER, index()))
-            .select();
+                .where(test(length(digit), SMALLER, index()))
+                .select();
         String result = "";
         for (String x : shortDigits) {
-            result +=  x + ";";
+            result += x + ";";
         }
         Assert.assertEquals(result, "five;six;seven;eight;nine;");
     }
-    
+
     @Test
     public void testSelectSimple1() {
 //        public void Linq6() {
@@ -173,17 +173,17 @@ public class SamplesTest {
 //                Console.WriteLine(i);
 //            }
 //        }        
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         Integer n = alias(numbers);
         List<Integer> lowNums = from(n)
-            .select(add(n, 1));
+                .select(add(n, 1));
         String result = "";
         for (int x : lowNums) {
             result += x + ";";
         }
         Assert.assertEquals(result, "6;5;2;4;10;9;7;8;3;1;");
     }
-    
+
     @Test
     public void testSelectSimple2() {
 //    public void Linq7() {
@@ -199,12 +199,12 @@ public class SamplesTest {
         List<Product> products = Product.getProductList();
         Product p = alias(Product.class, products);
         List<String> productNames = from(p)
-            .select(p.productName);
+                .select(p.productName);
         for (int i = 0; i < products.size(); i++) {
             Assert.assertEquals(products.get(i).productName, productNames.get(i));
         }
-    }        
-    
+    }
+
     @Test
     public void testSelectTransformation() {
 //        public void Linq8() {
@@ -218,18 +218,18 @@ public class SamplesTest {
 //                Console.WriteLine(s);
 //            }        
 //        }
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-        String[] strings = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        String[] strings = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         Integer n = alias(numbers);
         List<String> textNums = from(n)
-            .select(get(strings, n));
+                .select(get(strings, n));
         String result = "";
         for (String x : textNums) {
             result += x + ";";
-        }        
+        }
         Assert.assertEquals(result, "five;four;one;three;nine;eight;six;seven;two;zero;");
     }
-    
+
     public static class UpperLower {
         public String upper, lower;
     }
@@ -245,11 +245,11 @@ public class SamplesTest {
 //                Console.WriteLine("Uppercase: {0}, Lowercase: {1}", ul.Upper, ul.Lower);
 //            }
 //        }
-        String[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" };
+        String[] words = {"aPPLE", "BlUeBeRrY", "cHeRry"};
         String w = alias(words);
         UpperLower x = template(UpperLower.class);
         List<UpperLower> upperLowerWords = from(w)
-            .select(x, set(x.upper, upper(w)), set(x.lower, lower(w)));
+                .select(x, set(x.upper, upper(w)), set(x.lower, lower(w)));
         String resultUpper = "", resultLower = "";
         for (UpperLower ul : upperLowerWords) {
             resultUpper += ul.upper + ";";
@@ -258,13 +258,13 @@ public class SamplesTest {
         Assert.assertEquals(resultUpper, "APPLE;BLUEBERRY;CHERRY;");
         Assert.assertEquals(resultLower, "apple;blueberry;cherry;");
     }
-    
-    
+
+
     public static class Digit {
         public String digit;
         public Boolean even;
     }
-    
+
     @Test
     public void testAnonymousTypes2() {
 //        public void Linq10() {
@@ -277,25 +277,25 @@ public class SamplesTest {
 //                Console.WriteLine("The digit {0} is {1}.", d.Digit, d.Even ? "even" : "odd");
 //            }
 //        }        
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-        String[] strings = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        String[] strings = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         Integer n = alias(numbers);
         Digit x = template(Digit.class);
         List<Digit> digitOddEvens = from(n)
-            .select(x, set(x.digit, get(strings, n)), set(x.even, equal(mod(n, 2), 0)));
+                .select(x, set(x.digit, get(strings, n)), set(x.even, equal(mod(n, 2), 0)));
         String result = "";
         for (Digit d : digitOddEvens) {
             result += d.digit + ":" + (d.even ? "even" : "odd") + ";";
         }
         Assert.assertEquals("five:odd;four:even;one:odd;three:odd;nine:odd;eight:even;six:even;seven:odd;two:even;zero:even;", result);
     }
-    
+
     public static class ProductPrice {
         public String productName;
         public String category;
         public Double price;
     }
-    
+
     @Test
     public void testAnonymousTypes3() {
 //    public void Linq11() {
@@ -311,22 +311,22 @@ public class SamplesTest {
         Product p = alias(Product.class, products);
         ProductPrice x = template(ProductPrice.class);
         List<ProductPrice> productInfos = from(p)
-            .select(x, 
-                    set(x.productName, p.productName), 
-                    set(x.category, p.category), 
-                    set(x.price, p.unitPrice));
+                .select(x,
+                        set(x.productName, p.productName),
+                        set(x.category, p.category),
+                        set(x.price, p.unitPrice));
         for (int i = 0; i < productInfos.size(); i++) {
             Assert.assertEquals(products.get(i).productName, productInfos.get(i).productName);
             Assert.assertEquals(products.get(i).category, productInfos.get(i).category);
             Assert.assertEquals(products.get(i).unitPrice, productInfos.get(i).price);
         }
     }
-    
+
     public static class NumberInplace {
         public Integer num;
         public Boolean inPlace;
     }
-    
+
     @Test
     public void testSelectIndexes() {
 //        public void Linq12() {
@@ -337,7 +337,7 @@ public class SamplesTest {
 //                Console.WriteLine("{0}: {1}", n.Num, n.InPlace);
 //            }
 //        }
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
         Integer i = alias(numbers);
         NumberInplace x = template(NumberInplace.class);
         List<NumberInplace> numsInPlace = from(i).select(x, set(x.num, i), set(x.inPlace, equal(i, index())));
@@ -347,7 +347,7 @@ public class SamplesTest {
         }
         Assert.assertEquals("5:false;4:false;1:false;3:true;9:false;8:false;6:true;7:true;2:false;0:false;", result);
     }
-    
+
     @Test
     public void testSelectFiltered() {
 //        public void Linq13() {
@@ -362,8 +362,8 @@ public class SamplesTest {
 //                Console.WriteLine(num);
 //            }    
 //        }
-        int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-        String[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        int[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2, 0};
+        String[] digits = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
         Integer n = alias(numbers);
         List<String> lowNums = from(n).where(test(n, SMALLER, 5)).select(get(digits, n));
         String result = "";
@@ -371,7 +371,7 @@ public class SamplesTest {
             result += x + ";";
         }
         Assert.assertEquals("four;one;three;two;zero;", result);
-        
+
     }
-    
+
 }

@@ -3,7 +3,6 @@ package org.quaere;
 import org.quaere.expressions.Identifier;
 import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
 
-import java.util.Comparator;
 import java.util.Iterator;
 
 public class QueryableIterable<T> implements Queryable<T> {
@@ -22,6 +21,6 @@ public class QueryableIterable<T> implements Queryable<T> {
         return new Quaere4ObjectsQueryEngine();
     }
     public Identifier getSourceIdentifier(Identifier identifier) {
-        return new Identifier("__src_" + identifier.getText());
+        return new Identifier("__src_" + identifier.name);
     }
 }

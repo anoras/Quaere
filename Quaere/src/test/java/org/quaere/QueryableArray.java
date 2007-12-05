@@ -2,7 +2,6 @@ package org.quaere;
 
 import org.quaere.expressions.Identifier;
 import org.quaere.expressions.Expression;
-import org.quaere.dsl.parser.QuaereParser;
 
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +18,7 @@ public class QueryableArray<T> implements Queryable<T> {
         return new QueryableArrayQueryEngine(this);
     }
     public Identifier getSourceIdentifier(Identifier identifier) {
-        return new Identifier("__quare_quaere_quaere_" + identifier.getText());
+        return new Identifier("__quare_quaere_quaere_" + identifier.name);
     }
     public Iterator<T> iterator() {
         return innerList.iterator();

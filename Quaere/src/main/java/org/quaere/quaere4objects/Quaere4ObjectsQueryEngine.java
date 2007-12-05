@@ -22,27 +22,28 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void addSource(Identifier identifier, Queryable<?> source) {
-        rawSources.put(identifier.getText(), source);
+        rawSources.put(identifier.name, source);
     }
 
     // --------------------- Interface ExpressionTreeVisitor ---------------------
 
     public void visit(FromClause expression) {
-        sourceNames.add(expression.getIdentifier().getText());
+        sourceNames.add(expression.identifier.name);
         if (sourceNames.size() == 1) {
             // First iterable
-            expression.getExpression().accept(this);
+            expression.sourceExpression.accept(this);
             for (Object item : (Iterable) result) {
                 List<Object> row = new ArrayList<Object>();
                 row.add(item);
                 tuples.add(row);
             }
-        } else {
+        }
+        else {
             // Create a scalar product
             for (int i = tuples.size() - 1; i >= 0; i--) {
                 List<Object> tuple = tuples.get(i);
                 currentTuple = tuple;
-                expression.getExpression().accept(this);
+                expression.sourceExpression.accept(this);
                 for (Object item : (Iterable) result) {
                     List<Object> newTuple = new ArrayList<Object>();
                     newTuple.addAll(tuple);
@@ -69,7 +70,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                         break;
                     }
                 }
-            } else {
+            }
+            else {
                 containsKey = groups.containsKey(key);
             }
             if (!containsKey) {
@@ -88,19 +90,19 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(JoinClause expression) {
-        sourceNames.add(expression.getIdentifier().getText());
+        sourceNames.add(expression.identifier.name);
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
             currentTuple = tuple;
-            expression.getInIndentifier().accept(this);
+            expression.inIndentifier.accept(this);
             for (Object item : (Iterable) result) {
                 List<Object> newTuple = new ArrayList<Object>();
                 newTuple.addAll(tuple);
                 newTuple.add(item);
                 currentTuple = newTuple;
-                expression.getOnExpression().accept(this);
+                expression.onExpression.accept(this);
                 Object left = result;
-                expression.getEqualsExpression().accept(this);
+                expression.keyEqualityExpression.accept(this);
                 Object right = result;
                 if (Comparer.compare(left, right) == 0) {
                     tuples.add(newTuple);
@@ -108,8 +110,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 tuples.remove(tuple);
             }
         }
-        if (expression.getIntoIdentifier() != null) {
-            sourceNames.add(expression.getIntoIdentifier().getText());
+        if (expression.intoIdentifier != null) {
+            sourceNames.add(expression.intoIdentifier.name);
         }
     }
 
@@ -128,7 +130,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                     if (v != 0) {
                         if (!criteria.getDirection().equals(OrderByCriteria.Direction.ASCENDING)) {
                             return -1 * v;
-                        } else {
+                        }
+                        else {
                             return v;
                         }
                     }
@@ -140,11 +143,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(DeclareClause expression) {
-        sourceNames.add(expression.getLeft().getText());
+        sourceNames.add(expression.variableIdentifier.name);
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
             currentTuple = tuple;
-            expression.getRight().accept(this);
+            expression.assignedExpression.accept(this);
             tuple.add(result);
         }
     }
@@ -186,14 +189,15 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
 
     public void visit(QueryContinuation expression) {
         sourceNames.clear();
-        sourceNames.add(expression.getIdentifier().getText());
+        sourceNames.add(expression.getIdentifier().name);
         expression.getQueryBody().accept(this);
     }
 
     public void visit(QueryExpression expression) {
         if (expression instanceof SubqueryExpression) {
             visit((SubqueryExpression) expression);
-        } else {
+        }
+        else {
             expression.getFrom().accept(this);
             expression.getQueryBody().accept(this);
         }
@@ -235,79 +239,92 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             case EQUAL:
                 if (left == null && right == null) {
                     result = true;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = false;
-                } else {
+                }
+                else {
                     result = left.equals(right);
                 }
                 break;
             case NOT_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = true;
-                } else {
+                }
+                else {
                     result = !left.equals(right);
                 }
                 break;
             case GREATER_THAN:
                 if (left == null && right == null) {
                     result = false;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = false;
-                } else {
+                }
+                else {
                     result = ((Comparable) left).compareTo(right) > 0;
                 }
                 break;
             case GREATER_THAN_OR_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = false;
-                } else {
+                }
+                else {
                     result = ((Comparable) left).compareTo(right) >= 0;
                 }
                 break;
             case LESS_THAN:
                 if (left == null && right == null) {
                     result = false;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = false;
-                } else {
+                }
+                else {
                     result = ((Comparable) left).compareTo(right) < 0;
                 }
                 break;
             case LESS_THAN_OR_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                } else if (left == null) {
+                }
+                else if (left == null) {
                     result = false;
-                } else {
+                }
+                else {
                     result = ((Comparable) left).compareTo(right) <= 0;
                 }
                 break;
-            case MINUS:
+            case SUBTRACTION:
                 result = Convert.toType(
                         Convert.toDouble(left) - Convert.toDouble(right),
                         left.getClass()
                 );
                 break;
-            case PLUS:
+            case ADDITION:
                 if ((left instanceof String) || (right instanceof String)) {
                     result = String.valueOf(left) + String.valueOf(right);
-                } else {
+                }
+                else {
                     result = Convert.toType(
                             Convert.toDouble(left) + Convert.toDouble(right),
                             left.getClass()
                     );
                 }
                 break;
-            case MULTIPLY:
+            case MULTIPLICATION:
                 result = Convert.toType(
                         Convert.toDouble(left) * Convert.toDouble(right),
                         left.getClass());
                 break;
-            case DIVIDE:
+            case DIVISION:
                 result = Convert.toType(Convert.toDouble(left) / Convert.toDouble(right), left.getClass());
                 break;
             case MODULO:
@@ -328,7 +345,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Object left = result;
         if ((Boolean) left) {
             expression.getMiddleExpression().accept(this);
-        } else {
+        }
+        else {
             expression.getRightExpression().accept(this);
         }
     }
@@ -348,33 +366,38 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(Constant expression) {
-        result = expression.getValue();
+        result = expression.value;
     }
     public void visit(Identifier expression) {
-        if (namedSources.containsKey(expression.getText())) {
-            result = namedSources.get(expression.getText());
+        if (namedSources.containsKey(expression.name)) {
+            result = namedSources.get(expression.name);
             return;
         }
         if (result == null) {
-            int index = sourceNames.indexOf(expression.getText());
+            int index = sourceNames.indexOf(expression.name);
             if (index > -1 && index < currentTuple.size()) {
                 result = currentTuple.get(index);
-            } else if (index == -1) {
+            }
+            else if (index == -1) {
                 // Coerce the non-exisiting Identifier to a Constant.
-                Constant asConstant = new Constant(expression.getText(), String.class);
+                Constant asConstant = new Constant(expression.name, String.class);
                 this.visit(asConstant);
-            } else {
+            }
+            else {
                 result = null;
             }
-        } else {
+        }
+        else {
             Class clazz = result.getClass();
             try {
-                Field f = clazz.getDeclaredField(expression.getText());
+                Field f = clazz.getDeclaredField(expression.name);
                 f.setAccessible(true);
                 result = f.get(result);
-            } catch (NoSuchFieldException e) {
+            }
+            catch (NoSuchFieldException e) {
                 throw new RuntimeException(String.format("Field %s was not found on %s", e.getMessage(), result.getClass().getName()), e);
-            } catch (IllegalAccessException e) {
+            }
+            catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -384,9 +407,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         if (expression.getLambdaExpression() != null) {
             result = invokeOperator(expression);
             if (result == null) {
-                throw new RuntimeException(String.format("Unknown operator: %s", expression.getIdentifier().getText()));
+                throw new RuntimeException(String.format("Unknown operator: %s", expression.getIdentifier().name));
             }
-        } else if (result != null) {
+        }
+        else if (result != null) {
             Object[] parameters = new Object[expression.getParameters().size()];
             Class[] argumentClasses = new Class[parameters.length];
             if (parameters.length > 0) {
@@ -403,17 +427,20 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             Class<? extends Object> clazz = null;
             try {
                 clazz = result.getClass();
-                String methodName = expression.getIdentifier().getText();
+                String methodName = expression.getIdentifier().name;
                 Method method = findMethod(clazz, methodName, argumentClasses);
                 result = method.invoke(result, parameters);
-            } catch (NoSuchMethodException e) {
+            }
+            catch (NoSuchMethodException e) {
                 result = invokeOperator(expression);
                 if (result == null) {
-                    throw new RuntimeException(String.format("Method '%s' not found on class '%s'", expression.getIdentifier().getText(), clazz.getName()));
+                    throw new RuntimeException(String.format("Method '%s' not found on class '%s'", expression.getIdentifier().name, clazz.getName()));
                 }
-            } catch (IllegalAccessException e) {
+            }
+            catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -429,7 +456,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 for (Class i : argumentClasses[0].getInterfaces()) {
                     try {
                         return findMethod(clazz, methodName, new Class[]{i});
-                    } catch (Throwable e1) {
+                    }
+                    catch (Throwable e1) {
                     }
                 }
             }
@@ -452,9 +480,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         expression.getParameter().accept(this);
         if (indexed instanceof List) {
             result = ((List) indexed).get((Integer) result);
-        } else if (indexed instanceof CharSequence) {
+        }
+        else if (indexed instanceof CharSequence) {
             result = ((CharSequence) indexed).charAt((Integer) result);
-        } else {
+        }
+        else {
             throw new IllegalArgumentException(String.format("Cannot apply indexer to '%s'.", result.getClass().getName()));
         }
     }
@@ -478,7 +508,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 v.add(p.getPropertyName(), result);
             }
             result = v;
-        } else {
+        }
+        else {
             try {
                 // TODO: Support setter (and ctor) injection
                 Class<?> clazz = expression.getClazz();
@@ -490,7 +521,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                     field.set(instance, result);
                 }
                 result = instance;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -500,7 +532,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     public <T> T evaluate(Expression expression) {
         for (Map.Entry<String, Queryable> sourceEntry : rawSources.entrySet()) {
             List<Object> s = new ArrayList<Object>();
-            for (Object elm : sourceEntry.getValue()) s.add(elm);
+            for (Object elm : sourceEntry.getValue()) {
+                s.add(elm);
+            }
             namedSources.put(sourceEntry.getKey(), s);
         }
         expression.accept(this);
@@ -508,50 +542,71 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     private Object invokeOperator(MethodCall methodCall) {
-        String methodName = methodCall.getIdentifier().getText();
+        String methodName = methodCall.getIdentifier().name;
         if (methodName.equals("count")) {
             return count(methodCall);
-        } else if (methodName.equals("where")) {
+        }
+        else if (methodName.equals("where")) {
             return where(methodCall);
-        } else if (methodName.equals("take")) {
+        }
+        else if (methodName.equals("take")) {
             return take(methodCall);
-        } else if (methodName.equals("skip")) {
+        }
+        else if (methodName.equals("skip")) {
             return skip(methodCall);
-        } else if (methodName.equals("takeWhile")) {
+        }
+        else if (methodName.equals("takeWhile")) {
             return takeWhile(methodCall);
-        } else if (methodName.equals("skipWhile")) {
+        }
+        else if (methodName.equals("skipWhile")) {
             return skipWhile(methodCall);
-        } else if (methodName.equals("select")) {
+        }
+        else if (methodName.equals("select")) {
             return select(methodCall);
-        } else if (methodName.equals("reverse")) {
+        }
+        else if (methodName.equals("reverse")) {
             return reverse(methodCall);
-        } else if (methodName.equals("distinct")) {
+        }
+        else if (methodName.equals("distinct")) {
             return distinct(methodCall);
-        } else if (methodName.equals("union")) {
+        }
+        else if (methodName.equals("union")) {
             return union(methodCall);
-        } else if (methodName.equals("intersect")) {
+        }
+        else if (methodName.equals("intersect")) {
             return intersect(methodCall);
-        } else if (methodName.equals("except")) {
+        }
+        else if (methodName.equals("except")) {
             return except(methodCall);
-        } else if (methodName.equals("first")) {
+        }
+        else if (methodName.equals("first")) {
             return first(methodCall);
-        } else if (methodName.equals("elementAt")) {
+        }
+        else if (methodName.equals("elementAt")) {
             return elementAt(methodCall);
-        } else if (methodName.equals("any")) {
+        }
+        else if (methodName.equals("any")) {
             return any(methodCall);
-        } else if (methodName.equals("all")) {
+        }
+        else if (methodName.equals("all")) {
             return all(methodCall);
-        } else if (methodName.equals("sum")) {
+        }
+        else if (methodName.equals("sum")) {
             return sum(methodCall);
-        } else if (methodName.equals("min")) {
+        }
+        else if (methodName.equals("min")) {
             return min(methodCall);
-        } else if (methodName.equals("max")) {
+        }
+        else if (methodName.equals("max")) {
             return max(methodCall);
-        } else if (methodName.equals("average")) {
+        }
+        else if (methodName.equals("average")) {
             return average(methodCall);
-        } else if (methodName.equals("aggregate")) {
+        }
+        else if (methodName.equals("aggregate")) {
             return aggregate(methodCall);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -566,15 +621,15 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
 
     private List<Object> where(MethodCall methodCall) {
         if (methodCall.getLambdaExpression() == null) {
-            throw new IllegalArgumentException("Method calls to the where operator must have a lambda expression.");
+            throw new IllegalArgumentException("Method calls to the where operator must have a lambda sourceExpression.");
         }
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
@@ -602,7 +657,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<Object> selected = new ArrayList<Object>();
         int i = 0;
         for (Object item : items) {
-            if (i++ >= max) break;
+            if (i++ >= max) {
+                break;
+            }
             selected.add(item);
         }
         return selected;
@@ -615,7 +672,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<Object> selected = new ArrayList<Object>();
         int i = 0;
         for (Object item : items) {
-            if (i++ < max) continue;
+            if (i++ < max) {
+                continue;
+            }
             selected.add(item);
         }
         return selected;
@@ -628,10 +687,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
@@ -646,7 +705,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             methodCall.getLambdaExpression().accept(this);
             if ((Boolean) result) {
                 evaluation.add(item);
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -661,10 +721,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
@@ -681,7 +741,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 methodCall.getLambdaExpression().accept(this);
                 if ((Boolean) result) {
                     continue;
-                } else {
+                }
+                else {
                     go = true;
                 }
             }
@@ -698,10 +759,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
@@ -726,7 +787,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             for (int i = ((List) result).size() - 1; i >= 0; i++) {
                 evaluation.add(((List) result).get(i));
             }
-        } else {
+        }
+        else {
             throw new RuntimeException("Cannot reverse...");
         }
         return evaluation;
@@ -736,7 +798,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Iterable items = (Iterable) result;
         List<Object> selected = new ArrayList<Object>();
         for (Object item : items) {
-            if (!selected.contains(item)) selected.add(item);
+            if (!selected.contains(item)) {
+                selected.add(item);
+            }
         }
         return selected;
     }
@@ -747,10 +811,14 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Iterable bIter = (Iterable) result;
         List<Object> selected = new ArrayList<Object>();
         for (Object item : aIter) {
-            if (!selected.contains(item)) selected.add(item);
+            if (!selected.contains(item)) {
+                selected.add(item);
+            }
         }
         for (Object item : bIter) {
-            if (!selected.contains(item)) selected.add(item);
+            if (!selected.contains(item)) {
+                selected.add(item);
+            }
         }
         return selected;
     }
@@ -761,7 +829,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List bList = (List) result;
         List<Object> selected = new ArrayList<Object>();
         for (Object item : aIter) {
-            if (bList.contains(item)) selected.add(item);
+            if (bList.contains(item)) {
+                selected.add(item);
+            }
         }
         return selected;
     }
@@ -772,7 +842,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List bList = (List) result;
         List<Object> selected = new ArrayList<Object>();
         for (Object item : aIter) {
-            if (!bList.contains(item)) selected.add(item);
+            if (!bList.contains(item)) {
+                selected.add(item);
+            }
         }
         return selected;
     }
@@ -781,7 +853,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         if (methodCall.getLambdaExpression() == null) {
             if (((List) result).size() > 0) {
                 return ((List) result).get(0);
-            } else {
+            }
+            else {
                 return null;
             }
         }
@@ -789,10 +862,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         Object evaluation = null;
         int i = 0;
@@ -819,7 +892,8 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         methodCall.getParameters().get(0).accept(this);
         if (((List) o).size() > (Integer) result) {
             return ((List) o).get((Integer) result);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -831,10 +905,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         int i = 0;
         for (Object item : (Iterable) result) {
@@ -862,10 +936,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         int i = 0;
         for (Object item : (Iterable) result) {
@@ -897,10 +971,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         int i = 0;
         for (Object item : (Iterable) result) {
@@ -929,10 +1003,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         int i = 0;
         for (Object item : (Iterable) result) {
@@ -967,10 +1041,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
         int i = 0;
         for (Object item : (Iterable) result) {
@@ -991,11 +1065,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = sourceNames;
         sourceNames = new ArrayList<String>();
         if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().getText());
+            sourceNames.add(methodCall.getAnonymousIdentifier().name);
         }
         // NOTE: Index identigier doubles for accumulate identifier...
         if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().getText());
+            sourceNames.add(methodCall.getIndexedIdentifier().name);
         }
 
         Iterator resultIter = ((Iterable) result).iterator();
@@ -1016,10 +1090,11 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     static String getSourceName(Identifier identifier) {
-        if (!identifier.getText().startsWith("__src_")) {
-            return "__src_" + identifier.getText();
-        } else {
-            return identifier.getText();
+        if (!identifier.name.startsWith("__src_")) {
+            return "__src_" + identifier.name;
+        }
+        else {
+            return identifier.name;
         }
     }
 }

@@ -294,7 +294,7 @@ public class AggregationOperatorsScenarioTest {
     Fold - Seed
 
 
-This sample subtracts a sequence of integers from a starting value, simulating withdrawls from an account. While there is still cash left in the account, the withdrawal succeeds. The sample uses Fold to pass each withdrawal value in turn to the lambda expression that performs the subtraction.
+This sample subtracts a sequence of integers from a starting name, simulating withdrawls from an account. While there is still cash left in the account, the withdrawal succeeds. The sample uses Fold to pass each withdrawal name in turn to the lambda sourceExpression that performs the subtraction.
 
 public void Linq93() {
    double startBalance = 100.0;

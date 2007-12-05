@@ -33,13 +33,17 @@ public class Convert {
     public static boolean toBoolean(Object obj) {
         if (isNullOrEmptyString(obj)) {
             return false;
-        } else if (isBoolean(obj)) {
+        }
+        else if (isBoolean(obj)) {
             return (Boolean) obj;
-        } else if (isNumber(obj)) {
+        }
+        else if (isNumber(obj)) {
             return ((Number) obj).intValue() != 0;
-        } else if (isCharSequence(obj)) {
+        }
+        else if (isCharSequence(obj)) {
             return Boolean.valueOf(toString(obj));
-        } else {
+        }
+        else {
             throw createConversionException(obj, Boolean.class);
         }
     }
@@ -92,14 +96,19 @@ public class Convert {
     }
 
     public static Character toCharacter(Object obj) {
-        if (isNullOrEmptyString(obj) || isBoolean(obj)) { // TODO why ignore boolean value?
+        if (isNullOrEmptyString(obj) || isBoolean(obj)) { // TODO why ignore boolean name?
             return (char) 0;
-        } else if (isCharacter(obj)) return (Character) obj;
+        }
+        else if (isCharacter(obj)) {
+            return (Character) obj;
+        }
         if (isNumber(obj)) {
             return (char) ((Number) obj).shortValue();
-        } else if (isCharSequence(obj)) {
+        }
+        else if (isCharSequence(obj)) {
             return ((String) obj).charAt(0);
-        } else {
+        }
+        else {
             throw createConversionException(obj, Character.class);
         }
     }
@@ -122,18 +131,24 @@ public class Convert {
     private static Number toNumber(Object obj, Class<? extends Number> toClass) {
         if (isNullOrEmptyString(obj)) {
             return toNumber(0, toClass);
-        } else if (isCharacter(obj)) {
+        }
+        else if (isCharacter(obj)) {
             char val = (Character) obj;
             return toNumber(new Short((short) val), toClass);
-        } else if (isBoolean(obj)) {
+        }
+        else if (isBoolean(obj)) {
             return (Boolean) obj ? toNumber(1, toClass) : toNumber(0, toClass);
-        } else if (isInstance(obj, toClass)) {
+        }
+        else if (isInstance(obj, toClass)) {
             return (Number) obj;
-        } else if (isNumber(obj)) {
+        }
+        else if (isNumber(obj)) {
             return toNumber((Number) obj, toClass);
-        } else if (isCharSequence(obj)) {
+        }
+        else if (isCharSequence(obj)) {
             return toNumber((String) obj, toClass);
-        } else {
+        }
+        else {
             throw createConversionException(obj, toClass);
         }
     }
@@ -149,21 +164,29 @@ public class Convert {
     public static Number toNumber(String val, Class<? extends Number> toClass) {
         if (Byte.class.equals(toClass)) {
             return Byte.valueOf(val);
-        } else if (Short.class.equals(toClass)) {
+        }
+        else if (Short.class.equals(toClass)) {
             return Short.valueOf(val);
-        } else if (Integer.class.equals(toClass)) {
+        }
+        else if (Integer.class.equals(toClass)) {
             return Integer.valueOf(val);
-        } else if (Long.class.equals(toClass)) {
+        }
+        else if (Long.class.equals(toClass)) {
             return Long.valueOf(val);
-        } else if (Float.class.equals(toClass)) {
+        }
+        else if (Float.class.equals(toClass)) {
             return Float.valueOf(val);
-        } else if (Double.class.equals(toClass)) {
+        }
+        else if (Double.class.equals(toClass)) {
             return Double.valueOf(val);
-        } else if (BigInteger.class.equals(toClass)) {
+        }
+        else if (BigInteger.class.equals(toClass)) {
             return new BigInteger(val);
-        } else if (BigDecimal.class.equals(toClass)) {
+        }
+        else if (BigDecimal.class.equals(toClass)) {
             return new BigDecimal(val);
-        } else {
+        }
+        else {
             throw createConversionException(val, toClass);
         }
     }
@@ -174,29 +197,39 @@ public class Convert {
         }
         if (Byte.class.equals(toClass)) {
             return Primitives.getByte(val.byteValue());
-        } else if (Short.class.equals(toClass)) {
+        }
+        else if (Short.class.equals(toClass)) {
             return Primitives.getShort(val.shortValue());
-        } else if (Integer.class.equals(toClass)) {
+        }
+        else if (Integer.class.equals(toClass)) {
             return Primitives.getInteger(val.intValue());
-        } else if (Long.class.equals(toClass)) {
+        }
+        else if (Long.class.equals(toClass)) {
             return Primitives.getLong(val.longValue());
-        } else if (Float.class.equals(toClass)) {
+        }
+        else if (Float.class.equals(toClass)) {
             return Primitives.getFloat(val.floatValue());
-        } else if (Double.class.equals(toClass)) {
+        }
+        else if (Double.class.equals(toClass)) {
             return Primitives.getDouble(val.doubleValue());
-        } else if (BigInteger.class.equals(toClass)) {
+        }
+        else if (BigInteger.class.equals(toClass)) {
             if (val instanceof BigDecimal) {
                 return ((BigDecimal) val).toBigInteger();
-            } else {
+            }
+            else {
                 return BigInteger.valueOf(val.longValue());
             }
-        } else if (BigDecimal.class.equals(toClass)) {
+        }
+        else if (BigDecimal.class.equals(toClass)) {
             if (val instanceof BigInteger) {
                 return new BigDecimal((BigInteger) val);
-            } else {
+            }
+            else {
                 return new BigDecimal(val.doubleValue());
             }
-        } else {
+        }
+        else {
             throw createConversionException(val, toClass);
         }
     }
@@ -204,21 +237,29 @@ public class Convert {
     public static Number toNumber(long val, Class<? extends Number> toClass) {
         if (Byte.class.equals(toClass)) {
             return Primitives.getByte((byte) val);
-        } else if (Short.class.equals(toClass)) {
+        }
+        else if (Short.class.equals(toClass)) {
             return Primitives.getShort((short) val);
-        } else if (Integer.class.equals(toClass)) {
+        }
+        else if (Integer.class.equals(toClass)) {
             return Primitives.getInteger((int) val);
-        } else if (Long.class.equals(toClass)) {
+        }
+        else if (Long.class.equals(toClass)) {
             return Primitives.getLong((val));
-        } else if (Float.class.equals(toClass)) {
+        }
+        else if (Float.class.equals(toClass)) {
             return Primitives.getFloat((float) val);
-        } else if (Double.class.equals(toClass)) {
+        }
+        else if (Double.class.equals(toClass)) {
             return Primitives.getDouble((double) val);
-        } else if (BigInteger.class.equals(toClass)) {
+        }
+        else if (BigInteger.class.equals(toClass)) {
             return BigInteger.valueOf(Primitives.getLong(val));
-        } else if (BigDecimal.class.equals(toClass)) {
+        }
+        else if (BigDecimal.class.equals(toClass)) {
             return BigDecimal.valueOf(Primitives.getLong(val));
-        } else {
+        }
+        else {
             throw createConversionException(val, toClass);
         }
 

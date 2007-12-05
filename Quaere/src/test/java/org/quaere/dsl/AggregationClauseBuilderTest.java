@@ -42,7 +42,7 @@ public class AggregationClauseBuilderTest {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
         AggregationOperatorBuilder<Double> operatorBuilder = new AggregationOperatorBuilderImpl<Double>("min", new Identifier("n"));
         Double min = operatorBuilder.by(
-                BinaryExpression.plus(
+                BinaryExpression.add(
                         new Statement(
                                 Arrays.<Expression>asList(new Identifier("n"))
                         ),
@@ -86,7 +86,7 @@ public class AggregationClauseBuilderTest {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
         AggregationOperatorBuilder<Double> operatorBuilder = new AggregationOperatorBuilderImpl<Double>("max", new Identifier("n"));
         Double max = operatorBuilder.by(
-                BinaryExpression.plus(
+                BinaryExpression.add(
                         new Statement(
                                 Arrays.<Expression>asList(new Identifier("n"))
                         ),
@@ -130,7 +130,7 @@ public class AggregationClauseBuilderTest {
         Integer[] numbers = {5, 4, 1, 3, 9, 8, 6, 7, 2};
         AggregationOperatorBuilder<Double> operatorBuilder = new AggregationOperatorBuilderImpl<Double>("average", new Identifier("n"));
         Double average = operatorBuilder.by(
-                BinaryExpression.plus(
+                BinaryExpression.add(
                         new Statement(
                                 Arrays.<Expression>asList(new Identifier("n"))
                         ),

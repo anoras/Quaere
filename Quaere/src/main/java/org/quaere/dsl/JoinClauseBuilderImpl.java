@@ -42,7 +42,6 @@ public class JoinClauseBuilderImpl<R> implements JoinClauseBuilder<R>, JoinOnCla
     }
     public QueryContinuationOrQueryBodyBuilder<R> equals(Expression equalsExpression) {
         JoinClause joinClause = new JoinClause(
-                null,
                 currentIdentifier,
                 new Statement(
                         Arrays.<Expression>asList(

@@ -19,16 +19,17 @@ public class Property {
 
     public String getPropertyName() {
         if (identifier != null) {
-            return identifier.getText();
+            return identifier.name;
         }
         if (expression instanceof Statement) {
             Statement s = (Statement) expression;
-            return s.getLastIdentifier().getText();
-        } else {
+            return s.getLastIdentifier().name;
+        }
+        else {
             throw new RuntimeException("Property name must be set...");
         }
     }
     public String toString() {
-        return String.format("%s: %s",identifier.toString(),expression.toString());
+        return String.format("%s: %s", identifier.toString(), expression.toString());
     }
 }

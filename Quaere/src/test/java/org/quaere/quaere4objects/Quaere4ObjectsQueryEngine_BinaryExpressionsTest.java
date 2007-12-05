@@ -171,45 +171,45 @@ public class Quaere4ObjectsQueryEngine_BinaryExpressionsTest {
     }
     @Test
     public void canSubtractAnIntegerFromAnotherInteger() {
-        BinaryExpression minusOperator = BinaryExpression.minus(new Constant(10), new Constant(5));
+        BinaryExpression minusOperator = BinaryExpression.subtract(new Constant(10), new Constant(5));
         queryEngine.visit(minusOperator);
         Assert.assertEquals(5, queryEngine.result);
     }
     @Test
     public void subtractionWithDifferentTypesAreCoercedToLeftHandSideType() {
-        BinaryExpression minusOperator = BinaryExpression.minus(new Constant(10f), new Constant(5d));
+        BinaryExpression minusOperator = BinaryExpression.subtract(new Constant(10f), new Constant(5d));
         queryEngine.visit(minusOperator);
         Assert.assertEquals(5f, queryEngine.result);
         Assert.assertEquals(Float.class, queryEngine.result.getClass());
     }
     @Test
     public void canAddAnIntegerWithAnotherIntger() {
-        BinaryExpression plusOperator = BinaryExpression.plus(new Constant(2), new Constant(2));
+        BinaryExpression plusOperator = BinaryExpression.add(new Constant(2), new Constant(2));
         queryEngine.visit(plusOperator);
         Assert.assertEquals(4, queryEngine.result);
     }
     @Test
     public void additionWithDifferentTypesAreCoercedToLeftHandSideType() {
-        BinaryExpression plusOperator = BinaryExpression.plus(new Constant(2.5f), new Constant(2));
+        BinaryExpression plusOperator = BinaryExpression.add(new Constant(2.5f), new Constant(2));
         queryEngine.visit(plusOperator);
         Assert.assertEquals(4.5f, queryEngine.result);
         Assert.assertEquals(Float.class, queryEngine.result.getClass());
     }
     @Test
     public void addingTwoStringsConcatinatesTheStrings() {
-        BinaryExpression plusOperator = BinaryExpression.plus(new Constant("Hello "), new Constant("world"));
+        BinaryExpression plusOperator = BinaryExpression.add(new Constant("Hello "), new Constant("world"));
         queryEngine.visit(plusOperator);
         Assert.assertEquals("Hello world", queryEngine.result);
     }
     @Test
     public void addingStringToNumberConcatinatesTheResult() {
-        BinaryExpression plusOperator = BinaryExpression.plus(new Constant(5), new Constant(" times"));
+        BinaryExpression plusOperator = BinaryExpression.add(new Constant(5), new Constant(" times"));
         queryEngine.visit(plusOperator);
         Assert.assertEquals("5 times", queryEngine.result);
     }
     @Test
     public void addingNumberToStringConcatinatesTheResult() {
-        BinaryExpression plusOperator = BinaryExpression.plus(new Constant("Price: "), new Constant(43.5));
+        BinaryExpression plusOperator = BinaryExpression.add(new Constant("Price: "), new Constant(43.5));
         queryEngine.visit(plusOperator);
         Assert.assertEquals("Price: 43.5", queryEngine.result);
     }

@@ -10,7 +10,7 @@ public class IdentifierTest extends ExpressionTest {
     @Test
     public void canGetIdentifierString() {
         Identifier identifer = new Identifier("id");
-        Assert.assertEquals("id", identifer.getText());
+        Assert.assertEquals("id", identifer.name);
     }
     @Test(expected = IllegalArgumentException.class)
     public void identifierMustStartWithAJavaIdentifierCharacter() {

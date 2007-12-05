@@ -1,10 +1,23 @@
 package org.quaere.expressions;
 
+/**
+ * Represents a constant name.
+ */
 public class Constant extends Expression {
-
-    private final Object value;
-    private final Class clazz;
-
+    /**
+     * Gets the constant's name.
+     */
+    public final Object value;
+    /**
+     * Gets the @see Class of the constant's name.
+     */
+    public final Class clazz;
+    /**
+     * Creates a new @see Constant name and infers the constant's @see Class.
+     *
+     * @param value The name of the constant.
+     * @throws IllegalArgumentException The name is null.
+     */
     public Constant(Object value) {
         if (value == null) {
             throw new IllegalArgumentException("Canot infer the type of 'null'. Use the Constant(Object,Class) constructor to create a null valued constant.");
@@ -12,25 +25,30 @@ public class Constant extends Expression {
         this.value = value;
         this.clazz = value.getClass();
     }
+    /**
+     * Creates a new @see Constant name with a specified see @Class
+     *
+     * @param value The name of the constant.
+     * @param clazz The @see Class of the constant's name.
+     */
     public Constant(Object value, Class clazz) {
         this.value = value;
         this.clazz = clazz;
     }
-
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
+    /**
+     * Gets a textual representation of the @see Constant.
+     *
+     * @return
+     */
+    @Override
     public String toString() {
         if (String.class.equals(clazz)) {
             return '"' + String.valueOf(value) + '"';
-        } else if (Character.class.equals(clazz)) {
+        }
+        else if (Character.class.equals(clazz)) {
             return '\'' + String.valueOf(value) + '\'';
-        } else {
+        }
+        else {
             return String.valueOf(value);
         }
     }

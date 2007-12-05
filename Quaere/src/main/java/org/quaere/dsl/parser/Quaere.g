@@ -206,7 +206,7 @@ String t = null;
 Identifier i = null;
 }
 	:	'join' (type { t = $type.text; })?  join=identifier 'in' inid=expression 'on' on=expression 'equals' equals=expression ('into' into=identifier { i = $into.value; })?
-	{ $value = new JoinClause(t, $join.value, $inid.value, $on.value, $equals.value, i); }
+	{ $value = new JoinClause($join.value, $inid.value, $on.value, $equals.value, i); }
 	;
 		
 orderByClause returns [OrderByClause value]

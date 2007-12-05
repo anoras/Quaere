@@ -37,8 +37,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 row.add(item);
                 tuples.add(row);
             }
-        }
-        else {
+        } else {
             // Create a scalar product
             for (int i = tuples.size() - 1; i >= 0; i--) {
                 List<Object> tuple = tuples.get(i);
@@ -70,8 +69,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 containsKey = groups.containsKey(key);
             }
             if (!containsKey) {
@@ -87,6 +85,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             row.add(g);
             tuples.add(row);
         }
+        result = groups.values();
     }
 
     public void visit(JoinClause expression) {
@@ -130,8 +129,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                     if (v != 0) {
                         if (!criteria.getDirection().equals(OrderByCriteria.Direction.ASCENDING)) {
                             return -1 * v;
-                        }
-                        else {
+                        } else {
                             return v;
                         }
                     }
@@ -196,8 +194,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     public void visit(QueryExpression expression) {
         if (expression instanceof SubqueryExpression) {
             visit((SubqueryExpression) expression);
-        }
-        else {
+        } else {
             expression.getFrom().accept(this);
             expression.getQueryBody().accept(this);
         }
@@ -239,66 +236,54 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             case EQUAL:
                 if (left == null && right == null) {
                     result = true;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = false;
-                }
-                else {
+                } else {
                     result = left.equals(right);
                 }
                 break;
             case NOT_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = true;
-                }
-                else {
+                } else {
                     result = !left.equals(right);
                 }
                 break;
             case GREATER_THAN:
                 if (left == null && right == null) {
                     result = false;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = false;
-                }
-                else {
+                } else {
                     result = ((Comparable) left).compareTo(right) > 0;
                 }
                 break;
             case GREATER_THAN_OR_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = false;
-                }
-                else {
+                } else {
                     result = ((Comparable) left).compareTo(right) >= 0;
                 }
                 break;
             case LESS_THAN:
                 if (left == null && right == null) {
                     result = false;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = false;
-                }
-                else {
+                } else {
                     result = ((Comparable) left).compareTo(right) < 0;
                 }
                 break;
             case LESS_THAN_OR_EQUAL:
                 if (left == null && right == null) {
                     result = false;
-                }
-                else if (left == null) {
+                } else if (left == null) {
                     result = false;
-                }
-                else {
+                } else {
                     result = ((Comparable) left).compareTo(right) <= 0;
                 }
                 break;
@@ -311,8 +296,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             case ADDITION:
                 if ((left instanceof String) || (right instanceof String)) {
                     result = String.valueOf(left) + String.valueOf(right);
-                }
-                else {
+                } else {
                     result = Convert.toType(
                             Convert.toDouble(left) + Convert.toDouble(right),
                             left.getClass()
@@ -345,8 +329,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Object left = result;
         if ((Boolean) left) {
             expression.getMiddleExpression().accept(this);
-        }
-        else {
+        } else {
             expression.getRightExpression().accept(this);
         }
     }
@@ -377,17 +360,14 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             int index = sourceNames.indexOf(expression.name);
             if (index > -1 && index < currentTuple.size()) {
                 result = currentTuple.get(index);
-            }
-            else if (index == -1) {
+            } else if (index == -1) {
                 // Coerce the non-exisiting Identifier to a Constant.
                 Constant asConstant = new Constant(expression.name, String.class);
                 this.visit(asConstant);
-            }
-            else {
+            } else {
                 result = null;
             }
-        }
-        else {
+        } else {
             Class clazz = result.getClass();
             try {
                 Field f = clazz.getDeclaredField(expression.name);
@@ -409,8 +389,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             if (result == null) {
                 throw new RuntimeException(String.format("Unknown operator: %s", expression.getIdentifier().name));
             }
-        }
-        else if (result != null) {
+        } else if (result != null) {
             Object[] parameters = new Object[expression.getParameters().size()];
             Class[] argumentClasses = new Class[parameters.length];
             if (parameters.length > 0) {
@@ -480,11 +459,9 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         expression.getParameter().accept(this);
         if (indexed instanceof List) {
             result = ((List) indexed).get((Integer) result);
-        }
-        else if (indexed instanceof CharSequence) {
+        } else if (indexed instanceof CharSequence) {
             result = ((CharSequence) indexed).charAt((Integer) result);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException(String.format("Cannot apply indexer to '%s'.", result.getClass().getName()));
         }
     }
@@ -508,8 +485,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 v.add(p.getPropertyName(), result);
             }
             result = v;
-        }
-        else {
+        } else {
             try {
                 // TODO: Support setter (and ctor) injection
                 Class<?> clazz = expression.getClazz();
@@ -545,68 +521,47 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         String methodName = methodCall.getIdentifier().name;
         if (methodName.equals("count")) {
             return count(methodCall);
-        }
-        else if (methodName.equals("where")) {
+        } else if (methodName.equals("where")) {
             return where(methodCall);
-        }
-        else if (methodName.equals("take")) {
+        } else if (methodName.equals("take")) {
             return take(methodCall);
-        }
-        else if (methodName.equals("skip")) {
+        } else if (methodName.equals("skip")) {
             return skip(methodCall);
-        }
-        else if (methodName.equals("takeWhile")) {
+        } else if (methodName.equals("takeWhile")) {
             return takeWhile(methodCall);
-        }
-        else if (methodName.equals("skipWhile")) {
+        } else if (methodName.equals("skipWhile")) {
             return skipWhile(methodCall);
-        }
-        else if (methodName.equals("select")) {
+        } else if (methodName.equals("select")) {
             return select(methodCall);
-        }
-        else if (methodName.equals("reverse")) {
+        } else if (methodName.equals("reverse")) {
             return reverse(methodCall);
-        }
-        else if (methodName.equals("distinct")) {
+        } else if (methodName.equals("distinct")) {
             return distinct(methodCall);
-        }
-        else if (methodName.equals("union")) {
+        } else if (methodName.equals("union")) {
             return union(methodCall);
-        }
-        else if (methodName.equals("intersect")) {
+        } else if (methodName.equals("intersect")) {
             return intersect(methodCall);
-        }
-        else if (methodName.equals("except")) {
+        } else if (methodName.equals("except")) {
             return except(methodCall);
-        }
-        else if (methodName.equals("first")) {
+        } else if (methodName.equals("first")) {
             return first(methodCall);
-        }
-        else if (methodName.equals("elementAt")) {
+        } else if (methodName.equals("elementAt")) {
             return elementAt(methodCall);
-        }
-        else if (methodName.equals("any")) {
+        } else if (methodName.equals("any")) {
             return any(methodCall);
-        }
-        else if (methodName.equals("all")) {
+        } else if (methodName.equals("all")) {
             return all(methodCall);
-        }
-        else if (methodName.equals("sum")) {
+        } else if (methodName.equals("sum")) {
             return sum(methodCall);
-        }
-        else if (methodName.equals("min")) {
+        } else if (methodName.equals("min")) {
             return min(methodCall);
-        }
-        else if (methodName.equals("max")) {
+        } else if (methodName.equals("max")) {
             return max(methodCall);
-        }
-        else if (methodName.equals("average")) {
+        } else if (methodName.equals("average")) {
             return average(methodCall);
-        }
-        else if (methodName.equals("aggregate")) {
+        } else if (methodName.equals("aggregate")) {
             return aggregate(methodCall);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -705,8 +660,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             methodCall.getLambdaExpression().accept(this);
             if ((Boolean) result) {
                 evaluation.add(item);
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -741,8 +695,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
                 methodCall.getLambdaExpression().accept(this);
                 if ((Boolean) result) {
                     continue;
-                }
-                else {
+                } else {
                     go = true;
                 }
             }
@@ -787,8 +740,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             for (int i = ((List) result).size() - 1; i >= 0; i++) {
                 evaluation.add(((List) result).get(i));
             }
-        }
-        else {
+        } else {
             throw new RuntimeException("Cannot reverse...");
         }
         return evaluation;
@@ -853,8 +805,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         if (methodCall.getLambdaExpression() == null) {
             if (((List) result).size() > 0) {
                 return ((List) result).get(0);
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -892,8 +843,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         methodCall.getParameters().get(0).accept(this);
         if (((List) o).size() > (Integer) result) {
             return ((List) o).get((Integer) result);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -1092,8 +1042,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     static String getSourceName(Identifier identifier) {
         if (!identifier.name.startsWith("__src_")) {
             return "__src_" + identifier.name;
-        }
-        else {
+        } else {
             return identifier.name;
         }
     }

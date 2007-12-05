@@ -11,10 +11,7 @@ import org.quaere.model.Customer;
 import org.quaere.model.Order;
 import org.quaere.model.Product;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GroupingOperatorsScenarioTest {
     public GroupingOperatorsScenarioTest() {
@@ -98,40 +95,40 @@ public class GroupingOperatorsScenarioTest {
         Customer[] customers = Customer.getAllCustomers();
         Iterable<Variant> customerOrderGroups =
                 from("c").in(customers).
-                select(
-                    create(
-                        property("c.getCompanyName()"),
-                        property("yearGroups",
-                            from("o1").in("c.getOrders()").
-                            group("o1").by("o1.getOrderDate().getYear()").into("yg").
-                            select(
+                        select(
                                 create(
-                                    property("year", "yg.getKey()"),
-                                    property("monthGroups",
-                                        from("o2").in("yg.getGroup()").
-                                            orderBy("o2.getOrderDate().getMonth()").
-                                            group("o2").by("o2.getOrderDate().getMonth()").into("mg").
-                                            select(
-                                            create(
-                                                property("monthKey", "mg.getKey()"),
-                                                property("orders", "mg.getGroup()")
-                                            )
+                                        property("c.getCompanyName()"),
+                                        property("yearGroups",
+                                                from("o1").in("c.getOrders()").
+                                                        group("o1").by("o1.getOrderDate().getYear()").into("yg").
+                                                        select(
+                                                        create(
+                                                                property("year", "yg.getKey()"),
+                                                                property("monthGroups",
+                                                                        from("o2").in("yg.getGroup()").
+                                                                                orderBy("o2.getOrderDate().getMonth()").
+                                                                                group("o2").by("o2.getOrderDate().getMonth()").into("mg").
+                                                                                select(
+                                                                                create(
+                                                                                        property("monthKey", "mg.getKey()"),
+                                                                                        property("orders", "mg.getGroup()")
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                )
                                         )
-                                    )
                                 )
-                            )
-                        )
-                    )
-                );
+                        );
 
         for (Variant group : customerOrderGroups) {
-            System.out.println("Company: "+group.get("companyName"));
-            for (Variant yearGroup: (List<Variant>) group.get("yearGroups")) {
-                System.out.println("  Year: "+yearGroup.get("year"));
-                for (Variant monthGroup: (List<Variant>) yearGroup.get("monthGroups")) {
-                    System.out.println("    Month: "+monthGroup.get("monthKey"));
-                    for (Order order: (List<Order>) monthGroup.get("orders")) {
-                        System.out.printf("      %s\n",order!=null?order.toString():"null");
+            System.out.println("Company: " + group.get("companyName"));
+            for (Variant yearGroup : (List<Variant>) group.get("yearGroups")) {
+                System.out.println("  Year: " + yearGroup.get("year"));
+                for (Variant monthGroup : (List<Variant>) yearGroup.get("monthGroups")) {
+                    System.out.println("    Month: " + monthGroup.get("monthKey"));
+                    for (Order order : (List<Order>) monthGroup.get("orders")) {
+                        System.out.printf("      %s\n", order != null ? order.toString() : "null");
 
                     }
                 }
@@ -162,5 +159,21 @@ public class GroupingOperatorsScenarioTest {
             Arrays.sort(wordChars);
             return new String(wordChars);
         }
+    }
+
+    @Test
+    public void canEndAQueryWithAGroupClause() {
+        String[] anagrams = {"from   ", " salt", " earn ", "  last   ", " near ", " form  "};
+        Iterable<Group> orderGroups =
+                (Iterable<Group>) from("a").in(anagrams).
+                        group("a").by("a.trim()", new AnagramEqualityComparator());
+        HashMap<Object, Iterable> expectedOrderGroups = new HashMap<Object, Iterable>();
+        expectedOrderGroups.put("from", Arrays.asList("from   ", " form  "));
+        expectedOrderGroups.put("salt", Arrays.asList(" salt", "  last   "));
+        expectedOrderGroups.put("earn", Arrays.asList(" earn ", " near "));
+        for (Group g : orderGroups) {
+            Assert.assertEquals(expectedOrderGroups.get(g.getKey()), g.getGroup());
+        }
+
     }
 }

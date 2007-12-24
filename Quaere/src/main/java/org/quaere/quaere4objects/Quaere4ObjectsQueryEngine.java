@@ -28,7 +28,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     // --------------------- Interface ExpressionTreeVisitor ---------------------
 
     public void visit(FromClause expression) {
-        sourceNames.add(expression.identifier.name);
+        addToSourceNames(expression.identifier);
         if (sourceNames.size() == 1) {
             // First iterable
             expression.sourceExpression.accept(this);
@@ -89,7 +89,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(JoinClause expression) {
-        sourceNames.add(expression.identifier.name);
+        addToSourceNames(expression.identifier);
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
             currentTuple = tuple;
@@ -110,7 +110,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             }
         }
         if (expression.intoIdentifier != null) {
-            sourceNames.add(expression.intoIdentifier.name);
+            addToSourceNames(expression.intoIdentifier);
         }
     }
 
@@ -141,7 +141,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     public void visit(DeclareClause expression) {
-        sourceNames.add(expression.variableIdentifier.name);
+        addToSourceNames(expression.variableIdentifier);
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
             currentTuple = tuple;
@@ -187,7 +187,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
 
     public void visit(QueryContinuation expression) {
         sourceNames.clear();
-        sourceNames.add(expression.getIdentifier().name);
+        addToSourceNames(expression.getIdentifier());
         expression.getQueryBody().accept(this);
     }
 
@@ -567,7 +567,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     private int count(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             return ((List) result).size();
         }
 
@@ -575,33 +575,20 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     private List<Object> where(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             throw new IllegalArgumentException("Method calls to the where operator must have a lambda sourceExpression.");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(methodCall);
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            if ((Boolean) result) {
+            final Boolean lambdaResult = evaluateLambda(methodCall, item, i, Boolean.class);
+            if (lambdaResult) {
                 evaluation.add(item);
             }
+            i = methodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return evaluation;
     }
 
@@ -636,102 +623,73 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     private List<Object> takeWhile(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             throw new IllegalArgumentException("Expected lambda");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(methodCall);
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            if ((Boolean) result) {
+            final Boolean lambdaResult = evaluateLambda(methodCall, item, i, Boolean.class);
+            if (lambdaResult) {
                 evaluation.add(item);
             } else {
                 break;
             }
+            i = methodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return evaluation;
     }
 
     private List<Object> skipWhile(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             throw new IllegalArgumentException("Expected lambda");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(methodCall);
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
         boolean go = false;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            if (!go) {
-                methodCall.getLambdaExpression().accept(this);
-                if ((Boolean) result) {
-                    continue;
-                } else {
+            if (go) {
+                evaluation.add(item);
+            } else {
+                final Boolean noGo = evaluateLambda(methodCall, item, i, Boolean.class);
+                i = methodCall.nextIdentifierIndex(i);
+                if (!noGo) {
                     go = true;
+                    evaluation.add(item);
                 }
             }
-            evaluation.add(item);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return evaluation;
     }
 
     private List<Object> select(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             throw new IllegalArgumentException("Expected lambda");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(methodCall);
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            evaluation.add(result);
+            evaluation.add(evaluateLambda(methodCall,item,i,Object.class));
+            i = methodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return evaluation;
+    }
+
+    private List<Object> createCurrentTuple(final MethodCall methodCall, int i, final Object item) {
+        List<Object> currentTuple = new ArrayList<Object>();
+        if (methodCall.hasAnonymousIdentifier()) {
+            currentTuple.add(item);
+        }
+        if (methodCall.hasIndexedIdentifier()) {
+            currentTuple.add(i);
+        }
+        return currentTuple;
     }
 
     private List<Object> reverse(MethodCall methodCall) {
@@ -802,7 +760,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
     }
 
     private Object first(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+        if (methodCall.isNoLambda()) {
             if (((List) result).size() > 0) {
                 return ((List) result).get(0);
             } else {
@@ -810,233 +768,169 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             }
         }
 
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(methodCall);
         Object evaluation = null;
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            if ((Boolean) result) {
+            final Boolean lambdaResult = evaluateLambda(methodCall, item, i, Boolean.class);
+            if (lambdaResult) {
                 evaluation = item;
                 break;
             }
+            i = methodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return evaluation;
     }
 
     private Object elementAt(MethodCall methodCall) {
-        Object o = result;
+        List listResult = (List) result;
         methodCall.getParameters().get(0).accept(this);
-        if (((List) o).size() > (Integer) result) {
-            return ((List) o).get((Integer) result);
+        final Integer index = (Integer) result;
+        if (listResult.size() > index) {
+            return listResult.get(index);
         } else {
             return null;
         }
     }
 
-    private boolean any(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+    private boolean any(MethodCall anyMethodCall) {
+        if (anyMethodCall.isNoLambda()) {
             throw new IllegalArgumentException("Lam");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(anyMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            if ((Boolean) result) {
-                sourceNames = oldSourceNames;
+            if (evaluateLambda(anyMethodCall, item, i, Boolean.class)) {
+                restoreSourceNames(oldSourceNames);
                 return true;
             }
+            i = anyMethodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return false;
     }
 
-    private boolean all(MethodCall methodCall) {
-        if (methodCall.getLambdaExpression() == null) {
+    private boolean all(MethodCall allMethodCall) {
+        if (allMethodCall.isNoLambda()) {
             throw new IllegalArgumentException("Lam");
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(allMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            if (!(Boolean) result) {
-                sourceNames = oldSourceNames;
+            final Boolean lambdaResult = evaluateLambda(allMethodCall, item, i, Boolean.class);
+            if (!lambdaResult) {
+                restoreSourceNames(oldSourceNames);
                 return false;
             }
+            i = allMethodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return true;
     }
 
-    private double min(MethodCall methodCall) {
+
+    private double min(MethodCall minMethodCall) {
         Double min = Double.MAX_VALUE;
-        if (methodCall.getLambdaExpression() == null) {
+        if (minMethodCall.isNoLambda()) {
             for (Object value : (Iterable) result) {
                 min = Math.min(min, (Integer) value);
             }
             return min;
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(minMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            min = Math.min((Double) min, (Double) Convert.toType(result, Double.class));
+            min = Math.min(min, evaluateLambda(minMethodCall, item, i, Double.class));
+            i = minMethodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return min;
     }
 
-    private double max(MethodCall methodCall) {
+
+    private double max(MethodCall maxMethodCall) {
         Double max = Double.MIN_VALUE;
-        if (methodCall.getLambdaExpression() == null) {
+        if (maxMethodCall.isNoLambda()) {
             for (Object value : (Iterable) result) {
                 max = Math.max(max, (Integer) value);
             }
             return max;
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(maxMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            max = Math.max((Double) max, (Double) Convert.toType(result, Double.class));
+            max = Math.max((Double) max, evaluateLambda(maxMethodCall, item, i, Double.class));
+            i = maxMethodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return max;
     }
 
-    private double average(MethodCall methodCall) {
+    private double average(MethodCall avgCall) {
         int count = ((List) result).size();
-        double sum = sum(methodCall);
+        double sum = sum(avgCall);
         return sum / count;
     }
 
-    private double sum(MethodCall methodCall) {
+    private double sum(MethodCall sumMethodCall) {
         double sum = 0D;
-        if (methodCall.getLambdaExpression() == null) {
+        if (sumMethodCall.isNoLambda()) {
             for (Object value : (Iterable) result) {
                 sum += (Double) Convert.toType(value, Double.class);
             }
             return sum;
         }
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(sumMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
-                currentTuple.add(item);
-            }
-            if (methodCall.getIndexedIdentifier() != null) {
-                currentTuple.add(i++);
-            }
-            methodCall.getLambdaExpression().accept(this);
-            sum += (Double) Convert.toType(result, Double.class);
+            sum += evaluateLambda(sumMethodCall,item,i, Double.class);
+            i = sumMethodCall.nextIdentifierIndex(i);
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return sum;
     }
-    public Object aggregate(MethodCall methodCall) {
-        List<String> oldSourceNames = sourceNames;
-        sourceNames = new ArrayList<String>();
-        if (methodCall.getAnonymousIdentifier() != null) {
-            sourceNames.add(methodCall.getAnonymousIdentifier().name);
-        }
+
+    public Object aggregate(MethodCall aggregateMethodCall) {
         // NOTE: Index identigier doubles for accumulate identifier...
-        if (methodCall.getIndexedIdentifier() != null) {
-            sourceNames.add(methodCall.getIndexedIdentifier().name);
-        }
+        List<String> oldSourceNames = createTemporarySourceNames(aggregateMethodCall);
 
         Iterator resultIter = ((Iterable) result).iterator();
         Object accumulation = resultIter.next();
         while (resultIter.hasNext()) {
             currentTuple = new ArrayList<Object>();
-            if (methodCall.getAnonymousIdentifier() != null) {
+            if (aggregateMethodCall.hasAnonymousIdentifier()) {
                 currentTuple.add(resultIter.next());
             }
-            if (methodCall.getIndexedIdentifier() != null) {
+            if (aggregateMethodCall.hasIndexedIdentifier()) {
                 currentTuple.add(accumulation);
             }
-            methodCall.getLambdaExpression().accept(this);
-            accumulation = result;
+            aggregateMethodCall.getLambdaExpression().accept(this);
+            final Object lambdaResult = result;
+            accumulation = lambdaResult;
         }
-        sourceNames = oldSourceNames;
+        restoreSourceNames(oldSourceNames);
         return accumulation;
+    }
+
+    protected void restoreSourceNames(final List<String> oldSourceNames) {
+        sourceNames = oldSourceNames;
+    }
+
+    private List<String> createTemporarySourceNames(final MethodCall methodCall) {
+        List<String> oldSourceNames = sourceNames;
+        sourceNames = new ArrayList<String>(2);
+        if (methodCall.hasAnonymousIdentifier()) {
+            addToSourceNames(methodCall.getAnonymousIdentifier());
+        }
+        if (methodCall.hasIndexedIdentifier()) {
+            addToSourceNames(methodCall.getIndexedIdentifier());
+        }
+        return oldSourceNames;
+    }
+
+    protected void addToSourceNames(final Identifier id) {
+        sourceNames.add(id.name);
     }
 
     static String getSourceName(Identifier identifier) {
@@ -1045,5 +939,10 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         } else {
             return identifier.name;
         }
+    }
+    protected <T> T evaluateLambda(final MethodCall methodCall, final Object item, final int index, final Class<T> resultType) {
+        currentTuple = createCurrentTuple(methodCall, index, item);
+        methodCall.getLambdaExpression().accept(this);
+        return (T) Convert.toType(result, resultType);
     }
 }

@@ -66,4 +66,20 @@ public class MethodCall extends Expression {
     public void accept(ExpressionTreeVisitor visitor) {
         visitor.visit(this);
     }
+
+    public boolean isNoLambda() {
+        return getLambdaExpression() == null;
+    }
+
+    public boolean hasAnonymousIdentifier() {
+        return getAnonymousIdentifier() != null;
+    }
+
+    public boolean hasIndexedIdentifier() {
+        return getIndexedIdentifier() != null;
+    }
+
+    public int nextIdentifierIndex(int i) {
+        return hasIndexedIdentifier() ? i + 1 : i;
+    }
 }

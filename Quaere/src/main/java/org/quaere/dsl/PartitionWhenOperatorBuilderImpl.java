@@ -78,9 +78,8 @@ public class PartitionWhenOperatorBuilderImpl implements PartitionWhenOperatorBu
     }
     private <T> PartitionWhenOperatorWhenClauseBuilder evaluateQuery(QueryBodyBuilder<?> query) {
         List<T> elms = new ArrayList<T>();
-        Iterator iter = query.iterator();
-        while (iter.hasNext()) {
-            elms.add((T) iter.next());
+        for (final Object element : query) {
+            elms.add((T) element);
         }
         return from(elms);
     }

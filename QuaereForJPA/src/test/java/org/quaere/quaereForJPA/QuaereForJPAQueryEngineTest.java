@@ -1,19 +1,16 @@
 package org.quaere.quaereForJPA;
 
-import junit.framework.Assert;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import static org.quaere.DSL.*;
-import org.quaere.model.Customer;
-import org.quaere.model.Order;
+import org.quaere.quaereForJPA.model.Customer;
+import org.quaere.quaereForJPA.model.Order;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class QuaereForJPAQueryEngineTest {
     final Mockery context = new Mockery();

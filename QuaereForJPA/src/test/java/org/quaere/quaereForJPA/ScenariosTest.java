@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.quaere.DSL.*;
-import org.quaere.model.Customer;
+import org.quaere.quaereForJPA.model.Customer;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitTransactionType;

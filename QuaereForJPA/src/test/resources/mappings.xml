@@ -2,16 +2,16 @@
 <!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
         "http://castor.org/mapping.dtd">
 <mapping>
-    <class name="org.quaere.model.CustomersContainer">
+    <class name="org.quaere.quaereForJPA.model.CustomersContainer">
         <map-to xml="customers"/>
         <field name="Customers"
                collection="arraylist"
-               type="org.quaere.model.Customer">
+               type="org.quaere.quaereForJPA.model.Customer">
             <bind-xml name="customer"/>
         </field>
     </class>
 
-    <class name="org.quaere.model.Customer">
+    <class name="org.quaere.quaereForJPA.model.Customer">
         <field name="CustomerID" type="java.lang.String">
             <bind-xml name="id"/>
         </field>
@@ -39,12 +39,12 @@
         <field name="Fax" type="java.lang.String">
             <bind-xml name="fax"/>
         </field>
-        <field name="Orders" collection="arraylist" direct="false" type="org.quaere.model.Order">
+        <field name="Orders" collection="arraylist" direct="false" type="org.quaere.quaereForJPA.model.Order">
             <bind-xml name="order"/>
         </field>
     </class>
 
-    <class name="org.quaere.model.Order">
+    <class name="org.quaere.quaereForJPA.model.Order">
         <field name="OrderID" type="java.lang.Integer">
             <bind-xml name="id"/>
         </field>

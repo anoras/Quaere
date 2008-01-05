@@ -1,8 +1,9 @@
 package org.quaere;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Group {
     private final Object key;
@@ -43,5 +44,12 @@ public class Group {
     }
     public String toString() {
         return String.format("%s: %s", key, group);
+    }
+    public static List<Group> fromMap(Map<Object, List<Object>> map) {
+        List<Group> groups = new ArrayList<Group>();
+        for (Object key : map.keySet()) {
+            groups.add(new Group(key, map.get(key)));
+        }
+        return groups;
     }
 }

@@ -545,8 +545,7 @@ public class QuaereParser extends Parser {
 
                     if ((LA6_0 == 20)) {
                         alt6 = 1;
-                    }
-                    else if ((LA6_0 == 21)) {
+                    } else if ((LA6_0 == 21)) {
                         alt6 = 1;
                     }
 
@@ -561,11 +560,9 @@ public class QuaereParser extends Parser {
 
                             if ((LA5_0 == 20)) {
                                 alt5 = 1;
-                            }
-                            else if ((LA5_0 == 21)) {
+                            } else if ((LA5_0 == 21)) {
                                 alt5 = 2;
-                            }
-                            else {
+                            } else {
                                 NoViableAltException nvae =
                                         new NoViableAltException("58:4: ( '==' | '!=' )", 5, 0, input);
 
@@ -873,8 +870,7 @@ public class QuaereParser extends Parser {
 
                     if ((LA10_0 == 26)) {
                         alt10 = 1;
-                    }
-                    else if ((LA10_0 == 27)) {
+                    } else if ((LA10_0 == 27)) {
                         alt10 = 1;
                     }
 
@@ -889,11 +885,9 @@ public class QuaereParser extends Parser {
 
                             if ((LA9_0 == 26)) {
                                 alt9 = 1;
-                            }
-                            else if ((LA9_0 == 27)) {
+                            } else if ((LA9_0 == 27)) {
                                 alt9 = 2;
-                            }
-                            else {
+                            } else {
                                 NoViableAltException nvae =
                                         new NoViableAltException("82:4: ( '+' | '-' )", 9, 0, input);
 
@@ -1462,14 +1456,12 @@ public class QuaereParser extends Parser {
 
                                                 if ((LA16_13 == 36)) {
                                                     alt16 = 5;
-                                                }
-                                                else
+                                                } else
                                                 if ((LA16_13 == 14 || LA16_13 == 16 || (LA16_13 >= 18 && LA16_13 <= 30) || LA16_13 == 32 || (LA16_13 >= 34 && LA16_13 <= 35))) {
                                                     alt16 = 4;
-                                                }
-                                                else {
+                                                } else {
                                                     NoViableAltException nvae =
-                                                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 13, input);
+                                                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 13, input);
 
                                                     throw nvae;
                                                 }
@@ -1481,7 +1473,7 @@ public class QuaereParser extends Parser {
                                             break;
                                             default:
                                                 NoViableAltException nvae =
-                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 11, input);
+                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 11, input);
 
                                                 throw nvae;
                                         }
@@ -1494,7 +1486,7 @@ public class QuaereParser extends Parser {
                                     break;
                                     default:
                                         NoViableAltException nvae =
-                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 8, input);
+                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 8, input);
 
                                         throw nvae;
                                 }
@@ -1545,24 +1537,20 @@ public class QuaereParser extends Parser {
 
                                             if ((LA16_14 == 14 || LA16_14 == 16 || (LA16_14 >= 18 && LA16_14 <= 30) || (LA16_14 >= 32 && LA16_14 <= 35))) {
                                                 alt16 = 4;
-                                            }
-                                            else if ((LA16_14 == 36)) {
+                                            } else if ((LA16_14 == 36)) {
                                                 alt16 = 5;
-                                            }
-                                            else {
+                                            } else {
                                                 NoViableAltException nvae =
-                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 14, input);
+                                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 14, input);
 
                                                 throw nvae;
                                             }
-                                        }
-                                        else
+                                        } else
                                         if (((LA16_12 >= INTEGER && LA16_12 <= STRING) || LA16_12 == 27 || LA16_12 == 31 || LA16_12 == 33 || LA16_12 == 37 || LA16_12 == 41 || (LA16_12 >= 55 && LA16_12 <= 56))) {
                                             alt16 = 4;
-                                        }
-                                        else {
+                                        } else {
                                             NoViableAltException nvae =
-                                                    new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 12, input);
+                                                    new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 12, input);
 
                                             throw nvae;
                                         }
@@ -1574,7 +1562,7 @@ public class QuaereParser extends Parser {
                                     break;
                                     default:
                                         NoViableAltException nvae =
-                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 9, input);
+                                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 9, input);
 
                                         throw nvae;
                                 }
@@ -1587,19 +1575,17 @@ public class QuaereParser extends Parser {
                             break;
                             default:
                                 NoViableAltException nvae =
-                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 6, input);
+                                        new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 6, input);
 
                                 throw nvae;
                         }
 
-                    }
-                    else
+                    } else
                     if ((LA16_4 == EOF || (LA16_4 >= 14 && LA16_4 <= 30) || LA16_4 == 32 || (LA16_4 >= 34 && LA16_4 <= 35) || (LA16_4 >= 40 && LA16_4 <= 41) || (LA16_4 >= 43 && LA16_4 <= 53))) {
                         alt16 = 4;
-                    }
-                    else {
+                    } else {
                         NoViableAltException nvae =
-                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 4, input);
+                                new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 4, input);
 
                         throw nvae;
                     }
@@ -1611,7 +1597,7 @@ public class QuaereParser extends Parser {
                 break;
                 default:
                     NoViableAltException nvae =
-                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' expression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 0, input);
+                            new NoViableAltException("116:1: primaryExpression returns [Expression name] : ( '(' keySelectionExpression ')' | expr= name | newExpression | identifier ( arguments )? | methodCall | queryExpression );", 16, 0, input);
 
                     throw nvae;
             }
@@ -1959,27 +1945,23 @@ public class QuaereParser extends Parser {
 
                     if ((LA22_2 == 33)) {
                         alt22 = 2;
-                    }
-                    else if ((LA22_2 == ID || LA22_2 == 36)) {
+                    } else if ((LA22_2 == ID || LA22_2 == 36)) {
                         alt22 = 1;
-                    }
-                    else {
+                    } else {
                         NoViableAltException nvae =
-                                new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 2, input);
+                                new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= keySelectionExpression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= keySelectionExpression ')' );", 22, 2, input);
 
                         throw nvae;
                     }
-                }
-                else {
+                } else {
                     NoViableAltException nvae =
-                            new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 1, input);
+                            new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= keySelectionExpression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= keySelectionExpression ')' );", 22, 1, input);
 
                     throw nvae;
                 }
-            }
-            else {
+            } else {
                 NoViableAltException nvae =
-                        new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= expression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= expression ')' );", 22, 0, input);
+                        new NoViableAltException("132:1: methodCall returns [MethodCall name] : (n2= identifier '(' (anon1= identifier ( ',' indexer1= identifier )? )? '=>' lambda1= keySelectionExpression ')' | n3= identifier '(' '(' (anon2= identifier ( ',' indexer2= identifier )? )? ')' '=>' lambda2= keySelectionExpression ')' );", 22, 0, input);
 
                 throw nvae;
             }
@@ -2701,11 +2683,9 @@ public class QuaereParser extends Parser {
 
                 if ((LA29_0 == 52)) {
                     alt29 = 1;
-                }
-                else if ((LA29_0 == 53)) {
+                } else if ((LA29_0 == 53)) {
                     alt29 = 2;
-                }
-                else {
+                } else {
                     NoViableAltException nvae =
                             new NoViableAltException("180:65: ( selectClause | groupClause )", 29, 0, input);
 
@@ -3366,8 +3346,7 @@ public class QuaereParser extends Parser {
                             input.consume();
                             adaptor.addChild(root_0, adaptor.create(fio));
                             errorRecovery = false;
-                        }
-                        else {
+                        } else {
                             MismatchedSetException mse =
                                     new MismatchedSetException(null, input);
                             recoverFromMismatchedSet(input, mse, FOLLOW_set_in_orderByClause1257);
@@ -3422,8 +3401,7 @@ public class QuaereParser extends Parser {
                                         input.consume();
                                         adaptor.addChild(root_0, adaptor.create(foo));
                                         errorRecovery = false;
-                                    }
-                                    else {
+                                    } else {
                                         MismatchedSetException mse =
                                                 new MismatchedSetException(null, input);
                                         recoverFromMismatchedSet(input, mse, FOLLOW_set_in_orderByClause1278);
@@ -3906,11 +3884,9 @@ public class QuaereParser extends Parser {
 
             if ((LA40_0 == 55)) {
                 alt40 = 1;
-            }
-            else if ((LA40_0 == 56)) {
+            } else if ((LA40_0 == 56)) {
                 alt40 = 2;
-            }
-            else {
+            } else {
                 NoViableAltException nvae =
                         new NoViableAltException("264:1: booleanValue returns [boolean name] : ( 'true' | 'false' );", 40, 0, input);
 

@@ -58,12 +58,12 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         Map<Object, Group> groups = new HashMap<Object, Group>();
         for (List<Object> tuple : tuples) {
             currentTuple = tuple;
-            expression.getExpression().accept(this);
+            expression.keySelectionExpression.accept(this);
             Object key = result;
             boolean containsKey = false;
-            if (expression.getComparator() != null) {
+            if (expression.keyComparator != null) {
                 for (Object currentKey : groups.keySet()) {
-                    if (expression.getComparator().compare(currentKey, key) == 0) {
+                    if (expression.keyComparator.compare(currentKey, key) == 0) {
                         containsKey = true;
                         key = currentKey;
                         break;
@@ -75,7 +75,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
             if (!containsKey) {
                 groups.put(key, new Group(key));
             }
-            Statement i = new Statement(Arrays.<Expression>asList(expression.getIdentifier()));
+            Statement i = new Statement(Arrays.<Expression>asList(expression.identifier));
             i.accept(this);
             groups.get(key).getGroup().add(result);
         }
@@ -90,27 +90,46 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
 
     public void visit(JoinClause expression) {
         addToSourceNames(expression.identifier);
+        Map<Object, List<Object>> interimGroups = new HashMap<Object, List<Object>>();
         for (int i = tuples.size() - 1; i >= 0; i--) {
             List<Object> tuple = tuples.get(i);
             currentTuple = tuple;
             expression.inIndentifier.accept(this);
+            // result contains all products.
             for (Object item : (Iterable) result) {
                 List<Object> newTuple = new ArrayList<Object>();
                 newTuple.addAll(tuple);
                 newTuple.add(item);
                 currentTuple = newTuple;
                 expression.onExpression.accept(this);
-                Object left = result;
+                Object left = result; // Left has grouping key
                 expression.keyEqualityExpression.accept(this);
                 Object right = result;
                 if (Comparer.compare(left, right) == 0) {
                     tuples.add(newTuple);
+                    if (expression.intoIdentifier != null) {
+                        if (!interimGroups.containsKey(left)) {
+                            interimGroups.put(left, new ArrayList<Object>());
+                        }
+                        interimGroups.get(left).add(item);
+                    }
                 }
                 tuples.remove(tuple);
             }
         }
         if (expression.intoIdentifier != null) {
+            // TODO: This is broken - FIX IT ANDERS!
+            List<Group> groups = Group.fromMap(interimGroups);
+            tuples.clear();
+            for (Group g : groups) {
+                List<Object> row = new ArrayList<Object>();
+                row.add(g.getKey());
+                row.add(g.getGroup());
+                tuples.add(row);
+            }
+            result = groups;
             addToSourceNames(expression.intoIdentifier);
+            this.sourceNames.remove(expression.identifier.toString());
         }
     }
 
@@ -674,7 +693,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<Object> evaluation = new ArrayList<Object>();
         int i = 0;
         for (Object item : (Iterable) result) {
-            evaluation.add(evaluateLambda(methodCall,item,i,Object.class));
+            evaluation.add(evaluateLambda(methodCall, item, i, Object.class));
             i = methodCall.nextIdentifierIndex(i);
         }
         restoreSourceNames(oldSourceNames);
@@ -884,7 +903,7 @@ public class Quaere4ObjectsQueryEngine implements ExpressionTreeVisitor, QueryEn
         List<String> oldSourceNames = createTemporarySourceNames(sumMethodCall);
         int i = 0;
         for (Object item : (Iterable) result) {
-            sum += evaluateLambda(sumMethodCall,item,i, Double.class);
+            sum += evaluateLambda(sumMethodCall, item, i, Double.class);
             i = sumMethodCall.nextIdentifierIndex(i);
         }
         restoreSourceNames(oldSourceNames);

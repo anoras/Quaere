@@ -2,6 +2,14 @@ package org.quaere.expressions;
 
 /**
  * Represents a from clause within an sourceExpression tree.
+ * <p/>
+ * A query expression must begin with a from clause. Additionally, a query expression can
+ * contain sub-queries, which also begin with a from clause. The from clause specifies the
+ * source on which the query or subquery will be run and an @see Identifier that represents
+ * each element in the query source.
+ * <p/>
+ * The @see FromClause#sourceExpression produce a @see Queryable, @see Iterable, array or
+ * another query.
  *
  * @see org.quaere.expressions.ExpressionTreeNode
  */

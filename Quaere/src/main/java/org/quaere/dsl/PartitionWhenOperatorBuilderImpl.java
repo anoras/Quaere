@@ -3,13 +3,12 @@ package org.quaere.dsl;
 import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
 import org.quaere.QueryEngine;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 import org.quaere.expressions.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class PartitionWhenOperatorBuilderImpl implements PartitionWhenOperatorBuilder, PartitionWhenOperatorWhenClauseBuilder {
     private String operator;
@@ -18,7 +17,7 @@ public class PartitionWhenOperatorBuilderImpl implements PartitionWhenOperatorBu
     private Identifier indexerIdentifier;
 
     public PartitionWhenOperatorBuilderImpl(PartitionOperator operator, String anonymousIdentifier) {
-        this(operator.operationName(),anonymousIdentifier);
+        this(operator.operationName(), anonymousIdentifier);
     }
     public PartitionWhenOperatorBuilderImpl(String operator, String anonymousIdentifier) {
         this.operator = operator;

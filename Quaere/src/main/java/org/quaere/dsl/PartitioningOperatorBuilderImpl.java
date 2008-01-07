@@ -3,9 +3,8 @@ package org.quaere.dsl;
 import org.quaere.QueryEngine;
 import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
-import org.quaere.DSL;
 import org.quaere.expressions.*;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -4,7 +4,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.quaere.quaereForJPA.model.Customer" table="Customers">
+    <class name="org.quaere.jpa.model.Customer" table="Customers">
         <id name="customerID" column="CustomerID">
             <generator class="assigned"/>
         </id>
@@ -19,7 +19,7 @@
         <list name="orders" cascade="all">
             <key column="CustomerID"/>
             <index column="Order_IDX"/>
-            <one-to-many class="org.quaere.quaereForJPA.model.Order"/>
+            <one-to-many class="org.quaere.jpa.model.Order"/>
         </list>
     </class>
 </hibernate-mapping>

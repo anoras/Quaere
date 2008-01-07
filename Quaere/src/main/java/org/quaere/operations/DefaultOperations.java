@@ -5,7 +5,7 @@ import org.quaere.Queryable;
 import org.quaere.dsl.AggregateOperatorBuilder;
 import org.quaere.dsl.AggregateOperatorBuilderImpl;
 import org.quaere.expressions.*;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 
 import java.util.Arrays;
 

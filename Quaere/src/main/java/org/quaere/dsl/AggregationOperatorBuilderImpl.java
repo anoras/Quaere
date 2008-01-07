@@ -8,7 +8,7 @@ import org.quaere.expressions.Expression;
 import org.quaere.expressions.Identifier;
 import org.quaere.expressions.MethodCall;
 import org.quaere.expressions.Statement;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;

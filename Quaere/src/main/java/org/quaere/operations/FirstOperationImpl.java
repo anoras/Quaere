@@ -5,7 +5,7 @@ import org.quaere.QueryableIterable;
 import org.quaere.Queryable;
 import org.quaere.QueryEngine;
 import org.quaere.operations.DefaultOperations;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 import org.quaere.expressions.Identifier;
 import org.quaere.expressions.Statement;
 
@@ -52,7 +52,7 @@ public class FirstOperationImpl implements FirstOperation {
 
     public static <R> R firstInQueryBodyBuilder(QueryBodyBuilder<?> query) {
         QueryExpressionBuilderImpl<R> impl = (QueryExpressionBuilderImpl<R>) query;
-        Statement statement = DefaultOperations.createMethodCallStatement(query.getQueryExpression(),"first");
+        Statement statement = DefaultOperations.createMethodCallStatement(query.getQueryExpression(), "first");
         Quaere4ObjectsQueryEngine engine = new Quaere4ObjectsQueryEngine();
         for (Map.Entry<Identifier, Queryable> sourceEntry : impl.getSources().entrySet()) {
             engine.addSource(sourceEntry.getValue().getSourceIdentifier(sourceEntry.getKey()), sourceEntry.getValue());

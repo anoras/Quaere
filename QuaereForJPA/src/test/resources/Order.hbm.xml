@@ -4,7 +4,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.quaere.quaereForJPA.model.Order" table="Orders">
+    <class name="org.quaere.jpa.model.Order" table="Orders">
         <id name="orderID">
             <generator class="assigned"/>
         </id>

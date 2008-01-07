@@ -1,7 +1,7 @@
 package org.quaere;
 
 import org.quaere.expressions.Identifier;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 
 import java.util.Iterator;
 

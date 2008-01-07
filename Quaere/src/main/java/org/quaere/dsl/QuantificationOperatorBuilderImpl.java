@@ -2,7 +2,7 @@ package org.quaere.dsl;
 
 import org.quaere.QueryEngine;
 import org.quaere.Queryable;
-import org.quaere.quaere4objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.Quaere4ObjectsQueryEngine;
 import org.quaere.expressions.Expression;
 import org.quaere.expressions.Identifier;
 import org.quaere.expressions.MethodCall;

@@ -28,7 +28,7 @@
         </license>
     </licenses>
     <issueManagement>
-    <system>jira</system>
+        <system>jira</system>
         <url>http://jira.codehaus.org/browse/QUAERE</url>
     </issueManagement>
     <mailingLists>
@@ -94,33 +94,33 @@
 
     <reporting>
         <plugins>
-           <plugin>
-               <artifactId>maven-javadoc-plugin</artifactId>
-           </plugin>
-           <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>jxr-maven-plugin</artifactId>
-          </plugin>      
-           <plugin>
-               <artifactId>maven-javadoc-plugin</artifactId>
-           </plugin>
-           <plugin>
-               <artifactId>maven-jxr-plugin</artifactId>
-           </plugin>
-           <!--plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>dashboard-maven-plugin</artifactId>
-           </plugin-->
-           <plugin>
-               <artifactId>maven-pmd-plugin</artifactId>
-           </plugin>
-           <plugin>
-               <artifactId>maven-checkstyle-plugin</artifactId>
-           </plugin>
-           <plugin>
-               <artifactId>maven-clover-plugin</artifactId>
-           </plugin>
-       </plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+            <!--plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dashboard-maven-plugin</artifactId>
+            </plugin-->
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clover-plugin</artifactId>
+            </plugin>
+        </plugins>
     </reporting>
 
     <distributionManagement>

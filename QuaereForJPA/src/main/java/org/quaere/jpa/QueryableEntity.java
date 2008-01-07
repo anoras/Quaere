@@ -19,7 +19,7 @@ public class QueryableEntity<T> implements Queryable<T> {
         this.entityClass = entityClass;
     }
     public QueryEngine createQueryEngine() {
-        return new QuaereForJPAQueryEngine(entityManager);
+        return new JpaQueryEngine(entityManager);
     }
     public Identifier getSourceIdentifier(Identifier identifier) {
         return identifier;

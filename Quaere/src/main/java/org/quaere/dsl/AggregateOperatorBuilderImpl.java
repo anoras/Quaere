@@ -4,7 +4,7 @@ import org.quaere.Queryable;
 import org.quaere.QueryableIterable;
 import org.quaere.QueryEngine;
 import org.quaere.Convert;
-import org.quaere.objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.ObjectQueryEngine;
 import org.quaere.expressions.Expression;
 import org.quaere.expressions.Identifier;
 import org.quaere.expressions.Statement;
@@ -51,9 +51,9 @@ public class AggregateOperatorBuilderImpl<R> implements
                         )
                 )
         );
-        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
-            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
-            asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+        if (queryEngine instanceof ObjectQueryEngine) {
+            ObjectQueryEngine asObjectQueryEngine = (ObjectQueryEngine) queryEngine;
+            asObjectQueryEngine.addSource(sourceIdentifier, source);
         }
         return (R) Convert.toType(queryEngine.evaluate(query), rClass);
     }

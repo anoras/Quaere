@@ -5,7 +5,7 @@ import org.quaere.Queryable;
 import org.quaere.dsl.AggregateOperatorBuilder;
 import org.quaere.dsl.AggregateOperatorBuilderImpl;
 import org.quaere.expressions.*;
-import org.quaere.objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.ObjectQueryEngine;
 
 import java.util.Arrays;
 
@@ -32,19 +32,19 @@ public class DefaultOperations {
 
     public static <R> QueryEngine createEngineAndAddSource(final Identifier sourceIdentifier, final Queryable<R> source) {
         QueryEngine queryEngine = source.createQueryEngine();
-        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
-            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
-            asQuaere4ObjectsQueryEngine.addSource(sourceIdentifier, source);
+        if (queryEngine instanceof ObjectQueryEngine) {
+            ObjectQueryEngine asObjectQueryEngine = (ObjectQueryEngine) queryEngine;
+            asObjectQueryEngine.addSource(sourceIdentifier, source);
         }
         return queryEngine;
     }
 
     protected static <T> QueryEngine createEngineAndSetSources(final Identifier leftSourceIdentifier, final Queryable<T> leftHandSide, final Identifier rightSourceIdentifier, final Queryable<T> rightHandSide) {
         QueryEngine queryEngine = leftHandSide.createQueryEngine();
-        if (queryEngine instanceof Quaere4ObjectsQueryEngine) {
-            Quaere4ObjectsQueryEngine asQuaere4ObjectsQueryEngine = (Quaere4ObjectsQueryEngine) queryEngine;
-            asQuaere4ObjectsQueryEngine.addSource(leftSourceIdentifier, leftHandSide);
-            asQuaere4ObjectsQueryEngine.addSource(rightSourceIdentifier, rightHandSide);
+        if (queryEngine instanceof ObjectQueryEngine) {
+            ObjectQueryEngine asObjectQueryEngine = (ObjectQueryEngine) queryEngine;
+            asObjectQueryEngine.addSource(leftSourceIdentifier, leftHandSide);
+            asObjectQueryEngine.addSource(rightSourceIdentifier, rightHandSide);
         }
         return queryEngine;
     }

@@ -1,7 +1,7 @@
 package org.quaere;
 
 import org.quaere.expressions.Identifier;
-import org.quaere.objects.Quaere4ObjectsQueryEngine;
+import org.quaere.objects.ObjectQueryEngine;
 
 import java.util.Iterator;
 
@@ -18,7 +18,7 @@ public class QueryableIterable<T> implements Queryable<T> {
 
 
     public QueryEngine createQueryEngine() {
-        return new Quaere4ObjectsQueryEngine();
+        return new ObjectQueryEngine();
     }
     public Identifier getSourceIdentifier(Identifier identifier) {
         return new Identifier("__src_" + identifier.name);
